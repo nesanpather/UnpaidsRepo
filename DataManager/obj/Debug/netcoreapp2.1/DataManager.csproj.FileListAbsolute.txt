@@ -1,0 +1,9 @@
+C:\Source\git\UnpaidsRepo\DataManager\bin\Debug\netcoreapp2.1\DataManager.deps.json
+C:\Source\git\UnpaidsRepo\DataManager\bin\Debug\netcoreapp2.1\DataManager.dll
+C:\Source\git\UnpaidsRepo\DataManager\bin\Debug\netcoreapp2.1\DataManager.pdb
+C:\Source\git\UnpaidsRepo\DataManager\obj\Debug\netcoreapp2.1\DataManager.csprojAssemblyReference.cache
+C:\Source\git\UnpaidsRepo\DataManager\obj\Debug\netcoreapp2.1\DataManager.csproj.CoreCompileInputs.cache
+C:\Source\git\UnpaidsRepo\DataManager\obj\Debug\netcoreapp2.1\DataManager.AssemblyInfoInputs.cache
+C:\Source\git\UnpaidsRepo\DataManager\obj\Debug\netcoreapp2.1\DataManager.AssemblyInfo.cs
+C:\Source\git\UnpaidsRepo\DataManager\obj\Debug\netcoreapp2.1\DataManager.dll
+C:\Source\git\UnpaidsRepo\DataManager\obj\Debug\netcoreapp2.1\DataManager.pdb
