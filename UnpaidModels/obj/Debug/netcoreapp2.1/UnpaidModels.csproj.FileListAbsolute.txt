@@ -1,0 +1,8 @@
+C:\Source\git\UnpaidsRepo\UnpaidModels\bin\Debug\netcoreapp2.1\UnpaidModels.deps.json
+C:\Source\git\UnpaidsRepo\UnpaidModels\bin\Debug\netcoreapp2.1\UnpaidModels.dll
+C:\Source\git\UnpaidsRepo\UnpaidModels\bin\Debug\netcoreapp2.1\UnpaidModels.pdb
+C:\Source\git\UnpaidsRepo\UnpaidModels\obj\Debug\netcoreapp2.1\UnpaidModels.csproj.CoreCompileInputs.cache
+C:\Source\git\UnpaidsRepo\UnpaidModels\obj\Debug\netcoreapp2.1\UnpaidModels.AssemblyInfoInputs.cache
+C:\Source\git\UnpaidsRepo\UnpaidModels\obj\Debug\netcoreapp2.1\UnpaidModels.AssemblyInfo.cs
+C:\Source\git\UnpaidsRepo\UnpaidModels\obj\Debug\netcoreapp2.1\UnpaidModels.dll
+C:\Source\git\UnpaidsRepo\UnpaidModels\obj\Debug\netcoreapp2.1\UnpaidModels.pdb

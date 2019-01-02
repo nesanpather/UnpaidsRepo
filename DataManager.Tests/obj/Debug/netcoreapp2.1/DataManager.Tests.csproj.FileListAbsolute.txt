@@ -13,3 +13,8 @@ C:\Source\git\UnpaidsRepo\DataManager.Tests\obj\Debug\netcoreapp2.1\DataManager.
 C:\Source\git\UnpaidsRepo\DataManager.Tests\obj\Debug\netcoreapp2.1\DataManager.Tests.AssemblyInfo.cs
 C:\Source\git\UnpaidsRepo\DataManager.Tests\obj\Debug\netcoreapp2.1\DataManager.Tests.dll
 C:\Source\git\UnpaidsRepo\DataManager.Tests\obj\Debug\netcoreapp2.1\DataManager.Tests.pdb
+C:\Source\git\UnpaidsRepo\DataManager.Tests\bin\Debug\netcoreapp2.1\DataManager.dll
+C:\Source\git\UnpaidsRepo\DataManager.Tests\bin\Debug\netcoreapp2.1\UnpaidModels.dll
+C:\Source\git\UnpaidsRepo\DataManager.Tests\bin\Debug\netcoreapp2.1\DataManager.pdb
+C:\Source\git\UnpaidsRepo\DataManager.Tests\bin\Debug\netcoreapp2.1\UnpaidModels.pdb
+C:\Source\git\UnpaidsRepo\DataManager.Tests\obj\Debug\netcoreapp2.1\DataManager.Tests.csproj.CopyComplete
