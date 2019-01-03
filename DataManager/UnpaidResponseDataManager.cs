@@ -1,27 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DataManager.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using UnpaidModels;
 
 namespace DataManager
 {
     public class UnpaidResponseDataManager: IUnpaidResponseOperations
     {
-        public Task<int> AddUnpaidResponseAsync(UnpaidResponse unpaidResponse)
+        private readonly UnpaidsDBContext _unpaidsDbContext;
+
+        public UnpaidResponseDataManager(UnpaidsDBContext unpaidsDbContext)
         {
-            throw new NotImplementedException();
+            _unpaidsDbContext = unpaidsDbContext;
         }
 
-        public Task<UnpaidResponse> GetUnpaidResponseAsync(int unpaidRequestId)
+        public async Task<int> AddUnpaidResponseAsync(IEnumerable<UnpaidResponse> unpaidResponses)
         {
-            throw new NotImplementedException();
+            if (unpaidResponses == null)
+            {
+                return 0;
+            }
+
+            using (_unpaidsDbContext)
+            {
+                _unpaidsDbContext.UnpaidResponses.AddRange(unpaidResponses);
+                return await _unpaidsDbContext.SaveChangesAsync();
+            }
         }
 
-        public Task<IEnumerable<UnpaidResponse>> GetAllUnpaidResponseAsync()
+        public async Task<UnpaidResponse> GetSingleUnpaidResponseAsync(int unpaidResponseId)
         {
-            throw new NotImplementedException();
+            using (_unpaidsDbContext)
+            {
+                return await _unpaidsDbContext.UnpaidResponses.FirstOrDefaultAsync(u => u.UnpaidResponseId == unpaidResponseId);
+            }
+        }
+
+        public async Task<IEnumerable<UnpaidResponse>> GetAllUnpaidResponseAsync(int unpaidRequestId)
+        {
+            using (_unpaidsDbContext)
+            {
+                return await _unpaidsDbContext.UnpaidResponses.Where(u => u.UnpaidRequestId == unpaidRequestId).ToListAsync();
+            }
+        }
+
+        public async Task<IEnumerable<UnpaidResponse>> GetAllUnpaidResponseAsync()
+        {
+            using (_unpaidsDbContext)
+            {
+                return await _unpaidsDbContext.UnpaidResponses.ToListAsync();
+            }
         }
     }
 }

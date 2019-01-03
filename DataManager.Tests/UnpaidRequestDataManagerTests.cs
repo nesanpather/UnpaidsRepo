@@ -10,7 +10,7 @@ namespace DataManager.Tests
     public class UnpaidRequestDataManagerTests
     {
         [Test]
-        public async Task AddUnpaidRequestAsync_GIVEN_Valid_Unpaid_RETURNS_Valid_Result()
+        public async Task AddUnpaidRequestAsync_GIVEN_Valid_UnpaidRequest_RETURNS_Valid_Result()
         {
             // Arrange.
             var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
@@ -45,7 +45,7 @@ namespace DataManager.Tests
         }
 
         [Test]
-        public async Task AddUnpaidRequestAsync_2Entries_GIVEN_Valid_Unpaid_RETURNS_Valid_Result_With2Entries()
+        public async Task AddUnpaidRequestAsync_2Entries_GIVEN_Valid_UnpaidRequest_RETURNS_Valid_Result_With2Entries()
         {
             // Arrange.
             var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
@@ -89,7 +89,7 @@ namespace DataManager.Tests
         }
 
         [Test]
-        public async Task AddUnpaidRequestAsync_GIVEN_Null_Unpaid_RETURNS_Valid_Result()
+        public async Task AddUnpaidRequestAsync_GIVEN_Null_UnpaidRequest_RETURNS_Valid_Result()
         {
             // Arrange.
             var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
