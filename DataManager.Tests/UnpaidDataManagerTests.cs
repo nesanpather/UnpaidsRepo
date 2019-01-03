@@ -15,7 +15,7 @@ namespace DataManager.Tests
         }
 
         [Test]
-        public async Task AddUnpaidAsync_GIVEN_Valid_Unpaid_RETURNS_Valid_Task()
+        public async Task AddUnpaidAsync_GIVEN_Valid_Unpaid_RETURNS_Valid_Result()
         {
             // Arrange.
             var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
@@ -50,7 +50,7 @@ namespace DataManager.Tests
         }
 
         [Test]
-        public async Task AddUnpaidAsync_CalledTwice_GIVEN_Valid_Unpaid_RETURNS_Valid_Task_With2Entries()
+        public async Task AddUnpaidAsync_CalledTwice_GIVEN_Valid_Unpaid_RETURNS_Valid_Result_With2Entries()
         {
             // Arrange.
             var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
@@ -94,7 +94,7 @@ namespace DataManager.Tests
         }
 
         [Test]
-        public async Task AddUnpaidAsync_GIVEN_Null_Unpaid_RETURNS_Valid_Task()
+        public async Task AddUnpaidAsync_GIVEN_Null_Unpaid_RETURNS_Valid_Result()
         {
             // Arrange.
             var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
@@ -114,6 +114,120 @@ namespace DataManager.Tests
             using (var context = new UnpaidsDBContext(options))
             {
                 Assert.AreEqual(0, context.Unpaids.Count());
+            }
+        }
+
+        [Test]
+        public async Task GetSingleUnpaidAsync_GIVEN_Valid_Input_RETURNS_Valid_Unpaid()
+        {
+            // Arrange.
+            var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
+                .UseInMemoryDatabase(databaseName: "Find_unpaid")
+                .Options;
+            
+            // Insert seed data into the database using one instance of the context.
+            using (var context = new UnpaidsDBContext(options))
+            {
+                context.Unpaids.Add(new Unpaid { UnpaidId = 1, PolicyNumber = "P1", Name = "Tom", Message = "Test Message 1." });
+                context.Unpaids.Add(new Unpaid { UnpaidId = 2, PolicyNumber = "P2", Name = "Bob", Message = "Test Message 2." });
+                context.Unpaids.Add(new Unpaid { UnpaidId = 3, PolicyNumber = "P1", Name = "Tom", Message = "Test Message 3." });
+                context.Unpaids.Add(new Unpaid { UnpaidId = 4, PolicyNumber = "P4", Name = "Brad", Message = "Test Message 4." });
+                context.SaveChanges();
+            }
+
+            // Act and Assert.
+            // Use a clean instance of the context to run the test.
+            using (var context = new UnpaidsDBContext(options))
+            {
+                var service = new UnpaidDataManager(context);
+                var actual = await service.GetSingleUnpaidAsync(3);
+                Assert.AreEqual(3, actual.UnpaidId);
+                Assert.AreEqual("P1", actual.PolicyNumber);
+                Assert.AreEqual("Tom", actual.Name);
+                Assert.AreEqual("Test Message 3.", actual.Message);
+            }
+        }
+
+        [Test]
+        public async Task GetSingleUnpaidAsync_GIVEN_Invalid_Input_RETURNS_Null()
+        {
+            // Arrange.
+            var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
+                .UseInMemoryDatabase(databaseName: "Find_unpaid2")
+                .Options;
+
+            // Insert seed data into the database using one instance of the context.
+            using (var context = new UnpaidsDBContext(options))
+            {
+                context.Unpaids.Add(new Unpaid { UnpaidId = 1, PolicyNumber = "P1", Name = "Tom", Message = "Test Message 1." });
+                context.SaveChanges();
+            }
+
+            // Act and Assert.
+            // Use a clean instance of the context to run the test.
+            using (var context = new UnpaidsDBContext(options))
+            {
+                var service = new UnpaidDataManager(context);
+                var actual = await service.GetSingleUnpaidAsync(0);
+                Assert.AreEqual(null, actual);
+            }
+        }
+
+        [Test]
+        public async Task GetAllUnpaidAsync_RETURNS_Valid_Unpaid_List()
+        {
+            // Arrange.
+            var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
+                .UseInMemoryDatabase(databaseName: "Get_unpaids")
+                .Options;
+
+            // Insert seed data into the database using one instance of the context.
+            using (var context = new UnpaidsDBContext(options))
+            {
+                context.Unpaids.Add(new Unpaid { UnpaidId = 1, PolicyNumber = "P1", Name = "Tom", Message = "Test Message 1." });
+                context.Unpaids.Add(new Unpaid { UnpaidId = 2, PolicyNumber = "P2", Name = "Bob", Message = "Test Message 2." });
+                context.Unpaids.Add(new Unpaid { UnpaidId = 3, PolicyNumber = "P1", Name = "Tom", Message = "Test Message 3." });
+                context.Unpaids.Add(new Unpaid { UnpaidId = 4, PolicyNumber = "P4", Name = "Brad", Message = "Test Message 4." });
+                context.SaveChanges();
+            }
+
+            // Act and Assert.
+            // Use a clean instance of the context to run the test.
+            using (var context = new UnpaidsDBContext(options))
+            {
+                var service = new UnpaidDataManager(context);
+                var actual = await service.GetAllUnpaidAsync();
+                Assert.AreEqual(4, actual.Count());
+            }
+        }
+
+        [Test]
+        public async Task GetAllUnpaidAsync_GIVEN_Valid_Input_RETURNS_Valid_Unpaid_List()
+        {
+            // Arrange.
+            var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
+                .UseInMemoryDatabase(databaseName: "Get_unpaids_against_policynumber")
+                .Options;
+
+            // Insert seed data into the database using one instance of the context.
+            using (var context = new UnpaidsDBContext(options))
+            {
+                context.Unpaids.Add(new Unpaid { UnpaidId = 1, PolicyNumber = "P1", Name = "Tom", Message = "Test Message 1." });
+                context.Unpaids.Add(new Unpaid { UnpaidId = 2, PolicyNumber = "P2", Name = "Bob", Message = "Test Message 2." });
+                context.Unpaids.Add(new Unpaid { UnpaidId = 3, PolicyNumber = "P1", Name = "Tom", Message = "Test Message 3." });
+                context.Unpaids.Add(new Unpaid { UnpaidId = 4, PolicyNumber = "P4", Name = "Brad", Message = "Test Message 4." });
+                context.SaveChanges();
+            }
+
+            // Act and Assert.
+            // Use a clean instance of the context to run the test.
+            using (var context = new UnpaidsDBContext(options))
+            {
+                var service = new UnpaidDataManager(context);
+                var actual = await service.GetAllUnpaidAsync("P1");
+                Assert.AreEqual(2, actual.Count());
+                Assert.AreEqual(1, actual.ToList()[0].UnpaidId);
+                Assert.AreEqual(3, actual.ToList()[1].UnpaidId);
             }
         }
     }
