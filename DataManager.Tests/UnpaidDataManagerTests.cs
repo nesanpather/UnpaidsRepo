@@ -47,10 +47,12 @@ namespace DataManager.Tests
                 Assert.AreEqual("Nesan Pather", context.Unpaids.Single().Name);
                 Assert.AreEqual("Payment bounced. Please accept a call back.", context.Unpaids.Single().Message);
             }
+
+            options = null;
         }
 
         [Test]
-        public async Task AddUnpaidAsync_CalledTwice_GIVEN_Valid_Unpaid_RETURNS_Valid_Result_With2Entries()
+        public async Task AddUnpaidAsync_2Entries_GIVEN_Valid_Unpaid_RETURNS_Valid_Result_With2Entries()
         {
             // Arrange.
             var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
@@ -224,7 +226,7 @@ namespace DataManager.Tests
             using (var context = new UnpaidsDBContext(options))
             {
                 var service = new UnpaidDataManager(context);
-                var actual = await service.GetAllUnpaidAsync("P1");
+                var actual = await service.GetAllUnpaidAsync("p1");
                 Assert.AreEqual(2, actual.Count());
                 Assert.AreEqual(1, actual.ToList()[0].UnpaidId);
                 Assert.AreEqual(3, actual.ToList()[1].UnpaidId);

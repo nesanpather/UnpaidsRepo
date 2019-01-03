@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DataManager.Interfaces;
@@ -42,7 +43,7 @@ namespace DataManager
         {
             using (_unpaidsDbContext)
             {
-                return await _unpaidsDbContext.Unpaids.Where(u => u.PolicyNumber == policyNumber).ToListAsync();
+                return await _unpaidsDbContext.Unpaids.Where(u => u.PolicyNumber.Equals(policyNumber, StringComparison.InvariantCultureIgnoreCase)).ToListAsync();
             }
         }
 
