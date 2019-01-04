@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Threading;
 using UnpaidModels;
 
 namespace DataManager.Tests
@@ -35,7 +36,7 @@ namespace DataManager.Tests
                         Name = "Nesan Pather",
                         Message = "Payment bounced. Please accept a call back."
                     }
-                });
+                }, CancellationToken.None);
             }
 
             // Assert.
@@ -78,7 +79,7 @@ namespace DataManager.Tests
                         Name = "Tom Smith",
                         Message = "Payment bounced. Please accept a call back."
                     }
-                });
+                }, CancellationToken.None);
             }
 
             // Assert.
@@ -108,7 +109,7 @@ namespace DataManager.Tests
             using (var context = new UnpaidsDBContext(options))
             {
                 var service = new UnpaidDataManager(context);
-                var actual = await service.AddUnpaidAsync(null);
+                var actual = await service.AddUnpaidAsync(null, CancellationToken.None);
             }
 
             // Assert.
@@ -142,7 +143,7 @@ namespace DataManager.Tests
             using (var context = new UnpaidsDBContext(options))
             {
                 var service = new UnpaidDataManager(context);
-                var actual = await service.GetSingleUnpaidAsync(3);
+                var actual = await service.GetSingleUnpaidAsync(3, CancellationToken.None);
                 Assert.AreEqual(3, actual.UnpaidId);
                 Assert.AreEqual("P1", actual.PolicyNumber);
                 Assert.AreEqual("Tom", actual.Name);
@@ -170,7 +171,7 @@ namespace DataManager.Tests
             using (var context = new UnpaidsDBContext(options))
             {
                 var service = new UnpaidDataManager(context);
-                var actual = await service.GetSingleUnpaidAsync(0);
+                var actual = await service.GetSingleUnpaidAsync(0, CancellationToken.None);
                 Assert.AreEqual(null, actual);
             }
         }
@@ -198,7 +199,7 @@ namespace DataManager.Tests
             using (var context = new UnpaidsDBContext(options))
             {
                 var service = new UnpaidDataManager(context);
-                var actual = await service.GetAllUnpaidAsync();
+                var actual = await service.GetAllUnpaidAsync(CancellationToken.None);
                 Assert.AreEqual(4, actual.Count());
             }
         }
@@ -226,7 +227,7 @@ namespace DataManager.Tests
             using (var context = new UnpaidsDBContext(options))
             {
                 var service = new UnpaidDataManager(context);
-                var actual = await service.GetAllUnpaidAsync("p1");
+                var actual = await service.GetAllUnpaidAsync("p1", CancellationToken.None);
                 Assert.AreEqual(2, actual.Count());
                 Assert.AreEqual(1, actual.ToList()[0].UnpaidId);
                 Assert.AreEqual(3, actual.ToList()[1].UnpaidId);
