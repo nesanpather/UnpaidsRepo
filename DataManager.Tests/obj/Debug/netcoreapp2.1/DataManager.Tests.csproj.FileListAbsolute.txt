@@ -1,7 +1,6 @@
 C:\Source\git\UnpaidsRepo\DataManager.Tests\bin\Debug\netcoreapp2.1\NUnit3.TestAdapter.dll
 C:\Source\git\UnpaidsRepo\DataManager.Tests\bin\Debug\netcoreapp2.1\NUnit3.TestAdapter.pdb
 C:\Source\git\UnpaidsRepo\DataManager.Tests\bin\Debug\netcoreapp2.1\nunit.engine.netstandard.dll
-C:\Source\git\UnpaidsRepo\DataManager.Tests\bin\Debug\netcoreapp2.1\Mono.Cecil.dll
 C:\Source\git\UnpaidsRepo\DataManager.Tests\bin\Debug\netcoreapp2.1\DataManager.Tests.deps.json
 C:\Source\git\UnpaidsRepo\DataManager.Tests\bin\Debug\netcoreapp2.1\DataManager.Tests.runtimeconfig.json
 C:\Source\git\UnpaidsRepo\DataManager.Tests\bin\Debug\netcoreapp2.1\DataManager.Tests.runtimeconfig.dev.json

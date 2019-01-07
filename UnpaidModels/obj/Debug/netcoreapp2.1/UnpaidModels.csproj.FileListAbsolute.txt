@@ -6,3 +6,4 @@ C:\Source\git\UnpaidsRepo\UnpaidModels\obj\Debug\netcoreapp2.1\UnpaidModels.Asse
 C:\Source\git\UnpaidsRepo\UnpaidModels\obj\Debug\netcoreapp2.1\UnpaidModels.AssemblyInfo.cs
 C:\Source\git\UnpaidsRepo\UnpaidModels\obj\Debug\netcoreapp2.1\UnpaidModels.dll
 C:\Source\git\UnpaidsRepo\UnpaidModels\obj\Debug\netcoreapp2.1\UnpaidModels.pdb
+C:\Source\git\UnpaidsRepo\UnpaidModels\obj\Debug\netcoreapp2.1\UnpaidModels.csprojAssemblyReference.cache
