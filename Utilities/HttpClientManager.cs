@@ -41,7 +41,7 @@ namespace Utilities
             }
 
             var uri = new Uri(url);
-
+            
             var request = new HttpRequestMessage(httpMethod, uri);
             //request.Headers.Add("Accept", "application/json");
             //request.Headers.Add("User-Agent", "Unpaids-Sample");

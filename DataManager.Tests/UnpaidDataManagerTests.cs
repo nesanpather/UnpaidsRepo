@@ -33,6 +33,7 @@ namespace DataManager.Tests
                     new Unpaid
                     {
                         PolicyNumber = "Test1234",
+                        IdNumber = "9009165023080",
                         Name = "Nesan Pather",
                         Message = "Payment bounced. Please accept a call back."
                     }
@@ -45,6 +46,7 @@ namespace DataManager.Tests
             {
                 Assert.AreEqual(1, context.Unpaids.Count());
                 Assert.AreEqual("Test1234", context.Unpaids.Single().PolicyNumber);
+                Assert.AreEqual("9009165023080", context.Unpaids.Single().IdNumber);
                 Assert.AreEqual("Nesan Pather", context.Unpaids.Single().Name);
                 Assert.AreEqual("Payment bounced. Please accept a call back.", context.Unpaids.Single().Message);
             }
@@ -70,12 +72,14 @@ namespace DataManager.Tests
                     new Unpaid
                     {
                         PolicyNumber = "Test1234",
+                        IdNumber = "9009165023080",
                         Name = "Nesan Pather",
                         Message = "Payment bounced. Please accept a call back."
                     },
                     new Unpaid
                     {
                         PolicyNumber = "Test12345",
+                        IdNumber = "9009165023081",
                         Name = "Tom Smith",
                         Message = "Payment bounced. Please accept a call back."
                     }
@@ -88,9 +92,11 @@ namespace DataManager.Tests
             {
                 Assert.AreEqual(2, context.Unpaids.Count());
                 Assert.AreEqual("Test1234", context.Unpaids.ToList()[0].PolicyNumber);
+                Assert.AreEqual("9009165023080", context.Unpaids.ToList()[0].IdNumber);
                 Assert.AreEqual("Nesan Pather", context.Unpaids.ToList()[0].Name);
                 Assert.AreEqual("Payment bounced. Please accept a call back.", context.Unpaids.ToList()[0].Message);
                 Assert.AreEqual("Test12345", context.Unpaids.ToList()[1].PolicyNumber);
+                Assert.AreEqual("9009165023081", context.Unpaids.ToList()[1].IdNumber);
                 Assert.AreEqual("Tom Smith", context.Unpaids.ToList()[1].Name);
                 Assert.AreEqual("Payment bounced. Please accept a call back.", context.Unpaids.ToList()[1].Message);
             }
@@ -131,10 +137,10 @@ namespace DataManager.Tests
             // Insert seed data into the database using one instance of the context.
             using (var context = new UnpaidsDBContext(options))
             {
-                context.Unpaids.Add(new Unpaid { UnpaidId = 1, PolicyNumber = "P1", Name = "Tom", Message = "Test Message 1." });
-                context.Unpaids.Add(new Unpaid { UnpaidId = 2, PolicyNumber = "P2", Name = "Bob", Message = "Test Message 2." });
-                context.Unpaids.Add(new Unpaid { UnpaidId = 3, PolicyNumber = "P1", Name = "Tom", Message = "Test Message 3." });
-                context.Unpaids.Add(new Unpaid { UnpaidId = 4, PolicyNumber = "P4", Name = "Brad", Message = "Test Message 4." });
+                context.Unpaids.Add(new Unpaid { UnpaidId = 1, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 1." });
+                context.Unpaids.Add(new Unpaid { UnpaidId = 2, PolicyNumber = "P2", Name = "Bob", IdNumber = "9009165023081", Message = "Test Message 2." });
+                context.Unpaids.Add(new Unpaid { UnpaidId = 3, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 3." });
+                context.Unpaids.Add(new Unpaid { UnpaidId = 4, PolicyNumber = "P4", IdNumber = "9009165023082", Name = "Brad", Message = "Test Message 4." });
                 context.SaveChanges();
             }
 
@@ -146,6 +152,7 @@ namespace DataManager.Tests
                 var actual = await service.GetSingleUnpaidAsync(3, CancellationToken.None);
                 Assert.AreEqual(3, actual.UnpaidId);
                 Assert.AreEqual("P1", actual.PolicyNumber);
+                Assert.AreEqual("9009165023080", actual.IdNumber);
                 Assert.AreEqual("Tom", actual.Name);
                 Assert.AreEqual("Test Message 3.", actual.Message);
             }
