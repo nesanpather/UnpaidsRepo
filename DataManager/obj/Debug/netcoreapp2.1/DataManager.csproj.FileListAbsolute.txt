@@ -10,3 +10,5 @@ C:\Source\git\UnpaidsRepo\DataManager\obj\Debug\netcoreapp2.1\DataManager.pdb
 C:\Source\git\UnpaidsRepo\DataManager\bin\Debug\netcoreapp2.1\UnpaidModels.dll
 C:\Source\git\UnpaidsRepo\DataManager\bin\Debug\netcoreapp2.1\UnpaidModels.pdb
 C:\Source\git\UnpaidsRepo\DataManager\obj\Debug\netcoreapp2.1\DataManager.csproj.CopyComplete
+C:\Source\git\UnpaidsRepo\DataManager\bin\Debug\netcoreapp2.1\Newtonsoft.Json.dll
+C:\Source\git\UnpaidsRepo\DataManager\bin\Debug\netcoreapp2.1\Newtonsoft.Json.xml

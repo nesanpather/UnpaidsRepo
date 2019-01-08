@@ -11,6 +11,12 @@ namespace Utilities
         {
             _configuration = configuration;
         }
-        public string this[string key] => _configuration[key];
+
+        //public string this[string key] => _configuration[key];
+        public string this[string key]
+        {
+            get => _configuration[key];
+            set { }
+        }
     }
 }

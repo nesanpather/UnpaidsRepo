@@ -8,6 +8,6 @@ namespace Utilities.Interfaces
 {
     public interface IHttpClientOperations
     {
-        Task<string> SendHttpRequestAsync(HttpMethod httpMethod, AuthenticationHeaderValue authenticationHeaderValue, Dictionary<string, string> headerDictionary, string url, object content, CancellationToken cancellationToken);
+        Task<string> SendHttpRequestAsync(HttpMethod httpMethod, AuthenticationHeaderValue authenticationHeaderValue, Dictionary<string, string> headerDictionary, string url, HttpContent httpContent, CancellationToken cancellationToken);
     }
 }

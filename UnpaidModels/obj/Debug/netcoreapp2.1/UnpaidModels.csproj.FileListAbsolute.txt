@@ -7,3 +7,6 @@ C:\Source\git\UnpaidsRepo\UnpaidModels\obj\Debug\netcoreapp2.1\UnpaidModels.Asse
 C:\Source\git\UnpaidsRepo\UnpaidModels\obj\Debug\netcoreapp2.1\UnpaidModels.dll
 C:\Source\git\UnpaidsRepo\UnpaidModels\obj\Debug\netcoreapp2.1\UnpaidModels.pdb
 C:\Source\git\UnpaidsRepo\UnpaidModels\obj\Debug\netcoreapp2.1\UnpaidModels.csprojAssemblyReference.cache
+C:\Source\git\UnpaidsRepo\UnpaidModels\bin\Debug\netcoreapp2.1\Newtonsoft.Json.dll
+C:\Source\git\UnpaidsRepo\UnpaidModels\bin\Debug\netcoreapp2.1\Newtonsoft.Json.xml
+C:\Source\git\UnpaidsRepo\UnpaidModels\obj\Debug\netcoreapp2.1\UnpaidModels.csproj.CopyComplete

@@ -55,8 +55,11 @@ namespace Utilities.Tests
 
             var requestContent = new { ReferenceNumber = "Test1234" };
 
+            var serializedRequest = JsonConvert.SerializeObject(requestContent);
+            var httpContent = new StringContent(serializedRequest, Encoding.UTF8, "application/json");
+
             // Act.
-            var actual = await httpClientManager.SendHttpRequestAsync(HttpMethod.Post, authorizationHeader, acceptHeader, "http://test.co.za", requestContent, CancellationToken.None);
+            var actual = await httpClientManager.SendHttpRequestAsync(HttpMethod.Post, authorizationHeader, acceptHeader, "http://test.co.za", httpContent, CancellationToken.None);
 
             // Assert.
             Assert.NotNull(actual);
@@ -80,9 +83,11 @@ namespace Utilities.Tests
             var acceptHeader = new Dictionary<string, string> { { "Accept", "application/json" } };
 
             var requestContent = new { ReferenceNumber = "Test1234" };
+            var serializedRequest = JsonConvert.SerializeObject(requestContent);
+            var httpContent = new StringContent(serializedRequest, Encoding.UTF8, "application/json");
 
             // Act.
-            var actual = await httpClientManager.SendHttpRequestAsync(HttpMethod.Post, null, acceptHeader, "http://test.co.za", requestContent, CancellationToken.None);
+            var actual = await httpClientManager.SendHttpRequestAsync(HttpMethod.Post, null, acceptHeader, "http://test.co.za", httpContent, CancellationToken.None);
 
             // Assert.
             Assert.NotNull(actual);
@@ -107,9 +112,11 @@ namespace Utilities.Tests
             var acceptHeader = new Dictionary<string, string> { { "Accept", "application/json" } };
 
             var requestContent = new { ReferenceNumber = "Test1234" };
+            var serializedRequest = JsonConvert.SerializeObject(requestContent);
+            var httpContent = new StringContent(serializedRequest, Encoding.UTF8, "application/json");
 
             // Act.
-            var actual = await httpClientManager.SendHttpRequestAsync(null, authorizationHeader, acceptHeader, "http://test.co.za", requestContent, CancellationToken.None);
+            var actual = await httpClientManager.SendHttpRequestAsync(null, authorizationHeader, acceptHeader, "http://test.co.za", httpContent, CancellationToken.None);
 
             // Assert.
             Assert.IsNull(actual);
@@ -135,9 +142,11 @@ namespace Utilities.Tests
             var acceptHeader = new Dictionary<string, string> { { "Accept", "application/json" } };
 
             var requestContent = new { ReferenceNumber = "Test1234" };
+            var serializedRequest = JsonConvert.SerializeObject(requestContent);
+            var httpContent = new StringContent(serializedRequest, Encoding.UTF8, "application/json");
 
             // Act.
-            var actual = await httpClientManager.SendHttpRequestAsync(HttpMethod.Post, authorizationHeader, acceptHeader, url, requestContent, CancellationToken.None);
+            var actual = await httpClientManager.SendHttpRequestAsync(HttpMethod.Post, authorizationHeader, acceptHeader, url, httpContent, CancellationToken.None);
 
             // Assert.
             Assert.IsNull(actual);

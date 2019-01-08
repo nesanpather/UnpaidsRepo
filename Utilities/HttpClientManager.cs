@@ -19,7 +19,7 @@ namespace Utilities
             _clientFactory = clientFactory;
         }
 
-        public async Task<string> SendHttpRequestAsync(HttpMethod httpMethod, AuthenticationHeaderValue authenticationHeaderValue, Dictionary<string, string> headerDictionary, string url, object content, CancellationToken cancellationToken)
+        public async Task<string> SendHttpRequestAsync(HttpMethod httpMethod, AuthenticationHeaderValue authenticationHeaderValue, Dictionary<string, string> headerDictionary, string url, HttpContent httpContent, CancellationToken cancellationToken)
         {
             if (httpMethod == null)
             {
@@ -34,7 +34,7 @@ namespace Utilities
                 return null;
             }
 
-            if (content == null)
+            if (httpContent == null)
             {
                 // Log error.
                 return null;
@@ -47,15 +47,17 @@ namespace Utilities
             //request.Headers.Add("User-Agent", "Unpaids-Sample");
 
             request.Headers.Authorization = authenticationHeaderValue;
-
+            
             foreach (var header in headerDictionary)
             {
                 request.Headers.Add(header.Key, header.Value);
-            }         
-            
-            var serializedRequest = JsonConvert.SerializeObject(content);
-            request.Content = new StringContent(serializedRequest, Encoding.UTF8, "application/json");
-            
+            }
+
+            //var serializedRequest = JsonConvert.SerializeObject(content);
+            //request.Content = new StringContent(serializedRequest, Encoding.UTF8, "application/json");
+
+            request.Content = httpContent;
+
             var client = _clientFactory.CreateClient();
 
             var response = await client.SendAsync(request, cancellationToken);
