@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using NSubstitute;
 using Utilities.Interfaces;
-using Newtonsoft.Json;
-using System.Text;
 using UnpaidModels;
 
 namespace UnpaidManager.Tests

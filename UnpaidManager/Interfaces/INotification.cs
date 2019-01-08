@@ -1,10 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using UnpaidModels;
 
 namespace UnpaidManager.Interfaces
 {
     public interface INotification
     {
-        Task<bool> SendAsync(string title, string message, string idNumber, CancellationToken cancellationToken);
+        Task<NotificationResponse> SendAsync(string title, string message, string idNumber, CancellationToken cancellationToken);
     }
 }
