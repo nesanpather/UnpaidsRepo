@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace UnpaidModels
 {
-    public class UnpaidResponse
+    public class UnpaidResponseDb
     {
+        [Key]
         public int UnpaidResponseId { get; set; }
         public int UnpaidRequestId { get; set; }
         public int ResponseId { get; set; }

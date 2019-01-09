@@ -1,8 +1,7 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using UnpaidModels;
 
-namespace DataManager
+namespace DataManager.Models
 {
     public class UnpaidsDBContext: DbContext
     {
@@ -10,8 +9,8 @@ namespace DataManager
         {
         }
 
-        public DbSet<Unpaid> Unpaids { get; set; }
-        public DbSet<UnpaidRequest> UnpaidRequests { get; set; }
-        public DbSet<UnpaidResponse> UnpaidResponses { get; set; }
+        public DbSet<UnpaidDb> Unpaids { get; set; }
+        public DbSet<UnpaidRequestDb> UnpaidRequests { get; set; }
+        public DbSet<UnpaidResponseDb> UnpaidResponses { get; set; }
     }
 }

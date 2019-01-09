@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DataManager.Models;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using UnpaidModels;
@@ -25,9 +26,9 @@ namespace DataManager.Tests
             using (var context = new UnpaidsDBContext(options))
             {
                 var service = new UnpaidResponseDataManager(context);
-                var actual = await service.AddUnpaidResponseAsync(new List<UnpaidResponse>
+                var actual = await service.AddUnpaidResponseAsync(new List<UnpaidResponseDb>
                 {
-                    new UnpaidResponse
+                    new UnpaidResponseDb
                     {
                         UnpaidRequestId = 41,
                         StatusId = 1,
@@ -62,16 +63,16 @@ namespace DataManager.Tests
             using (var context = new UnpaidsDBContext(options))
             {
                 var service = new UnpaidResponseDataManager(context);
-                var actual = await service.AddUnpaidResponseAsync(new List<UnpaidResponse>
+                var actual = await service.AddUnpaidResponseAsync(new List<UnpaidResponseDb>
                 {
-                    new UnpaidResponse
+                    new UnpaidResponseDb
                     {
                         UnpaidRequestId = 41,
                         StatusId = 1,
                         ResponseId = 1,
                         Accepted = true
                     },
-                    new UnpaidResponse
+                    new UnpaidResponseDb
                     {
                         UnpaidRequestId = 55,
                         StatusId = 1,
@@ -131,10 +132,10 @@ namespace DataManager.Tests
 
             using (var context = new UnpaidsDBContext(options))
             {
-                context.UnpaidResponses.Add(new UnpaidResponse { UnpaidResponseId = 1, UnpaidRequestId = 12, StatusId = 1, ResponseId = 1, Accepted = true });
-                context.UnpaidResponses.Add(new UnpaidResponse { UnpaidResponseId = 2, UnpaidRequestId = 50, StatusId = 1, ResponseId = 1, Accepted = true });
-                context.UnpaidResponses.Add(new UnpaidResponse { UnpaidResponseId = 3, UnpaidRequestId = 12, StatusId = 1, ResponseId = 1, Accepted = false });
-                context.UnpaidResponses.Add(new UnpaidResponse { UnpaidResponseId = 4, UnpaidRequestId = 25, StatusId = 1, ResponseId = 2, Accepted = true });
+                context.UnpaidResponses.Add(new UnpaidResponseDb { UnpaidResponseId = 1, UnpaidRequestId = 12, StatusId = 1, ResponseId = 1, Accepted = true });
+                context.UnpaidResponses.Add(new UnpaidResponseDb { UnpaidResponseId = 2, UnpaidRequestId = 50, StatusId = 1, ResponseId = 1, Accepted = true });
+                context.UnpaidResponses.Add(new UnpaidResponseDb { UnpaidResponseId = 3, UnpaidRequestId = 12, StatusId = 1, ResponseId = 1, Accepted = false });
+                context.UnpaidResponses.Add(new UnpaidResponseDb { UnpaidResponseId = 4, UnpaidRequestId = 25, StatusId = 1, ResponseId = 2, Accepted = true });
                 context.SaveChanges();
             }
 
@@ -161,7 +162,7 @@ namespace DataManager.Tests
 
             using (var context = new UnpaidsDBContext(options))
             {
-                context.UnpaidResponses.Add(new UnpaidResponse { UnpaidResponseId = 1, UnpaidRequestId = 12, StatusId = 1, ResponseId = 1, Accepted = true });
+                context.UnpaidResponses.Add(new UnpaidResponseDb { UnpaidResponseId = 1, UnpaidRequestId = 12, StatusId = 1, ResponseId = 1, Accepted = true });
                 context.SaveChanges();
             }
 
@@ -184,10 +185,10 @@ namespace DataManager.Tests
 
             using (var context = new UnpaidsDBContext(options))
             {
-                context.UnpaidResponses.Add(new UnpaidResponse { UnpaidResponseId = 1, UnpaidRequestId = 12, StatusId = 1, ResponseId = 1, Accepted = true });
-                context.UnpaidResponses.Add(new UnpaidResponse { UnpaidResponseId = 2, UnpaidRequestId = 50, StatusId = 1, ResponseId = 1, Accepted = true });
-                context.UnpaidResponses.Add(new UnpaidResponse { UnpaidResponseId = 3, UnpaidRequestId = 12, StatusId = 1, ResponseId = 1, Accepted = false });
-                context.UnpaidResponses.Add(new UnpaidResponse { UnpaidResponseId = 4, UnpaidRequestId = 25, StatusId = 1, ResponseId = 2, Accepted = true });
+                context.UnpaidResponses.Add(new UnpaidResponseDb { UnpaidResponseId = 1, UnpaidRequestId = 12, StatusId = 1, ResponseId = 1, Accepted = true });
+                context.UnpaidResponses.Add(new UnpaidResponseDb { UnpaidResponseId = 2, UnpaidRequestId = 50, StatusId = 1, ResponseId = 1, Accepted = true });
+                context.UnpaidResponses.Add(new UnpaidResponseDb { UnpaidResponseId = 3, UnpaidRequestId = 12, StatusId = 1, ResponseId = 1, Accepted = false });
+                context.UnpaidResponses.Add(new UnpaidResponseDb { UnpaidResponseId = 4, UnpaidRequestId = 25, StatusId = 1, ResponseId = 2, Accepted = true });
                 context.SaveChanges();
             }
 
@@ -210,10 +211,10 @@ namespace DataManager.Tests
 
             using (var context = new UnpaidsDBContext(options))
             {
-                context.UnpaidResponses.Add(new UnpaidResponse { UnpaidResponseId = 1, UnpaidRequestId = 12, StatusId = 1, ResponseId = 1, Accepted = true });
-                context.UnpaidResponses.Add(new UnpaidResponse { UnpaidResponseId = 2, UnpaidRequestId = 50, StatusId = 1, ResponseId = 1, Accepted = true });
-                context.UnpaidResponses.Add(new UnpaidResponse { UnpaidResponseId = 3, UnpaidRequestId = 12, StatusId = 1, ResponseId = 1, Accepted = false });
-                context.UnpaidResponses.Add(new UnpaidResponse { UnpaidResponseId = 4, UnpaidRequestId = 25, StatusId = 1, ResponseId = 2, Accepted = true });
+                context.UnpaidResponses.Add(new UnpaidResponseDb { UnpaidResponseId = 1, UnpaidRequestId = 12, StatusId = 1, ResponseId = 1, Accepted = true });
+                context.UnpaidResponses.Add(new UnpaidResponseDb { UnpaidResponseId = 2, UnpaidRequestId = 50, StatusId = 1, ResponseId = 1, Accepted = true });
+                context.UnpaidResponses.Add(new UnpaidResponseDb { UnpaidResponseId = 3, UnpaidRequestId = 12, StatusId = 1, ResponseId = 1, Accepted = false });
+                context.UnpaidResponses.Add(new UnpaidResponseDb { UnpaidResponseId = 4, UnpaidRequestId = 25, StatusId = 1, ResponseId = 2, Accepted = true });
                 context.SaveChanges();
             }
 

@@ -359,8 +359,19 @@
         }
       },
       "UnpaidModels/1.0.0": {
+        "dependencies": {
+          "Newtonsoft.Json": "9.0.0.0"
+        },
         "runtime": {
           "UnpaidModels.dll": {}
+        }
+      },
+      "Newtonsoft.Json.Reference/9.0.0.0": {
+        "runtime": {
+          "Newtonsoft.Json.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.1.19813"
+          }
         }
       }
     }
@@ -667,6 +678,11 @@
     },
     "UnpaidModels/1.0.0": {
       "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Newtonsoft.Json.Reference/9.0.0.0": {
+      "type": "reference",
       "serviceable": false,
       "sha512": ""
     }

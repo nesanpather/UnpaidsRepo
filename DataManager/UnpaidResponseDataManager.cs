@@ -3,12 +3,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DataManager.Interfaces;
+using DataManager.Models;
 using Microsoft.EntityFrameworkCore;
 using UnpaidModels;
 
 namespace DataManager
 {
-    public class UnpaidResponseDataManager: IUnpaidResponseOperations
+    public class UnpaidResponseDataManager: IUnpaidResponseStorageOperations
     {
         private readonly UnpaidsDBContext _unpaidsDbContext;
 
@@ -17,7 +18,7 @@ namespace DataManager
             _unpaidsDbContext = unpaidsDbContext;
         }
 
-        public async Task<int> AddUnpaidResponseAsync(IEnumerable<UnpaidResponse> unpaidResponses, CancellationToken cancellationToken)
+        public async Task<int> AddUnpaidResponseAsync(IEnumerable<UnpaidResponseDb> unpaidResponses, CancellationToken cancellationToken)
         {
             if (unpaidResponses == null)
             {
@@ -31,7 +32,7 @@ namespace DataManager
             }
         }
 
-        public async Task<UnpaidResponse> GetSingleUnpaidResponseAsync(int unpaidResponseId, CancellationToken cancellationToken)
+        public async Task<UnpaidResponseDb> GetSingleUnpaidResponseAsync(int unpaidResponseId, CancellationToken cancellationToken)
         {
             using (_unpaidsDbContext)
             {
@@ -39,7 +40,7 @@ namespace DataManager
             }
         }
 
-        public async Task<IEnumerable<UnpaidResponse>> GetAllUnpaidResponseAsync(int unpaidRequestId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<UnpaidResponseDb>> GetAllUnpaidResponseAsync(int unpaidRequestId, CancellationToken cancellationToken)
         {
             using (_unpaidsDbContext)
             {
@@ -47,7 +48,7 @@ namespace DataManager
             }
         }
 
-        public async Task<IEnumerable<UnpaidResponse>> GetAllUnpaidResponseAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<UnpaidResponseDb>> GetAllUnpaidResponseAsync(CancellationToken cancellationToken)
         {
             using (_unpaidsDbContext)
             {

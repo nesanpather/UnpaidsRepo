@@ -3,12 +3,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DataManager.Interfaces;
+using DataManager.Models;
 using Microsoft.EntityFrameworkCore;
 using UnpaidModels;
 
 namespace DataManager
 {
-    public class UnpaidRequestDataManager: IUnpaidRequestOperations
+    public class UnpaidRequestDataManager: IUnpaidRequestStorageOperations
     {
         private readonly UnpaidsDBContext _unpaidsDbContext;
 
@@ -17,7 +18,7 @@ namespace DataManager
             _unpaidsDbContext = unpaidsDbContext;
         }
 
-        public async Task<int> AddUnpaidRequestAsync(IEnumerable<UnpaidRequest> unpaidRequests, CancellationToken cancellationToken)
+        public async Task<int> AddUnpaidRequestAsync(IEnumerable<UnpaidRequestDb> unpaidRequests, CancellationToken cancellationToken)
         {
             if (unpaidRequests == null)
             {
@@ -31,7 +32,7 @@ namespace DataManager
             }
         }
 
-        public async Task<UnpaidRequest> GetSingleUnpaidRequestAsync(int unpaidRequestId, CancellationToken cancellationToken)
+        public async Task<UnpaidRequestDb> GetSingleUnpaidRequestAsync(int unpaidRequestId, CancellationToken cancellationToken)
         {
             using (_unpaidsDbContext)
             {
@@ -39,7 +40,7 @@ namespace DataManager
             }
         }
 
-        public async Task<IEnumerable<UnpaidRequest>> GetAllUnpaidRequestAsync(int unpaidId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<UnpaidRequestDb>> GetAllUnpaidRequestAsync(int unpaidId, CancellationToken cancellationToken)
         {
             using (_unpaidsDbContext)
             {
@@ -47,11 +48,32 @@ namespace DataManager
             }
         }
 
-        public async Task<IEnumerable<UnpaidRequest>> GetAllUnpaidRequestAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<UnpaidRequestDb>> GetAllUnpaidRequestAsync(CancellationToken cancellationToken)
         {
             using (_unpaidsDbContext)
             {
                 return await _unpaidsDbContext.UnpaidRequests.ToListAsync(cancellationToken: cancellationToken);
+            }
+        }
+
+        public async Task<int> UpdateUnpaidRequestAsync(int unpaidRequestId, Notification notification, Status status, string statusAdditionalInfo, CancellationToken cancellationToken)
+        {
+            using (_unpaidsDbContext)
+            {
+                var entity = _unpaidsDbContext.UnpaidRequests.FirstOrDefault(item => item.UnpaidRequestId == unpaidRequestId);
+
+                if (entity == null)
+                {
+                    // Log Warning. No record found for unpaidRequestId
+                    return 0;
+                }
+
+                entity.NotificationId = (int) notification;
+                entity.StatusId = (int) status;
+                entity.StatusAdditionalInfo = statusAdditionalInfo;
+
+                _unpaidsDbContext.UnpaidRequests.Update(entity);
+                return await _unpaidsDbContext.SaveChangesAsync(cancellationToken);
             }
         }
     }
