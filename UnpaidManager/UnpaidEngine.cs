@@ -66,7 +66,7 @@ namespace UnpaidManager
             return await HandleUnpaidRequestAsync(byIdempotencyResultList, cancellationToken);
         }
 
-        private async Task<IEnumerable<UnpaidOutput>> HandleUnpaidRequestAsync(IEnumerable<UnpaidDb> unpaids, CancellationToken cancellationToken)
+        public async Task<IEnumerable<UnpaidOutput>> HandleUnpaidRequestAsync(IEnumerable<UnpaidDb> unpaids, CancellationToken cancellationToken)
         {
             var unpaidOutputList = new List<UnpaidOutput>();
 
