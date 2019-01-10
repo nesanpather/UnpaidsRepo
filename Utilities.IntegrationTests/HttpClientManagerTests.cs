@@ -87,5 +87,32 @@ namespace Utilities.IntegrationTests
             // Assert.
             Assert.IsNotNull(actual);
         }
+
+        [Test]
+        public async Task SendHttpRequestAsync_GIVEN_Valid_Input_HttpMethod_Post_GetAccessTokenAsync_RETURNS_Valid_StringNotNull()
+        {
+            // Arrange.   
+            var httpClientFactory = Substitute.For<IHttpClientFactory>();
+            var httpClientManager = new HttpClientManager(httpClientFactory);
+
+            httpClientFactory.CreateClient(Arg.Any<string>()).Returns(info => new HttpClient());
+
+            var headers = new Dictionary<string, string>();
+            var keyValueContent = new Dictionary<string, string>
+            {
+                {"grant_type", "client_credentials"},
+                {"client_id", "push-user"},
+                {"client_secret", "bNvrT3EsEnPwDvwy46wVyev7DHR4f86e32LVZBJk6ej"}
+            };
+
+            var httpContent = new FormUrlEncodedContent(keyValueContent);
+            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+
+            // Act.
+            var actual = await httpClientManager.SendHttpRequestAsync(HttpMethod.Post, null, headers, "https://drivewithdialstable.retrotest.co.za/api/v1/token", httpContent, CancellationToken.None);
+
+            // Assert.
+            Assert.IsNotNull(actual);
+        }
     }
 }

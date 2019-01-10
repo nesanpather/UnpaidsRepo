@@ -24,24 +24,25 @@ namespace UnpaidManager
 
         public async Task<PushNotificationWebTokenResponse> GetAccessTokenAsync(CancellationToken cancellationToken)
         {
-            var url = _settings["PushNotification.WebTokenUrl"]; // https://drivewithdialstable.retrotest.co.za/api/v1/token
+            var url = _settings["PushNotification:WebTokenUrl"]; // https://drivewithdialstable.retrotest.co.za/api/v1/token
             if (string.IsNullOrWhiteSpace(url))
             {
                 // Log Error.
                 return null;
             }
 
-            var clientSecret = _settings["PushNotification.WebTokenClientSecret"]; // bNvrT3EsEnPwDvwy46wVyev7DHR4f86e32LVZBJk6ej
+            var clientSecret = _settings["PushNotification:WebTokenClientSecret"]; // bNvrT3EsEnPwDvwy46wVyev7DHR4f86e32LVZBJk6ej
             if (string.IsNullOrWhiteSpace(clientSecret))
             {
                 // Log Error.
                 return null;
             }
 
-            var grantType = _settings["PushNotification.WebTokenGrantType"]; // client_credentials
-            var clientId = _settings["PushNotification.WebTokenClientId"]; // push-user
+            var grantType = _settings["PushNotification:WebTokenGrantType"]; // client_credentials
+            var clientId = _settings["PushNotification:WebTokenClientId"]; // push-user
 
-            var headers = new Dictionary<string, string> { { "Content-Type", "application/x-www-form-urlencoded" } };
+            var headers = new Dictionary<string, string>();
+
             var keyValueContent = new Dictionary<string, string>
             {
                 {"grant_type", grantType},
@@ -50,6 +51,7 @@ namespace UnpaidManager
             };
 
             var httpContent = new FormUrlEncodedContent(keyValueContent);
+            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
             var responseString = await _httpClientOperations.SendHttpRequestAsync(HttpMethod.Post, null, headers, url, httpContent, cancellationToken);
 
@@ -88,7 +90,7 @@ namespace UnpaidManager
                 return null;
             }
 
-            var url = _settings["PushNotification.Url"]; // https://drivewithdialstable.retrotest.co.za/api/v1/profile/send/push/for/idnumber
+            var url = _settings["PushNotification:Url"]; // https://drivewithdialstable.retrotest.co.za/api/v1/profile/send/push/for/idnumber
 
             if (string.IsNullOrWhiteSpace(url))
             {
@@ -97,8 +99,7 @@ namespace UnpaidManager
             }
 
             var headers = new Dictionary<string, string>
-            {
-                {"Content-Type", "application/json"},
+            {                
                 {"Accept-Charset", "UTF-8"},
                 {"Accept", "application/json"}
             };

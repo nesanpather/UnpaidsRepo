@@ -15,18 +15,18 @@ namespace DataManager.Tests
         public async Task AddUnpaidRequestAsync_GIVEN_Valid_UnpaidRequest_RETURNS_Valid_Result()
         {
             // Arrange.
-            var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
+            var options = new DbContextOptionsBuilder<UnpaidsContext>()
                 .UseInMemoryDatabase(databaseName: "Add_writes_to_database")
                 .Options;
 
             // Act.
             // Run the test against one instance of the context
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
                 var service = new UnpaidRequestDataManager(context);
-                var actual = await service.AddUnpaidRequestAsync(new List<UnpaidRequestDb>
+                var actual = await service.AddUnpaidRequestAsync(new List<TbUnpaidRequest>
                 {
-                    new UnpaidRequestDb
+                    new TbUnpaidRequest
                     {
                         UnpaidId = 10,
                         StatusId = 1,
@@ -37,12 +37,12 @@ namespace DataManager.Tests
 
             // Assert.
             // Use a separate instance of the context to verify correct data was saved to database
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
-                Assert.AreEqual(1, context.UnpaidRequests.Count());
-                Assert.AreEqual(10, context.UnpaidRequests.Single().UnpaidId);
-                Assert.AreEqual(1, context.UnpaidRequests.Single().StatusId);
-                Assert.AreEqual(1, context.UnpaidRequests.Single().NotificationId);
+                Assert.AreEqual(1, context.TbUnpaidRequest.Count());
+                Assert.AreEqual(10, context.TbUnpaidRequest.Single().UnpaidId);
+                Assert.AreEqual(1, context.TbUnpaidRequest.Single().StatusId);
+                Assert.AreEqual(1, context.TbUnpaidRequest.Single().NotificationId);
             }
         }
 
@@ -50,24 +50,24 @@ namespace DataManager.Tests
         public async Task AddUnpaidRequestAsync_2Entries_GIVEN_Valid_UnpaidRequest_RETURNS_Valid_Result_With2Entries()
         {
             // Arrange.
-            var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
+            var options = new DbContextOptionsBuilder<UnpaidsContext>()
                 .UseInMemoryDatabase(databaseName: "Add_writes_to_database2")
                 .Options;
 
             // Act.
             // Run the test against one instance of the context
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
                 var service = new UnpaidRequestDataManager(context);
-                var actual = await service.AddUnpaidRequestAsync(new List<UnpaidRequestDb>
+                var actual = await service.AddUnpaidRequestAsync(new List<TbUnpaidRequest>
                 {
-                    new UnpaidRequestDb
+                    new TbUnpaidRequest
                     {
                         UnpaidId = 10,
                         StatusId = 1,
                         NotificationId = 1
                     },
-                    new UnpaidRequestDb
+                    new TbUnpaidRequest
                     {
                         UnpaidId = 12,
                         StatusId = 2,
@@ -78,15 +78,15 @@ namespace DataManager.Tests
 
             // Assert.
             // Use a separate instance of the context to verify correct data was saved to database
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
-                Assert.AreEqual(2, context.UnpaidRequests.Count());
-                Assert.AreEqual(10, context.UnpaidRequests.ToList()[0].UnpaidId);
-                Assert.AreEqual(1, context.UnpaidRequests.ToList()[0].StatusId);
-                Assert.AreEqual(1, context.UnpaidRequests.ToList()[0].NotificationId);
-                Assert.AreEqual(12, context.UnpaidRequests.ToList()[1].UnpaidId);
-                Assert.AreEqual(2, context.UnpaidRequests.ToList()[1].StatusId);
-                Assert.AreEqual(3, context.UnpaidRequests.ToList()[1].NotificationId);
+                Assert.AreEqual(2, context.TbUnpaidRequest.Count());
+                Assert.AreEqual(10, context.TbUnpaidRequest.ToList()[0].UnpaidId);
+                Assert.AreEqual(1, context.TbUnpaidRequest.ToList()[0].StatusId);
+                Assert.AreEqual(1, context.TbUnpaidRequest.ToList()[0].NotificationId);
+                Assert.AreEqual(12, context.TbUnpaidRequest.ToList()[1].UnpaidId);
+                Assert.AreEqual(2, context.TbUnpaidRequest.ToList()[1].StatusId);
+                Assert.AreEqual(3, context.TbUnpaidRequest.ToList()[1].NotificationId);
             }
         }
 
@@ -94,13 +94,13 @@ namespace DataManager.Tests
         public async Task AddUnpaidRequestAsync_GIVEN_Null_UnpaidRequest_RETURNS_Valid_Result()
         {
             // Arrange.
-            var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
+            var options = new DbContextOptionsBuilder<UnpaidsContext>()
                 .UseInMemoryDatabase(databaseName: "Add_writes_to_database3")
                 .Options;
 
             // Act.
             // Run the test against one instance of the context
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
                 var service = new UnpaidRequestDataManager(context);
                 var actual = await service.AddUnpaidRequestAsync(null, CancellationToken.None);
@@ -108,9 +108,9 @@ namespace DataManager.Tests
 
             // Assert.
             // Use a separate instance of the context to verify correct data was saved to database
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
-                Assert.AreEqual(0, context.UnpaidRequests.Count());
+                Assert.AreEqual(0, context.TbUnpaidRequest.Count());
             }
         }
 
@@ -118,21 +118,21 @@ namespace DataManager.Tests
         public async Task GetSingleUnpaidRequestAsync_GIVEN_Valid_Input_RETURNS_Valid_UnpaidRequest()
         {
             // Arrange.
-            var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
+            var options = new DbContextOptionsBuilder<UnpaidsContext>()
                 .UseInMemoryDatabase(databaseName: "Find_unpaidRequest")
                 .Options;
 
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
-                context.UnpaidRequests.Add(new UnpaidRequestDb { UnpaidRequestId = 1, UnpaidId = 10, StatusId = 1, NotificationId = 1 });
-                context.UnpaidRequests.Add(new UnpaidRequestDb { UnpaidRequestId = 2, UnpaidId = 12, StatusId = 2, NotificationId = 3 });
-                context.UnpaidRequests.Add(new UnpaidRequestDb { UnpaidRequestId = 3, UnpaidId = 10, StatusId = 1, NotificationId = 1 });
-                context.UnpaidRequests.Add(new UnpaidRequestDb { UnpaidRequestId = 4, UnpaidId = 55, StatusId = 3, NotificationId = 2 });
+                context.TbUnpaidRequest.Add(new TbUnpaidRequest { UnpaidRequestId = 1, UnpaidId = 10, StatusId = 1, NotificationId = 1 });
+                context.TbUnpaidRequest.Add(new TbUnpaidRequest { UnpaidRequestId = 2, UnpaidId = 12, StatusId = 2, NotificationId = 3 });
+                context.TbUnpaidRequest.Add(new TbUnpaidRequest { UnpaidRequestId = 3, UnpaidId = 10, StatusId = 1, NotificationId = 1 });
+                context.TbUnpaidRequest.Add(new TbUnpaidRequest { UnpaidRequestId = 4, UnpaidId = 55, StatusId = 3, NotificationId = 2 });
                 context.SaveChanges();
             }
 
             // Act and Assert.
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
                 var service = new UnpaidRequestDataManager(context);
                 var actual = await service.GetSingleUnpaidRequestAsync(3, CancellationToken.None);
@@ -147,18 +147,18 @@ namespace DataManager.Tests
         public async Task GetSingleUnpaidRequestAsync_GIVEN_Invalid_Input_RETURNS_Null()
         {
             // Arrange.
-            var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
+            var options = new DbContextOptionsBuilder<UnpaidsContext>()
                 .UseInMemoryDatabase(databaseName: "Find_unpaidRequest2")
                 .Options;
 
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
-                context.UnpaidRequests.Add(new UnpaidRequestDb { UnpaidRequestId = 1, UnpaidId = 10, StatusId = 1, NotificationId = 1 });
+                context.TbUnpaidRequest.Add(new TbUnpaidRequest { UnpaidRequestId = 1, UnpaidId = 10, StatusId = 1, NotificationId = 1 });
                 context.SaveChanges();
             }
 
             // Act and Assert.
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
                 var service = new UnpaidRequestDataManager(context);
                 var actual = await service.GetSingleUnpaidRequestAsync(0, CancellationToken.None);
@@ -170,21 +170,21 @@ namespace DataManager.Tests
         public async Task GetAllUnpaidRequestAsync_RETURNS_Valid_UnpaidRequest_List()
         {
             // Arrange.
-            var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
+            var options = new DbContextOptionsBuilder<UnpaidsContext>()
                 .UseInMemoryDatabase(databaseName: "Get_unpaidRequests")
                 .Options;
 
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
-                context.UnpaidRequests.Add(new UnpaidRequestDb { UnpaidRequestId = 1, UnpaidId = 10, StatusId = 1, NotificationId = 1 });
-                context.UnpaidRequests.Add(new UnpaidRequestDb { UnpaidRequestId = 2, UnpaidId = 12, StatusId = 2, NotificationId = 3 });
-                context.UnpaidRequests.Add(new UnpaidRequestDb { UnpaidRequestId = 3, UnpaidId = 10, StatusId = 1, NotificationId = 1 });
-                context.UnpaidRequests.Add(new UnpaidRequestDb { UnpaidRequestId = 4, UnpaidId = 55, StatusId = 3, NotificationId = 2 });
+                context.TbUnpaidRequest.Add(new TbUnpaidRequest { UnpaidRequestId = 1, UnpaidId = 10, StatusId = 1, NotificationId = 1 });
+                context.TbUnpaidRequest.Add(new TbUnpaidRequest { UnpaidRequestId = 2, UnpaidId = 12, StatusId = 2, NotificationId = 3 });
+                context.TbUnpaidRequest.Add(new TbUnpaidRequest { UnpaidRequestId = 3, UnpaidId = 10, StatusId = 1, NotificationId = 1 });
+                context.TbUnpaidRequest.Add(new TbUnpaidRequest { UnpaidRequestId = 4, UnpaidId = 55, StatusId = 3, NotificationId = 2 });
                 context.SaveChanges();
             }
 
             // Act and Assert.
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
                 var service = new UnpaidRequestDataManager(context);
                 var actual = await service.GetAllUnpaidRequestAsync(CancellationToken.None);
@@ -196,21 +196,21 @@ namespace DataManager.Tests
         public async Task GetAllUnpaidRequestAsync_GIVEN_Valid_Input_RETURNS_Valid_UnpaidRequest_List()
         {
             // Arrange.
-            var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
+            var options = new DbContextOptionsBuilder<UnpaidsContext>()
                 .UseInMemoryDatabase(databaseName: "Get_unpaidRequests_against_unpaidId")
                 .Options;
 
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
-                context.UnpaidRequests.Add(new UnpaidRequestDb { UnpaidRequestId = 1, UnpaidId = 10, StatusId = 1, NotificationId = 1 });
-                context.UnpaidRequests.Add(new UnpaidRequestDb { UnpaidRequestId = 2, UnpaidId = 12, StatusId = 2, NotificationId = 3 });
-                context.UnpaidRequests.Add(new UnpaidRequestDb { UnpaidRequestId = 3, UnpaidId = 10, StatusId = 1, NotificationId = 1 });
-                context.UnpaidRequests.Add(new UnpaidRequestDb { UnpaidRequestId = 4, UnpaidId = 55, StatusId = 3, NotificationId = 2 });
+                context.TbUnpaidRequest.Add(new TbUnpaidRequest { UnpaidRequestId = 1, UnpaidId = 10, StatusId = 1, NotificationId = 1 });
+                context.TbUnpaidRequest.Add(new TbUnpaidRequest { UnpaidRequestId = 2, UnpaidId = 12, StatusId = 2, NotificationId = 3 });
+                context.TbUnpaidRequest.Add(new TbUnpaidRequest { UnpaidRequestId = 3, UnpaidId = 10, StatusId = 1, NotificationId = 1 });
+                context.TbUnpaidRequest.Add(new TbUnpaidRequest { UnpaidRequestId = 4, UnpaidId = 55, StatusId = 3, NotificationId = 2 });
                 context.SaveChanges();
             }
 
             // Act and Assert.
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
                 var service = new UnpaidRequestDataManager(context);
                 //var unpaids = new List<UnpaidDb>
@@ -245,25 +245,25 @@ namespace DataManager.Tests
         public async Task UpdateUnpaidRequestAsync_GIVEN_Valid_Input_RETURNS_Valid_Result()
         {
             // Arrange.
-            var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
+            var options = new DbContextOptionsBuilder<UnpaidsContext>()
                 .UseInMemoryDatabase(databaseName: "Update_unpaidRequests_against_unpaidId")
                 .Options;
 
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
-                context.UnpaidRequests.Add(new UnpaidRequestDb
+                context.TbUnpaidRequest.Add(new TbUnpaidRequest
                     {UnpaidRequestId = 1, UnpaidId = 10, StatusId = 1, NotificationId = 1});
-                context.UnpaidRequests.Add(new UnpaidRequestDb
+                context.TbUnpaidRequest.Add(new TbUnpaidRequest
                     {UnpaidRequestId = 2, UnpaidId = 12, StatusId = 2, NotificationId = 3});
-                context.UnpaidRequests.Add(new UnpaidRequestDb
+                context.TbUnpaidRequest.Add(new TbUnpaidRequest
                     {UnpaidRequestId = 3, UnpaidId = 10, StatusId = 1, NotificationId = 1});
-                context.UnpaidRequests.Add(new UnpaidRequestDb
+                context.TbUnpaidRequest.Add(new TbUnpaidRequest
                     {UnpaidRequestId = 4, UnpaidId = 55, StatusId = 3, NotificationId = 2});
                 context.SaveChanges();
             }
 
             // Act.
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
                 var service = new UnpaidRequestDataManager(context);
                 await service.UpdateUnpaidRequestAsync(3, Notification.Call, Status.Failed, "Testing.", CancellationToken.None);
@@ -271,9 +271,9 @@ namespace DataManager.Tests
 
             // Assert.
             // Use a separate instance of the context to verify correct data was saved to database
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
-                var actual = context.UnpaidRequests.FirstOrDefault(item => item.UnpaidRequestId == 3);
+                var actual = context.TbUnpaidRequest.FirstOrDefault(item => item.UnpaidRequestId == 3);
 
                 if (actual != null)
                 {

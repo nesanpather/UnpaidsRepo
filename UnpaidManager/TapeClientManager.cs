@@ -32,28 +32,28 @@ namespace UnpaidManager
                 return null;
             }
 
-            var tapeUrl = _settings["Tape.Url"];
+            var tapeUrl = _settings["Tape:Url"];
             if (string.IsNullOrWhiteSpace(tapeUrl))
             {
                 // Log Error.
                 return null;
             }
 
-            var tapeEnvironment = _settings["Tape.Environment"];
+            var tapeEnvironment = _settings["Tape:Environment"];
             if (string.IsNullOrWhiteSpace(tapeEnvironment))
             {
                 // Log Error.
                 return null;
             }
 
-            var tapeUsername = _settings["Tape.Username"];
+            var tapeUsername = _settings["Tape:Username"];
             if (string.IsNullOrWhiteSpace(tapeUsername))
             {
                 // Log Error.
                 return null;
             }
 
-            var tapePassword = _settings["Tape.Password"];
+            var tapePassword = _settings["Tape:Password"];
             if (string.IsNullOrWhiteSpace(tapePassword))
             {
                 // Log Error.

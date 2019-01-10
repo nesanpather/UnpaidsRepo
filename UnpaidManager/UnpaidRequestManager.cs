@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DataManager.Interfaces;
+using DataManager.Models;
 using UnpaidManager.Interfaces;
 using UnpaidModels;
 
@@ -19,7 +20,7 @@ namespace UnpaidManager
             _unpaidRequestOperations = unpaidRequestOperations;
         }
 
-        public async Task<int> AddUnpaidRequestAsync(IEnumerable<UnpaidDb> unpaids, Notification notification, Status status, CancellationToken cancellationToken)
+        public async Task<int> AddUnpaidRequestAsync(IEnumerable<TbUnpaid> unpaids, Notification notification, Status status, CancellationToken cancellationToken)
         {
             if (unpaids == null)
             {
@@ -35,11 +36,11 @@ namespace UnpaidManager
                 return 0;
             }
 
-            var unpaidRequestList = new List<UnpaidRequestDb>();
+            var unpaidRequestList = new List<TbUnpaidRequest>();
 
             foreach (var unpaid in unpaidDbs)
             {
-              unpaidRequestList.Add(new UnpaidRequestDb
+              unpaidRequestList.Add(new TbUnpaidRequest
               {
                   UnpaidId = unpaid.UnpaidId,
                   NotificationId = (int) notification,
@@ -61,7 +62,7 @@ namespace UnpaidManager
             return await _unpaidRequestOperations.UpdateUnpaidRequestAsync(unpaidRequestId, notification, status, statusAdditionalInfo, cancellationToken);
         }
 
-        public async Task<IEnumerable<UnpaidRequestDb>> GetAllUnpaidRequestAsync(int unpaidId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<TbUnpaidRequest>> GetAllUnpaidRequestAsync(int unpaidId, CancellationToken cancellationToken)
         {
             if (unpaidId <= 0)
             {

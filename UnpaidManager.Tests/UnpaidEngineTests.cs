@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DataManager.Models;
 using NUnit.Framework;
 using NSubstitute;
 using UnpaidManager.Interfaces;
@@ -28,9 +29,9 @@ namespace UnpaidManager.Tests
 
             var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
             unpaidRequestClient.GetAllUnpaidRequestAsync(10, CancellationToken.None)
-                .Returns(Task.FromResult<IEnumerable<UnpaidRequestDb>>(new List<UnpaidRequestDb>
+                .Returns(Task.FromResult<IEnumerable<TbUnpaidRequest>>(new List<TbUnpaidRequest>
                 {
-                    new UnpaidRequestDb
+                    new TbUnpaidRequest
                     {
                         UnpaidRequestId = 1,
                         UnpaidId = 10,
@@ -42,9 +43,9 @@ namespace UnpaidManager.Tests
             unpaidRequestClient.UpdateUnpaidRequestAsync(1, Notification.Push, Status.Success, "", CancellationToken.None)
                 .Returns(Task.FromResult(1));
 
-            var unpaidsInput = new List<UnpaidDb>
+            var unpaidsInput = new List<TbUnpaid>
             {
-                new UnpaidDb
+                new TbUnpaid
                 {
                     UnpaidId = 10,
                     PolicyNumber = "P1",
@@ -86,9 +87,9 @@ namespace UnpaidManager.Tests
 
             var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
             unpaidRequestClient.GetAllUnpaidRequestAsync(10, CancellationToken.None)
-                .Returns(Task.FromResult<IEnumerable<UnpaidRequestDb>>(new List<UnpaidRequestDb>
+                .Returns(Task.FromResult<IEnumerable<TbUnpaidRequest>>(new List<TbUnpaidRequest>
                 {
-                    new UnpaidRequestDb
+                    new TbUnpaidRequest
                     {
                         UnpaidRequestId = 1,
                         UnpaidId = 10,
@@ -100,9 +101,9 @@ namespace UnpaidManager.Tests
             unpaidRequestClient.UpdateUnpaidRequestAsync(1, Notification.Push, Status.Failed, "Error getting a WebToken.", CancellationToken.None)
                 .Returns(Task.FromResult(1));
 
-            var unpaidsInput = new List<UnpaidDb>
+            var unpaidsInput = new List<TbUnpaid>
             {
-                new UnpaidDb
+                new TbUnpaid
                 {
                     UnpaidId = 10,
                     PolicyNumber = "P1",
@@ -158,9 +159,9 @@ namespace UnpaidManager.Tests
 
             var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
             unpaidRequestClient.GetAllUnpaidRequestAsync(10, CancellationToken.None)
-                .Returns(Task.FromResult<IEnumerable<UnpaidRequestDb>>(new List<UnpaidRequestDb>
+                .Returns(Task.FromResult<IEnumerable<TbUnpaidRequest>>(new List<TbUnpaidRequest>
                 {
-                    new UnpaidRequestDb
+                    new TbUnpaidRequest
                     {
                         UnpaidRequestId = 1,
                         UnpaidId = 10,
@@ -170,9 +171,9 @@ namespace UnpaidManager.Tests
                 }));
 
             unpaidRequestClient.GetAllUnpaidRequestAsync(11, CancellationToken.None)
-                .Returns(Task.FromResult<IEnumerable<UnpaidRequestDb>>(new List<UnpaidRequestDb>
+                .Returns(Task.FromResult<IEnumerable<TbUnpaidRequest>>(new List<TbUnpaidRequest>
                 {
-                    new UnpaidRequestDb
+                    new TbUnpaidRequest
                     {
                         UnpaidRequestId = 2,
                         UnpaidId = 11,
@@ -182,9 +183,9 @@ namespace UnpaidManager.Tests
                 }));
 
             unpaidRequestClient.GetAllUnpaidRequestAsync(12, CancellationToken.None)
-                .Returns(Task.FromResult<IEnumerable<UnpaidRequestDb>>(new List<UnpaidRequestDb>
+                .Returns(Task.FromResult<IEnumerable<TbUnpaidRequest>>(new List<TbUnpaidRequest>
                 {
-                    new UnpaidRequestDb
+                    new TbUnpaidRequest
                     {
                         UnpaidRequestId = 3,
                         UnpaidId = 12,
@@ -202,9 +203,9 @@ namespace UnpaidManager.Tests
             unpaidRequestClient.UpdateUnpaidRequestAsync(3, Notification.Push, Status.Success, "", CancellationToken.None)
                 .Returns(Task.FromResult(1));
 
-            var unpaidsInput = new List<UnpaidDb>
+            var unpaidsInput = new List<TbUnpaid>
             {
-                new UnpaidDb
+                new TbUnpaid
                 {
                     UnpaidId = 10,
                     PolicyNumber = "P1",
@@ -213,7 +214,7 @@ namespace UnpaidManager.Tests
                     Name = "Test Name",
                     IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
                 },
-                new UnpaidDb
+                new TbUnpaid
                 {
                     UnpaidId = 11,
                     PolicyNumber = "P2",
@@ -222,7 +223,7 @@ namespace UnpaidManager.Tests
                     Name = "Test Name",
                     IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
                 },
-                new UnpaidDb
+                new TbUnpaid
                 {
                     UnpaidId = 12,
                     PolicyNumber = "P3",
@@ -275,14 +276,14 @@ namespace UnpaidManager.Tests
 
             var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
             unpaidRequestClient.GetAllUnpaidRequestAsync(10, CancellationToken.None)
-                .Returns(Task.FromResult<IEnumerable<UnpaidRequestDb>>(new List<UnpaidRequestDb>()));
+                .Returns(Task.FromResult<IEnumerable<TbUnpaidRequest>>(new List<TbUnpaidRequest>()));
 
             unpaidRequestClient.UpdateUnpaidRequestAsync(1, Notification.Push, Status.Success, "", CancellationToken.None)
                 .Returns(Task.FromResult(1));
 
-            var unpaidsInput = new List<UnpaidDb>
+            var unpaidsInput = new List<TbUnpaid>
             {
-                new UnpaidDb
+                new TbUnpaid
                 {
                     UnpaidId = 10,
                     PolicyNumber = "P1",
@@ -324,14 +325,14 @@ namespace UnpaidManager.Tests
 
             var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
             unpaidRequestClient.GetAllUnpaidRequestAsync(10, CancellationToken.None)
-                .Returns(Task.FromResult<IEnumerable<UnpaidRequestDb>>(null));
+                .Returns(Task.FromResult<IEnumerable<TbUnpaidRequest>>(null));
 
             unpaidRequestClient.UpdateUnpaidRequestAsync(1, Notification.Push, Status.Success, "", CancellationToken.None)
                 .Returns(Task.FromResult(1));
 
-            var unpaidsInput = new List<UnpaidDb>
+            var unpaidsInput = new List<TbUnpaid>
             {
-                new UnpaidDb
+                new TbUnpaid
                 {
                     UnpaidId = 10,
                     PolicyNumber = "P1",
@@ -370,9 +371,9 @@ namespace UnpaidManager.Tests
                     CancellationToken.None).Returns(Task.FromResult(1));
 
             unpaidClient.GetUnpaidsByIdempotencyKeyAsync("7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None)
-                .Returns(Task.FromResult<IEnumerable<UnpaidDb>>(new List<UnpaidDb>
+                .Returns(Task.FromResult<IEnumerable<TbUnpaid>>(new List<TbUnpaid>
                 {
-                    new UnpaidDb
+                    new TbUnpaid
                     {
                         UnpaidId = 10,
                         PolicyNumber = "P1",
@@ -384,13 +385,13 @@ namespace UnpaidManager.Tests
                 }));
 
                 var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
-                unpaidRequestClient.AddUnpaidRequestAsync(Arg.Any<IEnumerable<UnpaidDb>>(), Notification.Push,
+                unpaidRequestClient.AddUnpaidRequestAsync(Arg.Any<IEnumerable<TbUnpaid>>(), Notification.Push,
                     Status.Pending, CancellationToken.None).Returns(Task.FromResult(1));
 
                 unpaidRequestClient.GetAllUnpaidRequestAsync(10, CancellationToken.None)
-                    .Returns(Task.FromResult<IEnumerable<UnpaidRequestDb>>(new List<UnpaidRequestDb>
+                    .Returns(Task.FromResult<IEnumerable<TbUnpaidRequest>>(new List<TbUnpaidRequest>
                     {
-                        new UnpaidRequestDb
+                        new TbUnpaidRequest
                         {
                             UnpaidRequestId = 1,
                             UnpaidId = 10,
@@ -482,7 +483,7 @@ namespace UnpaidManager.Tests
                     CancellationToken.None).Returns(Task.FromResult(1));
 
             unpaidClient.GetUnpaidsByIdempotencyKeyAsync("7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None)
-                .Returns(Task.FromResult<IEnumerable<UnpaidDb>>(new List<UnpaidDb>()));
+                .Returns(Task.FromResult<IEnumerable<TbUnpaid>>(new List<TbUnpaid>()));
 
             var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
 
@@ -519,7 +520,7 @@ namespace UnpaidManager.Tests
                     CancellationToken.None).Returns(Task.FromResult(1));
 
             unpaidClient.GetUnpaidsByIdempotencyKeyAsync("7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None)
-                .Returns(Task.FromResult<IEnumerable<UnpaidDb>>(null));
+                .Returns(Task.FromResult<IEnumerable<TbUnpaid>>(null));
 
             var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
 
@@ -557,9 +558,9 @@ namespace UnpaidManager.Tests
                     CancellationToken.None).Returns(Task.FromResult(1));
 
             unpaidClient.GetUnpaidsByIdempotencyKeyAsync("7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None)
-                .Returns(Task.FromResult<IEnumerable<UnpaidDb>>(new List<UnpaidDb>
+                .Returns(Task.FromResult<IEnumerable<TbUnpaid>>(new List<TbUnpaid>
                 {
-                    new UnpaidDb
+                    new TbUnpaid
                     {
                         UnpaidId = 10,
                         PolicyNumber = "P1",
@@ -571,7 +572,7 @@ namespace UnpaidManager.Tests
                 }));
 
             var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
-            unpaidRequestClient.AddUnpaidRequestAsync(Arg.Any<IEnumerable<UnpaidDb>>(), Notification.Push,
+            unpaidRequestClient.AddUnpaidRequestAsync(Arg.Any<IEnumerable<TbUnpaid>>(), Notification.Push,
                 Status.Pending, CancellationToken.None).Returns(Task.FromResult(input));
 
             var notification = Substitute.For<INotification>();

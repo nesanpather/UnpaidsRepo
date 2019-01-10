@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DataManager.Interfaces;
+using DataManager.Models;
 using UnpaidManager.Interfaces;
 using UnpaidModels;
 
@@ -34,11 +35,11 @@ namespace UnpaidManager
                 return 0;
             }
 
-            var unpaidDbList = new List<UnpaidDb>();
+            var unpaidDbList = new List<TbUnpaid>();
 
             foreach (var unpaid in enumerable)
             {
-                unpaidDbList.Add(new UnpaidDb
+                unpaidDbList.Add(new TbUnpaid
                 {
                     PolicyNumber = unpaid.PolicyNumber,
                     IdNumber = unpaid.IdNumber,
@@ -52,7 +53,7 @@ namespace UnpaidManager
             return addUnpaidResult;
         }
 
-        public async Task<IEnumerable<UnpaidDb>> GetUnpaidsByIdempotencyKeyAsync(string idempotencyKey, CancellationToken cancellationToken)
+        public async Task<IEnumerable<TbUnpaid>> GetUnpaidsByIdempotencyKeyAsync(string idempotencyKey, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(idempotencyKey))
             {

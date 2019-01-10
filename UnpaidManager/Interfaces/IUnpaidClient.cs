@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using DataManager.Models;
 using UnpaidModels;
 
 namespace UnpaidManager.Interfaces
@@ -9,6 +10,6 @@ namespace UnpaidManager.Interfaces
     {
         Task<int> AddUnpaidAsync(IEnumerable<Unpaid> unpaids, string idempotencyKey, CancellationToken cancellationToken);
 
-        Task<IEnumerable<UnpaidDb>> GetUnpaidsByIdempotencyKeyAsync(string idempotencyKey, CancellationToken cancellationToken);
+        Task<IEnumerable<TbUnpaid>> GetUnpaidsByIdempotencyKeyAsync(string idempotencyKey, CancellationToken cancellationToken);
     }
 }

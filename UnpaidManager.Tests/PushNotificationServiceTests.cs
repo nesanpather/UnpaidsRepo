@@ -23,10 +23,10 @@ namespace UnpaidManager.Tests
         {
             // Arrange.
             var settings = Substitute.For<ISettings>();
-            settings["PushNotification.WebTokenUrl"] = "https://www.test.com";
-            settings["PushNotification.WebTokenClientSecret"] = "dgfdggdfgdgfgfdgdg";
-            settings["PushNotification.WebTokenGrantType"] = "client_credentials";
-            settings["PushNotification.WebTokenClientId"] = "push-user";
+            settings["PushNotification:WebTokenUrl"] = "https://www.test.com";
+            settings["PushNotification:WebTokenClientSecret"] = "dgfdggdfgdgfgfdgdg";
+            settings["PushNotification:WebTokenGrantType"] = "client_credentials";
+            settings["PushNotification:WebTokenClientId"] = "push-user";
 
             var httpClientOperations = Substitute.For<IHttpClientOperations>();
 
@@ -59,10 +59,10 @@ namespace UnpaidManager.Tests
         {
             // Arrange.
             var settings = Substitute.For<ISettings>();
-            settings["PushNotification.WebTokenUrl"] = url;
-            settings["PushNotification.WebTokenClientSecret"] = "dgfdggdfgdgfgfdgdg";
-            settings["PushNotification.WebTokenGrantType"] = "client_credentials";
-            settings["PushNotification.WebTokenClientId"] = "push-user";
+            settings["PushNotification:WebTokenUrl"] = url;
+            settings["PushNotification:WebTokenClientSecret"] = "dgfdggdfgdgfgfdgdg";
+            settings["PushNotification:WebTokenGrantType"] = "client_credentials";
+            settings["PushNotification:WebTokenClientId"] = "push-user";
 
             var httpClientOperations = Substitute.For<IHttpClientOperations>();
             var pushNotificationService = new PushNotificationService(httpClientOperations, settings);
@@ -81,10 +81,10 @@ namespace UnpaidManager.Tests
         {
             // Arrange.
             var settings = Substitute.For<ISettings>();
-            settings["PushNotification.WebTokenUrl"] = "https://www.test.com";
-            settings["PushNotification.WebTokenClientSecret"] = clientSecret;
-            settings["PushNotification.WebTokenGrantType"] = "client_credentials";
-            settings["PushNotification.WebTokenClientId"] = "push-user";
+            settings["PushNotification:WebTokenUrl"] = "https://www.test.com";
+            settings["PushNotification:WebTokenClientSecret"] = clientSecret;
+            settings["PushNotification:WebTokenGrantType"] = "client_credentials";
+            settings["PushNotification:WebTokenClientId"] = "push-user";
 
             var httpClientOperations = Substitute.For<IHttpClientOperations>();
             var pushNotificationService = new PushNotificationService(httpClientOperations, settings);
@@ -103,10 +103,10 @@ namespace UnpaidManager.Tests
         {
             // Arrange.
             var settings = Substitute.For<ISettings>();
-            settings["PushNotification.WebTokenUrl"] = "https://www.test.com";
-            settings["PushNotification.WebTokenClientSecret"] = "dgfdggdfgdgfgfdgdg";
-            settings["PushNotification.WebTokenGrantType"] = "client_credentials";
-            settings["PushNotification.WebTokenClientId"] = "push-user";
+            settings["PushNotification:WebTokenUrl"] = "https://www.test.com";
+            settings["PushNotification:WebTokenClientSecret"] = "dgfdggdfgdgfgfdgdg";
+            settings["PushNotification:WebTokenGrantType"] = "client_credentials";
+            settings["PushNotification:WebTokenClientId"] = "push-user";
 
             var httpClientOperations = Substitute.For<IHttpClientOperations>();
 
@@ -127,7 +127,7 @@ namespace UnpaidManager.Tests
         {
             // Arrange.
             var settings = Substitute.For<ISettings>();
-            settings["PushNotification.Url"] = "https://www.test.com";
+            settings["PushNotification:Url"] = "https://www.test.com";
 
             var tokenType = "bearer";
             var accessToken =
@@ -161,7 +161,7 @@ namespace UnpaidManager.Tests
         {
             // Arrange.
             var settings = Substitute.For<ISettings>();
-            settings["PushNotification.Url"] = "https://www.test.com";
+            settings["PushNotification:Url"] = "https://www.test.com";
 
             var tokenType = "bearer";
             var accessToken =
@@ -197,7 +197,7 @@ namespace UnpaidManager.Tests
         {
             // Arrange.
             var settings = Substitute.For<ISettings>();
-            settings["PushNotification.Url"] = url;
+            settings["PushNotification:Url"] = url;
 
             var tokenType = "bearer";
             var accessToken =
@@ -227,7 +227,7 @@ namespace UnpaidManager.Tests
         {
             // Arrange.
             var settings = Substitute.For<ISettings>();
-            settings["PushNotification.Url"] = "https://www.test.com";
+            settings["PushNotification:Url"] = "https://www.test.com";
 
             var tokenType = "bearer";
             var pushNotificationRequest = new PushNotificationRequest
@@ -252,7 +252,7 @@ namespace UnpaidManager.Tests
         {
             // Arrange.
             var settings = Substitute.For<ISettings>();
-            settings["PushNotification.Url"] = "https://www.test.com";
+            settings["PushNotification:Url"] = "https://www.test.com";
 
             var tokenType = "bearer";
             var accessToken =
@@ -275,7 +275,7 @@ namespace UnpaidManager.Tests
         {
             // Arrange.
             var settings = Substitute.For<ISettings>();
-            settings["PushNotification.Url"] = "https://www.test.com";
+            settings["PushNotification:Url"] = "https://www.test.com";
 
             var tokenType = "bearer";
             var accessToken =
@@ -305,7 +305,7 @@ namespace UnpaidManager.Tests
         {
             // Arrange.
             var settings = Substitute.For<ISettings>();
-            settings["PushNotification.Url"] = "https://www.test.com";
+            settings["PushNotification:Url"] = "https://www.test.com";
 
             var tokenType = "bearer";
             var accessToken =
@@ -335,7 +335,7 @@ namespace UnpaidManager.Tests
         {
             // Arrange.
             var settings = Substitute.For<ISettings>();
-            settings["PushNotification.Url"] = "https://www.test.com";
+            settings["PushNotification:Url"] = "https://www.test.com";
 
             var tokenType = "bearer";
             var accessToken =

@@ -18,10 +18,10 @@ namespace UnpaidManager.Tests
         {
             // Arrange.
             var settings = Substitute.For<ISettings>();
-            settings["Tape.Url"] = "http://tape.telesure.co.za/";
-            settings["Tape.Environment"] = "DEN0114";
-            settings["Tape.Username"] = "upstream";
-            settings["Tape.Password"] = "uPstream23@";
+            settings["Tape:Url"] = "http://tape.telesure.co.za/";
+            settings["Tape:Environment"] = "DEN0114";
+            settings["Tape:Username"] = "upstream";
+            settings["Tape:Password"] = "uPstream23@";
 
             var httpClientOperations = Substitute.For<IHttpClientOperations>();
             httpClientOperations.SendHttpRequestAsync(HttpMethod.Post, Arg.Any<AuthenticationHeaderValue>(),

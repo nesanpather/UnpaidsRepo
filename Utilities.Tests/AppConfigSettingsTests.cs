@@ -17,11 +17,11 @@ namespace Utilities.Tests
             // Arrange. 
             var config = Substitute.For<IConfiguration>();
 
-            config["app.test"] = "Utilities";
+            config["app:test"] = "Utilities";
             var appSettings = new AppConfigSettings(config);
 
             // Act.
-            var actual = appSettings["app.test"];
+            var actual = appSettings["app:test"];
 
             // Assert.
             Assert.AreEqual("Utilities", actual);

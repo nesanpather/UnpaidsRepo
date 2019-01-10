@@ -11,49 +11,37 @@ namespace DataManager
 {
     public class UnpaidResponseDataManager: IUnpaidResponseStorageOperations
     {
-        private readonly UnpaidsDBContext _unpaidsDbContext;
+        private readonly UnpaidsContext _unpaidsDbContext;
 
-        public UnpaidResponseDataManager(UnpaidsDBContext unpaidsDbContext)
+        public UnpaidResponseDataManager(UnpaidsContext unpaidsDbContext)
         {
             _unpaidsDbContext = unpaidsDbContext;
         }
 
-        public async Task<int> AddUnpaidResponseAsync(IEnumerable<UnpaidResponseDb> unpaidResponses, CancellationToken cancellationToken)
+        public async Task<int> AddUnpaidResponseAsync(IEnumerable<TbUnpaidResponse> unpaidResponses, CancellationToken cancellationToken)
         {
             if (unpaidResponses == null)
             {
                 return 0;
             }
 
-            using (_unpaidsDbContext)
-            {
-                _unpaidsDbContext.UnpaidResponses.AddRange(unpaidResponses);
-                return await _unpaidsDbContext.SaveChangesAsync(cancellationToken);
-            }
+            _unpaidsDbContext.TbUnpaidResponse.AddRange(unpaidResponses);
+            return await _unpaidsDbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<UnpaidResponseDb> GetSingleUnpaidResponseAsync(int unpaidResponseId, CancellationToken cancellationToken)
+        public async Task<TbUnpaidResponse> GetSingleUnpaidResponseAsync(int unpaidResponseId, CancellationToken cancellationToken)
         {
-            using (_unpaidsDbContext)
-            {
-                return await _unpaidsDbContext.UnpaidResponses.FirstOrDefaultAsync(u => u.UnpaidResponseId == unpaidResponseId, cancellationToken: cancellationToken);
-            }
+            return await _unpaidsDbContext.TbUnpaidResponse.FirstOrDefaultAsync(u => u.UnpaidResponseId == unpaidResponseId, cancellationToken: cancellationToken);
         }
 
-        public async Task<IEnumerable<UnpaidResponseDb>> GetAllUnpaidResponseAsync(int unpaidRequestId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<TbUnpaidResponse>> GetAllUnpaidResponseAsync(int unpaidRequestId, CancellationToken cancellationToken)
         {
-            using (_unpaidsDbContext)
-            {
-                return await _unpaidsDbContext.UnpaidResponses.Where(u => u.UnpaidRequestId == unpaidRequestId).ToListAsync(cancellationToken: cancellationToken);
-            }
+            return await _unpaidsDbContext.TbUnpaidResponse.Where(u => u.UnpaidRequestId == unpaidRequestId).ToListAsync(cancellationToken: cancellationToken);
         }
 
-        public async Task<IEnumerable<UnpaidResponseDb>> GetAllUnpaidResponseAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<TbUnpaidResponse>> GetAllUnpaidResponseAsync(CancellationToken cancellationToken)
         {
-            using (_unpaidsDbContext)
-            {
-                return await _unpaidsDbContext.UnpaidResponses.ToListAsync(cancellationToken: cancellationToken);
-            }
+            return await _unpaidsDbContext.TbUnpaidResponse.ToListAsync(cancellationToken: cancellationToken);
         }
     }
 }

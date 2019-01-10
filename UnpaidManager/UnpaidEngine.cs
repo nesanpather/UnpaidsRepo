@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using DataManager.Models;
 using UnpaidManager.Interfaces;
 using UnpaidModels;
 
@@ -79,7 +80,7 @@ namespace UnpaidManager
             return await HandleUnpaidRequestAsync(byIdempotencyResultList, cancellationToken);
         }
 
-        public async Task<IEnumerable<UnpaidOutput>> HandleUnpaidRequestAsync(IEnumerable<UnpaidDb> unpaids, CancellationToken cancellationToken)
+        public async Task<IEnumerable<UnpaidOutput>> HandleUnpaidRequestAsync(IEnumerable<TbUnpaid> unpaids, CancellationToken cancellationToken)
         {
             var unpaidOutputList = new List<UnpaidOutput>();
 

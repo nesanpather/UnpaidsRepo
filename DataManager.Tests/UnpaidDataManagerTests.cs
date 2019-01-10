@@ -20,18 +20,18 @@ namespace DataManager.Tests
         public async Task AddUnpaidAsync_GIVEN_Valid_Unpaid_RETURNS_Valid_Result()
         {
             // Arrange.
-            var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
+            var options = new DbContextOptionsBuilder<UnpaidsContext>()
                 .UseInMemoryDatabase(databaseName: "Add_writes_to_database")
                 .Options;
             
             // Act.
             // Run the test against one instance of the context
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
                 var service = new UnpaidDataManager(context);
-                var actual = await service.AddUnpaidAsync(new List<UnpaidDb>
+                var actual = await service.AddUnpaidAsync(new List<TbUnpaid>
                 {
-                    new UnpaidDb
+                    new TbUnpaid
                     {
                         PolicyNumber = "Test1234",
                         IdNumber = "9009165023080",
@@ -44,14 +44,14 @@ namespace DataManager.Tests
 
             // Assert.
             // Use a separate instance of the context to verify correct data was saved to database
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
-                Assert.AreEqual(1, context.Unpaids.Count());
-                Assert.AreEqual("Test1234", context.Unpaids.Single().PolicyNumber);
-                Assert.AreEqual("9009165023080", context.Unpaids.Single().IdNumber);
-                Assert.AreEqual("Nesan Pather", context.Unpaids.Single().Name);
-                Assert.AreEqual("Payment bounced. Please accept a call back.", context.Unpaids.Single().Message);
-                Assert.AreEqual("7c9e6679-7425-40de-944b-e07fc1f90ae7", context.Unpaids.Single().IdempotencyKey);
+                Assert.AreEqual(1, context.TbUnpaid.Count());
+                Assert.AreEqual("Test1234", context.TbUnpaid.Single().PolicyNumber);
+                Assert.AreEqual("9009165023080", context.TbUnpaid.Single().IdNumber);
+                Assert.AreEqual("Nesan Pather", context.TbUnpaid.Single().Name);
+                Assert.AreEqual("Payment bounced. Please accept a call back.", context.TbUnpaid.Single().Message);
+                Assert.AreEqual("7c9e6679-7425-40de-944b-e07fc1f90ae7", context.TbUnpaid.Single().IdempotencyKey);
             }
 
             options = null;
@@ -61,18 +61,18 @@ namespace DataManager.Tests
         public async Task AddUnpaidAsync_2Entries_GIVEN_Valid_Unpaid_RETURNS_Valid_Result_With2Entries()
         {
             // Arrange.
-            var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
+            var options = new DbContextOptionsBuilder<UnpaidsContext>()
                 .UseInMemoryDatabase(databaseName: "Add_writes_to_database2")
                 .Options;
 
             // Act.
             // Run the test against one instance of the context
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
                 var service = new UnpaidDataManager(context);
-                var actual = await service.AddUnpaidAsync(new List<UnpaidDb>
+                var actual = await service.AddUnpaidAsync(new List<TbUnpaid>
                 {
-                    new UnpaidDb
+                    new TbUnpaid
                     {
                         PolicyNumber = "Test1234",
                         IdNumber = "9009165023080",
@@ -80,7 +80,7 @@ namespace DataManager.Tests
                         Message = "Payment bounced. Please accept a call back.",
                         IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
                     },
-                    new UnpaidDb
+                    new TbUnpaid
                     {
                         PolicyNumber = "Test12345",
                         IdNumber = "9009165023081",
@@ -93,19 +93,19 @@ namespace DataManager.Tests
 
             // Assert.
             // Use a separate instance of the context to verify correct data was saved to database
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
-                Assert.AreEqual(2, context.Unpaids.Count());
-                Assert.AreEqual("Test1234", context.Unpaids.ToList()[0].PolicyNumber);
-                Assert.AreEqual("9009165023080", context.Unpaids.ToList()[0].IdNumber);
-                Assert.AreEqual("Nesan Pather", context.Unpaids.ToList()[0].Name);
-                Assert.AreEqual("Payment bounced. Please accept a call back.", context.Unpaids.ToList()[0].Message);
-                Assert.AreEqual("7c9e6679-7425-40de-944b-e07fc1f90ae7", context.Unpaids.ToList()[0].IdempotencyKey);
-                Assert.AreEqual("Test12345", context.Unpaids.ToList()[1].PolicyNumber);
-                Assert.AreEqual("9009165023081", context.Unpaids.ToList()[1].IdNumber);
-                Assert.AreEqual("Tom Smith", context.Unpaids.ToList()[1].Name);
-                Assert.AreEqual("Payment bounced. Please accept a call back.", context.Unpaids.ToList()[1].Message);
-                Assert.AreEqual("0f8fad5b-d9cb-469f-a165-70867728950e", context.Unpaids.ToList()[1].IdempotencyKey);
+                Assert.AreEqual(2, context.TbUnpaid.Count());
+                Assert.AreEqual("Test1234", context.TbUnpaid.ToList()[0].PolicyNumber);
+                Assert.AreEqual("9009165023080", context.TbUnpaid.ToList()[0].IdNumber);
+                Assert.AreEqual("Nesan Pather", context.TbUnpaid.ToList()[0].Name);
+                Assert.AreEqual("Payment bounced. Please accept a call back.", context.TbUnpaid.ToList()[0].Message);
+                Assert.AreEqual("7c9e6679-7425-40de-944b-e07fc1f90ae7", context.TbUnpaid.ToList()[0].IdempotencyKey);
+                Assert.AreEqual("Test12345", context.TbUnpaid.ToList()[1].PolicyNumber);
+                Assert.AreEqual("9009165023081", context.TbUnpaid.ToList()[1].IdNumber);
+                Assert.AreEqual("Tom Smith", context.TbUnpaid.ToList()[1].Name);
+                Assert.AreEqual("Payment bounced. Please accept a call back.", context.TbUnpaid.ToList()[1].Message);
+                Assert.AreEqual("0f8fad5b-d9cb-469f-a165-70867728950e", context.TbUnpaid.ToList()[1].IdempotencyKey);
             }
         }
 
@@ -113,13 +113,13 @@ namespace DataManager.Tests
         public async Task AddUnpaidAsync_GIVEN_Null_Unpaid_RETURNS_Valid_Result()
         {
             // Arrange.
-            var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
+            var options = new DbContextOptionsBuilder<UnpaidsContext>()
                 .UseInMemoryDatabase(databaseName: "Add_writes_to_database3")
                 .Options;
 
             // Act.
             // Run the test against one instance of the context
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
                 var service = new UnpaidDataManager(context);
                 var actual = await service.AddUnpaidAsync(null, CancellationToken.None);
@@ -127,9 +127,9 @@ namespace DataManager.Tests
 
             // Assert.
             // Use a separate instance of the context to verify correct data was saved to database
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
-                Assert.AreEqual(0, context.Unpaids.Count());
+                Assert.AreEqual(0, context.TbUnpaid.Count());
             }
         }
 
@@ -137,23 +137,23 @@ namespace DataManager.Tests
         public async Task GetSingleUnpaidAsync_GIVEN_Valid_Input_RETURNS_Valid_Unpaid()
         {
             // Arrange.
-            var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
+            var options = new DbContextOptionsBuilder<UnpaidsContext>()
                 .UseInMemoryDatabase(databaseName: "Find_unpaid")
                 .Options;
             
             // Insert seed data into the database using one instance of the context.
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
-                context.Unpaids.Add(new UnpaidDb { UnpaidId = 1, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 1.", IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7" });
-                context.Unpaids.Add(new UnpaidDb { UnpaidId = 2, PolicyNumber = "P2", Name = "Bob", IdNumber = "9009165023081", Message = "Test Message 2.", IdempotencyKey = "0f8fad5b-d9cb-469f-a165-70867728950e" });
-                context.Unpaids.Add(new UnpaidDb { UnpaidId = 3, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 3.", IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7" });
-                context.Unpaids.Add(new UnpaidDb { UnpaidId = 4, PolicyNumber = "P4", IdNumber = "9009165023082", Name = "Brad", Message = "Test Message 4.", IdempotencyKey = "1f9fad5b-d9cb-469f-a165-70867728950e" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 1, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 1.", IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 2, PolicyNumber = "P2", Name = "Bob", IdNumber = "9009165023081", Message = "Test Message 2.", IdempotencyKey = "0f8fad5b-d9cb-469f-a165-70867728950e" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 3, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 3.", IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 4, PolicyNumber = "P4", IdNumber = "9009165023082", Name = "Brad", Message = "Test Message 4.", IdempotencyKey = "1f9fad5b-d9cb-469f-a165-70867728950e" });
                 context.SaveChanges();
             }
 
             // Act and Assert.
             // Use a clean instance of the context to run the test.
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
                 var service = new UnpaidDataManager(context);
                 var actual = await service.GetSingleUnpaidAsync(3, CancellationToken.None);
@@ -170,20 +170,20 @@ namespace DataManager.Tests
         public async Task GetSingleUnpaidAsync_GIVEN_Invalid_Input_RETURNS_Null()
         {
             // Arrange.
-            var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
+            var options = new DbContextOptionsBuilder<UnpaidsContext>()
                 .UseInMemoryDatabase(databaseName: "Find_unpaid2")
                 .Options;
 
             // Insert seed data into the database using one instance of the context.
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
-                context.Unpaids.Add(new UnpaidDb { UnpaidId = 1, PolicyNumber = "P1", Name = "Tom", Message = "Test Message 1." });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 1, PolicyNumber = "P1", Name = "Tom", Message = "Test Message 1." });
                 context.SaveChanges();
             }
 
             // Act and Assert.
             // Use a clean instance of the context to run the test.
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
                 var service = new UnpaidDataManager(context);
                 var actual = await service.GetSingleUnpaidAsync(0, CancellationToken.None);
@@ -195,23 +195,23 @@ namespace DataManager.Tests
         public async Task GetAllUnpaidAsync_RETURNS_Valid_Unpaid_List()
         {
             // Arrange.
-            var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
+            var options = new DbContextOptionsBuilder<UnpaidsContext>()
                 .UseInMemoryDatabase(databaseName: "Get_unpaids")
                 .Options;
 
             // Insert seed data into the database using one instance of the context.
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
-                context.Unpaids.Add(new UnpaidDb { UnpaidId = 1, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 1.", IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7" });
-                context.Unpaids.Add(new UnpaidDb { UnpaidId = 2, PolicyNumber = "P2", Name = "Bob", IdNumber = "9009165023081", Message = "Test Message 2.", IdempotencyKey = "0f8fad5b-d9cb-469f-a165-70867728950e" });
-                context.Unpaids.Add(new UnpaidDb { UnpaidId = 3, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 3.", IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7" });
-                context.Unpaids.Add(new UnpaidDb { UnpaidId = 4, PolicyNumber = "P4", IdNumber = "9009165023082", Name = "Brad", Message = "Test Message 4.", IdempotencyKey = "1f9fad5b-d9cb-469f-a165-70867728950e" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 1, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 1.", IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 2, PolicyNumber = "P2", Name = "Bob", IdNumber = "9009165023081", Message = "Test Message 2.", IdempotencyKey = "0f8fad5b-d9cb-469f-a165-70867728950e" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 3, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 3.", IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 4, PolicyNumber = "P4", IdNumber = "9009165023082", Name = "Brad", Message = "Test Message 4.", IdempotencyKey = "1f9fad5b-d9cb-469f-a165-70867728950e" });
                 context.SaveChanges();
             }
 
             // Act and Assert.
             // Use a clean instance of the context to run the test.
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
                 var service = new UnpaidDataManager(context);
                 var actual = await service.GetAllUnpaidAsync(CancellationToken.None);
@@ -223,23 +223,23 @@ namespace DataManager.Tests
         public async Task GetAllUnpaidAsync_GIVEN_Valid_Input_RETURNS_Valid_Unpaid_List()
         {
             // Arrange.
-            var options = new DbContextOptionsBuilder<UnpaidsDBContext>()
+            var options = new DbContextOptionsBuilder<UnpaidsContext>()
                 .UseInMemoryDatabase(databaseName: "Get_unpaids_against_idempotencyKey")
                 .Options;
 
             // Insert seed data into the database using one instance of the context.
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
-                context.Unpaids.Add(new UnpaidDb { UnpaidId = 1, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 1.", IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7" });
-                context.Unpaids.Add(new UnpaidDb { UnpaidId = 2, PolicyNumber = "P2", Name = "Bob", IdNumber = "9009165023081", Message = "Test Message 2.", IdempotencyKey = "0f8fad5b-d9cb-469f-a165-70867728950e" });
-                context.Unpaids.Add(new UnpaidDb { UnpaidId = 3, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 3.", IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7" });
-                context.Unpaids.Add(new UnpaidDb { UnpaidId = 4, PolicyNumber = "P4", IdNumber = "9009165023082", Name = "Brad", Message = "Test Message 4.", IdempotencyKey = "1f9fad5b-d9cb-469f-a165-70867728950e" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 1, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 1.", IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 2, PolicyNumber = "P2", Name = "Bob", IdNumber = "9009165023081", Message = "Test Message 2.", IdempotencyKey = "0f8fad5b-d9cb-469f-a165-70867728950e" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 3, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 3.", IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 4, PolicyNumber = "P4", IdNumber = "9009165023082", Name = "Brad", Message = "Test Message 4.", IdempotencyKey = "1f9fad5b-d9cb-469f-a165-70867728950e" });
                 context.SaveChanges();
             }
 
             // Act and Assert.
             // Use a clean instance of the context to run the test.
-            using (var context = new UnpaidsDBContext(options))
+            using (var context = new UnpaidsContext(options))
             {
                 var service = new UnpaidDataManager(context);
                 var actual = await service.GetAllUnpaidAsync("7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None);
