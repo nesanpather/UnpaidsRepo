@@ -1,0 +1,12 @@
+C:\Source\git\UnpaidsRepo\Utilities\bin\Debug\netcoreapp2.2\Utilities.deps.json
+C:\Source\git\UnpaidsRepo\Utilities\bin\Debug\netcoreapp2.2\Utilities.dll
+C:\Source\git\UnpaidsRepo\Utilities\bin\Debug\netcoreapp2.2\Utilities.pdb
+C:\Source\git\UnpaidsRepo\Utilities\bin\Debug\netcoreapp2.2\Newtonsoft.Json.dll
+C:\Source\git\UnpaidsRepo\Utilities\bin\Debug\netcoreapp2.2\Newtonsoft.Json.xml
+C:\Source\git\UnpaidsRepo\Utilities\obj\Debug\netcoreapp2.2\Utilities.csprojAssemblyReference.cache
+C:\Source\git\UnpaidsRepo\Utilities\obj\Debug\netcoreapp2.2\Utilities.csproj.CoreCompileInputs.cache
+C:\Source\git\UnpaidsRepo\Utilities\obj\Debug\netcoreapp2.2\Utilities.AssemblyInfoInputs.cache
+C:\Source\git\UnpaidsRepo\Utilities\obj\Debug\netcoreapp2.2\Utilities.AssemblyInfo.cs
+C:\Source\git\UnpaidsRepo\Utilities\obj\Debug\netcoreapp2.2\Utilities.csproj.CopyComplete
+C:\Source\git\UnpaidsRepo\Utilities\obj\Debug\netcoreapp2.2\Utilities.dll
+C:\Source\git\UnpaidsRepo\Utilities\obj\Debug\netcoreapp2.2\Utilities.pdb

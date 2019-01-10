@@ -1,0 +1,17 @@
+C:\Source\git\UnpaidsRepo\Utilities.Tests\bin\Debug\netcoreapp2.2\NUnit3.TestAdapter.dll
+C:\Source\git\UnpaidsRepo\Utilities.Tests\bin\Debug\netcoreapp2.2\NUnit3.TestAdapter.pdb
+C:\Source\git\UnpaidsRepo\Utilities.Tests\bin\Debug\netcoreapp2.2\nunit.engine.netstandard.dll
+C:\Source\git\UnpaidsRepo\Utilities.Tests\bin\Debug\netcoreapp2.2\Utilities.Tests.deps.json
+C:\Source\git\UnpaidsRepo\Utilities.Tests\bin\Debug\netcoreapp2.2\Utilities.Tests.runtimeconfig.json
+C:\Source\git\UnpaidsRepo\Utilities.Tests\bin\Debug\netcoreapp2.2\Utilities.Tests.runtimeconfig.dev.json
+C:\Source\git\UnpaidsRepo\Utilities.Tests\bin\Debug\netcoreapp2.2\Utilities.Tests.dll
+C:\Source\git\UnpaidsRepo\Utilities.Tests\bin\Debug\netcoreapp2.2\Utilities.Tests.pdb
+C:\Source\git\UnpaidsRepo\Utilities.Tests\bin\Debug\netcoreapp2.2\Utilities.dll
+C:\Source\git\UnpaidsRepo\Utilities.Tests\bin\Debug\netcoreapp2.2\Utilities.pdb
+C:\Source\git\UnpaidsRepo\Utilities.Tests\obj\Debug\netcoreapp2.2\Utilities.Tests.csprojAssemblyReference.cache
+C:\Source\git\UnpaidsRepo\Utilities.Tests\obj\Debug\netcoreapp2.2\Utilities.Tests.csproj.CoreCompileInputs.cache
+C:\Source\git\UnpaidsRepo\Utilities.Tests\obj\Debug\netcoreapp2.2\Utilities.Tests.AssemblyInfoInputs.cache
+C:\Source\git\UnpaidsRepo\Utilities.Tests\obj\Debug\netcoreapp2.2\Utilities.Tests.AssemblyInfo.cs
+C:\Source\git\UnpaidsRepo\Utilities.Tests\obj\Debug\netcoreapp2.2\Utilities.Tests.csproj.CopyComplete
+C:\Source\git\UnpaidsRepo\Utilities.Tests\obj\Debug\netcoreapp2.2\Utilities.Tests.dll
+C:\Source\git\UnpaidsRepo\Utilities.Tests\obj\Debug\netcoreapp2.2\Utilities.Tests.pdb
