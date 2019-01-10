@@ -42,7 +42,9 @@ namespace UnpaidManager.Tests
                     Message = string.Empty
                 }));
 
-            var pushNotificationManager = new PushNotificationManager(pushNotificationClient);
+            var accessTokenClient = Substitute.For<IAccessTokenClient>();
+
+            var pushNotificationManager = new PushNotificationManager(pushNotificationClient, accessTokenClient);
 
             // Act.
             var actual = await pushNotificationManager.SendAsync(title, message, idNumber, CancellationToken.None);
@@ -83,7 +85,9 @@ namespace UnpaidManager.Tests
                         Message = "Could not find user with ID Number: 9009165023080"
                     }));
 
-            var pushNotificationManager = new PushNotificationManager(pushNotificationClient);
+            var accessTokenClient = Substitute.For<IAccessTokenClient>();
+
+            var pushNotificationManager = new PushNotificationManager(pushNotificationClient, accessTokenClient);
 
             // Act.
             var actual = await pushNotificationManager.SendAsync(title, message, idNumber, CancellationToken.None);
@@ -104,9 +108,11 @@ namespace UnpaidManager.Tests
 
             var idNumber = "9009165023080";
             var title = "Test Title";
-            var message = "Test Message";            
+            var message = "Test Message";
 
-            var pushNotificationManager = new PushNotificationManager(pushNotificationClient);
+            var accessTokenClient = Substitute.For<IAccessTokenClient>();
+
+            var pushNotificationManager = new PushNotificationManager(pushNotificationClient, accessTokenClient);
 
             // Act.
             var actual = await pushNotificationManager.SendAsync(title, message, idNumber, CancellationToken.None);
@@ -143,7 +149,9 @@ namespace UnpaidManager.Tests
                 .SendPushNotification(accessToken, tokenType, Arg.Any<PushNotificationRequest>(),
                     CancellationToken.None).Returns(Task.FromResult<PushNotificationResponse>(null));
 
-            var pushNotificationManager = new PushNotificationManager(pushNotificationClient);
+            var accessTokenClient = Substitute.For<IAccessTokenClient>();
+
+            var pushNotificationManager = new PushNotificationManager(pushNotificationClient, accessTokenClient);
 
             // Act.
             var actual = await pushNotificationManager.SendAsync(title, message, idNumber, CancellationToken.None);
@@ -165,7 +173,9 @@ namespace UnpaidManager.Tests
             var title = input;
             var message = "Test Message";
 
-            var pushNotificationManager = new PushNotificationManager(pushNotificationClient);
+            var accessTokenClient = Substitute.For<IAccessTokenClient>();
+
+            var pushNotificationManager = new PushNotificationManager(pushNotificationClient, accessTokenClient);
 
             // Act.
             var actual = await pushNotificationManager.SendAsync(title, message, idNumber, CancellationToken.None);
@@ -187,7 +197,9 @@ namespace UnpaidManager.Tests
             var title = "Test Title";
             var message = input;
 
-            var pushNotificationManager = new PushNotificationManager(pushNotificationClient);
+            var accessTokenClient = Substitute.For<IAccessTokenClient>();
+
+            var pushNotificationManager = new PushNotificationManager(pushNotificationClient, accessTokenClient);
 
             // Act.
             var actual = await pushNotificationManager.SendAsync(title, message, idNumber, CancellationToken.None);
@@ -207,9 +219,11 @@ namespace UnpaidManager.Tests
 
             var idNumber = input;
             var title = "Test Title";
-            var message = "Test Message";      
+            var message = "Test Message";
 
-            var pushNotificationManager = new PushNotificationManager(pushNotificationClient);
+            var accessTokenClient = Substitute.For<IAccessTokenClient>();
+
+            var pushNotificationManager = new PushNotificationManager(pushNotificationClient, accessTokenClient);
 
             // Act.
             var actual = await pushNotificationManager.SendAsync(title, message, idNumber, CancellationToken.None);

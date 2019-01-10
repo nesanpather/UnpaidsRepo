@@ -1,6 +1,8 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using DataManager.Models;
 using UnpaidManager.Interfaces;
 using UnpaidModels;
 
@@ -8,12 +10,14 @@ namespace UnpaidManager
 {
     public class PushNotificationManager : INotification
     {
-        private readonly IPushNotificationClient _pushNotificationClient;        
+        private readonly IPushNotificationClient _pushNotificationClient;
+        private readonly IAccessTokenClient _accessTokenClient;
         // need to inject an AccessTokenManager to manage how long to use the same access token for bulk processing;
 
-        public PushNotificationManager(IPushNotificationClient pushNotificationClient)
+        public PushNotificationManager(IPushNotificationClient pushNotificationClient, IAccessTokenClient accessTokenClient)
         {
             _pushNotificationClient = pushNotificationClient;
+            _accessTokenClient = accessTokenClient;
         }
 
         public async Task<NotificationResponse> SendAsync(string title, string message, string idNumber, CancellationToken cancellationToken)
@@ -44,14 +48,44 @@ namespace UnpaidManager
                 return errorResponse;
             }
 
-            var accessTokenResult = await _pushNotificationClient.GetAccessTokenAsync(cancellationToken);
+            var accessToken = string.Empty;
+            var tokenType = string.Empty;
 
-            if (accessTokenResult == null)
+            var latestAccessTokenResult = await _accessTokenClient.GetLatestAccessTokenAsync(cancellationToken);
+
+            if (latestAccessTokenResult != null && latestAccessTokenResult.DateExpires >= DateTime.UtcNow)
             {
-                // Log Error.
-                errorResponse.StatusCode = HttpStatusCode.ServiceUnavailable;
-                errorResponse.AdditionalErrorMessage = "Error getting a WebToken.";
-                return errorResponse;
+                accessToken = latestAccessTokenResult.AccessToken;
+                tokenType = latestAccessTokenResult.TokenType;
+            }
+            else
+            {
+                var accessTokenResult = await _pushNotificationClient.GetAccessTokenAsync(cancellationToken);
+
+                if (accessTokenResult == null)
+                {
+                    // Log Error.
+                    errorResponse.StatusCode = HttpStatusCode.ServiceUnavailable;
+                    errorResponse.AdditionalErrorMessage = "Error getting a WebToken.";
+                    return errorResponse;
+                }
+
+                var newAccessToken = new TbAccessToken
+                {
+                    AccessToken = accessTokenResult.AccessToken,
+                    TokenType = accessTokenResult.TokenType,
+                    ExpiresIn = accessTokenResult.ExpiresIn,
+                    DateIssued = accessTokenResult.Issued,
+                    DateExpires = accessTokenResult.Expires
+                };
+
+                var addAccessTokenResult = await _accessTokenClient.AddUnpaidRequestAsync(newAccessToken, cancellationToken);
+
+                if (addAccessTokenResult > 0)
+                {
+                    accessToken = accessTokenResult.AccessToken;
+                    tokenType = accessTokenResult.TokenType;
+                }
             }
 
             var pushNotificationRequest = new PushNotificationRequest
@@ -61,7 +95,7 @@ namespace UnpaidManager
                 Message = message
             };
 
-            var pushNotificationResult = await _pushNotificationClient.SendPushNotification(accessTokenResult.AccessToken, accessTokenResult.TokenType, pushNotificationRequest, cancellationToken);
+            var pushNotificationResult = await _pushNotificationClient.SendPushNotification(accessToken, tokenType, pushNotificationRequest, cancellationToken);
 
             if (pushNotificationResult == null)
             {

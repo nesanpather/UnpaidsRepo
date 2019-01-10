@@ -15,6 +15,7 @@ namespace DataManager.Models
         {
         }
 
+        public virtual DbSet<TbAccessToken> TbAccessToken { get; set; }
         public virtual DbSet<TbNotification> TbNotification { get; set; }
         public virtual DbSet<TbResponse> TbResponse { get; set; }
         public virtual DbSet<TbStatus> TbStatus { get; set; }
@@ -26,6 +27,7 @@ namespace DataManager.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Persist Security Info=False;User ID=UnpaidsUser;Password=Password1234$;Initial Catalog=Unpaids;Server=localhost");
             }
         }
@@ -33,6 +35,25 @@ namespace DataManager.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("ProductVersion", "2.2.1-servicing-10028");
+
+            modelBuilder.Entity<TbAccessToken>(entity =>
+            {
+                entity.HasKey(e => e.AccessTokenId);
+
+                entity.ToTable("tb_AccessToken");
+
+                entity.Property(e => e.AccessToken)
+                    .IsRequired()
+                    .HasMaxLength(1000);
+
+                entity.Property(e => e.DateExpires).HasColumnType("datetime");
+
+                entity.Property(e => e.DateIssued).HasColumnType("datetime");
+
+                entity.Property(e => e.TokenType)
+                    .IsRequired()
+                    .HasMaxLength(20);
+            });
 
             modelBuilder.Entity<TbNotification>(entity =>
             {

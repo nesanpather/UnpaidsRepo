@@ -47,11 +47,13 @@ namespace UnpaidApi
             services.AddScoped<IUnpaidStorageOperations, UnpaidDataManager>();
             services.AddScoped<IUnpaidRequestStorageOperations, UnpaidRequestDataManager>();
             services.AddScoped<IUnpaidResponseStorageOperations, UnpaidResponseDataManager>();
+            services.AddScoped<IAccessTokenStorageOperations, AccessTokenDataManager>();
 
             services.AddScoped<IPushNotificationClient, PushNotificationService>();
             services.AddScoped<INotification, PushNotificationManager>();
             services.AddScoped<IUnpaidClient, UnpaidManager.UnpaidManager>();
             services.AddScoped<IUnpaidRequestClient, UnpaidRequestManager>();
+            services.AddScoped<IAccessTokenClient, AccessTokenManager>();
             services.AddScoped<IUnpaidEngineHandler, UnpaidEngine>();
         }
 
