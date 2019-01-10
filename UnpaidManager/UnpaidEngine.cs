@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -23,6 +24,12 @@ namespace UnpaidManager
 
         public async Task<IEnumerable<UnpaidOutput>> HandleUnpaidAsync(IEnumerable<Unpaid> unpaids, string idempotencyKey, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrWhiteSpace(idempotencyKey))
+            {
+                // Log Error.
+                return null;
+            }
+
             if (unpaids == null)
             {
                 // Log Error.
@@ -54,6 +61,12 @@ namespace UnpaidManager
 
             var byIdempotencyResultList = unpaidsByIdempotencyResult.ToList();
 
+            if (!byIdempotencyResultList.Any())
+            {
+                // Log Error.
+                return null;
+            }
+
             // Add UnpaidRequest to storage and default status as pending.
             var unpaidRequestResult = await _unpaidRequestClient.AddUnpaidRequestAsync(byIdempotencyResultList, Notification.Push, Status.Pending, cancellationToken);
 
@@ -72,6 +85,16 @@ namespace UnpaidManager
 
             foreach (var unpaid in unpaids)
             {
+                var unpaidOutput = new UnpaidOutput
+                {
+                    PolicyNumber = unpaid.PolicyNumber,
+                    IdNumber = unpaid.IdNumber,
+                    Name = unpaid.Name,
+                    Message = unpaid.Message,
+                    Status = Status.Pending.ToString(),
+                    ErrorMessage = string.Empty
+                };
+
                 // create notification task.
                 var notificationTask = _notification.SendAsync($"Dear {unpaid.Name}", unpaid.Message, unpaid.IdNumber, cancellationToken);
 
@@ -81,7 +104,9 @@ namespace UnpaidManager
                 if (unpaidRequestsToUpdate == null)
                 {
                     // Log Warning. No UnpaidRequests to update.
-                    return null;
+                    notificationTask.Dispose();
+                    unpaidOutputList.Add(unpaidOutput);
+                    continue;
                 }
 
                 var singleUnpaidRequestToUpdate = unpaidRequestsToUpdate.FirstOrDefault();
@@ -106,16 +131,11 @@ namespace UnpaidManager
                         return null;
                     }
 
-                    unpaidOutputList.Add(new UnpaidOutput
-                    {
-                        PolicyNumber = unpaid.PolicyNumber,
-                        IdNumber = unpaid.IdNumber,
-                        Name = unpaid.Name,
-                        Message = unpaid.Message,
-                        Status = status.ToString(),
-                        ErrorMessage = notificationResult.AdditionalErrorMessage
-                    });
+                    unpaidOutput.Status = status.ToString();
+                    unpaidOutput.ErrorMessage = notificationResult.AdditionalErrorMessage;
                 }
+
+                unpaidOutputList.Add(unpaidOutput);
             }
 
             return unpaidOutputList;
