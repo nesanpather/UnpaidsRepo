@@ -12,5 +12,6 @@ namespace DataManager.Interfaces
         Task<TbUnpaidResponse> GetSingleUnpaidResponseAsync(int unpaidResponseId, CancellationToken cancellationToken);
         Task<IEnumerable<TbUnpaidResponse>> GetAllUnpaidResponseAsync(int unpaidRequestId, CancellationToken cancellationToken);
         Task<IEnumerable<TbUnpaidResponse>> GetAllUnpaidResponseAsync(CancellationToken cancellationToken);
+        Task<IEnumerable<TbUnpaidResponse>> GetAllUnpaidResponseJoinUnpaidRequest(CancellationToken cancellationToken);
     }
 }

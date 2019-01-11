@@ -59,6 +59,28 @@ namespace DataManager
             return await _unpaidsDbContext.TbUnpaidRequest.ToListAsync(cancellationToken: cancellationToken);
         }
 
+        public async Task<IEnumerable<TbUnpaidRequest>> GetUnpaidRequestJoinUnpaidAsync(int pageIndex, int pageSize, CancellationToken cancellationToken)
+        {
+            var query = from ur in _unpaidsDbContext.TbUnpaidRequest
+                join u in _unpaidsDbContext.TbUnpaid on ur.UnpaidId equals u.UnpaidId
+                join s in _unpaidsDbContext.TbStatus on ur.StatusId equals s.StatusId
+                join n in _unpaidsDbContext.TbNotification on ur.NotificationId equals n.NotificationId
+                select new TbUnpaidRequest{Unpaid = u, UnpaidRequestId = ur.UnpaidRequestId, UnpaidId = ur.UnpaidId, Notification = n, Status = s, DateCreated = ur.DateCreated, StatusAdditionalInfo = ur.StatusAdditionalInfo };
+
+            return await query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<TbUnpaidRequest>> GetUnpaidRequestJoinUnpaidAsync(CancellationToken cancellationToken)
+        {
+            var query = from ur in _unpaidsDbContext.TbUnpaidRequest
+                join u in _unpaidsDbContext.TbUnpaid on ur.UnpaidId equals u.UnpaidId
+                join s in _unpaidsDbContext.TbStatus on ur.StatusId equals s.StatusId
+                join n in _unpaidsDbContext.TbNotification on ur.NotificationId equals n.NotificationId
+                select new TbUnpaidRequest { Unpaid = u, UnpaidRequestId = ur.UnpaidRequestId, UnpaidId = ur.UnpaidId, Notification = n, Status = s, DateCreated = ur.DateCreated, StatusAdditionalInfo = ur.StatusAdditionalInfo };
+
+            return await query.ToListAsync(cancellationToken);
+        }
+
         public async Task<int> UpdateUnpaidRequestAsync(int unpaidRequestId, Notification notification, Status status, string statusAdditionalInfo, CancellationToken cancellationToken)
         {
             var entity = _unpaidsDbContext.TbUnpaidRequest.FirstOrDefault(item => item.UnpaidRequestId == unpaidRequestId);

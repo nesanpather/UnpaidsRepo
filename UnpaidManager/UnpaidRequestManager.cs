@@ -95,5 +95,84 @@ namespace UnpaidManager
 
             return await _unpaidRequestOperations.GetSingleUnpaidRequestAsync(unpaidResponseInput.PolicyNumber, unpaidResponseInput.IdNumber, Status.Success, cancellationToken);
         }
+
+        public async Task<IEnumerable<GetAllUnpaidRequestOutput>> GetAllUnpaidRequestAsync(int pageIndex, int pageSize, CancellationToken cancellationToken)
+        {
+            if (pageIndex <= 0)
+            {
+                pageIndex = 1;
+            }
+
+            var unpaidRequests = await _unpaidRequestOperations.GetUnpaidRequestJoinUnpaidAsync(pageIndex, pageSize, cancellationToken);
+
+            if (unpaidRequests == null)
+            {
+                return null;
+            }
+
+            return GetAllUnpaidRequestOutputs(unpaidRequests);
+        }
+
+        public async Task<IEnumerable<GetAllUnpaidRequestOutput>> GetAllUnpaidRequestAsync(CancellationToken cancellationToken)
+        {           
+            var unpaidRequests = await _unpaidRequestOperations.GetUnpaidRequestJoinUnpaidAsync(cancellationToken);
+
+            if (unpaidRequests == null)
+            {
+                return null;
+            }
+
+            return GetAllUnpaidRequestOutputs(unpaidRequests);
+        }
+
+        public async Task<IEnumerable<GetAllUnpaidRequestOutput>> GetAllUnpaidRequestAsync(string policyNumber, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(policyNumber))
+            {
+                // Log Error.
+                return null;
+            }
+
+            var unpaidRequests = await _unpaidRequestOperations.GetUnpaidRequestJoinUnpaidAsync(cancellationToken);
+
+            if (unpaidRequests == null)
+            {
+                return null;
+            }
+
+            return GetAllUnpaidRequestOutputs(unpaidRequests.Where(u => string.Equals(u.Unpaid.PolicyNumber, policyNumber, StringComparison.InvariantCultureIgnoreCase)));
+        }
+
+        private static IEnumerable<GetAllUnpaidRequestOutput> GetAllUnpaidRequestOutputs(IEnumerable<TbUnpaidRequest> unpaidRequests)
+        {
+            var tbUnpaidRequests = unpaidRequests.ToList();
+
+            if (!tbUnpaidRequests.Any())
+            {
+                return null;
+            }
+
+            var unpaidRequestOutputList = new List<GetAllUnpaidRequestOutput>();
+
+            foreach (var unpaidRequest in tbUnpaidRequests)
+            {
+                unpaidRequestOutputList.Add(new GetAllUnpaidRequestOutput
+                {
+                    UnpaidId = unpaidRequest.UnpaidId,
+                    PolicyNumber = unpaidRequest.Unpaid.PolicyNumber,
+                    IdNumber = unpaidRequest.Unpaid.IdNumber,
+                    Name = unpaidRequest.Unpaid.Name,
+                    Message = unpaidRequest.Unpaid.Message,
+                    DateAdded = unpaidRequest.Unpaid.DateCreated,
+                    NotificationRequestId = unpaidRequest.UnpaidRequestId,
+                    NotificationType = unpaidRequest.Notification.Notification,
+                    DateNotificationSent = unpaidRequest.DateCreated,
+                    NotificationSentStatus = unpaidRequest.Status.Status,
+                    NotificationErrorMessage = unpaidRequest.StatusAdditionalInfo
+                });
+            }
+
+            return unpaidRequestOutputList;
+        }
     }
 }

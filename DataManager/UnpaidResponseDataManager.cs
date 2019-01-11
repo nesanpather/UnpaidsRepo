@@ -43,5 +43,21 @@ namespace DataManager
         {
             return await _unpaidsDbContext.TbUnpaidResponse.ToListAsync(cancellationToken: cancellationToken);
         }
+
+        public async Task<IEnumerable<TbUnpaidResponse>> GetAllUnpaidResponseJoinUnpaidRequest(CancellationToken cancellationToken)
+        {
+            var query = from ursp in _unpaidsDbContext.TbUnpaidResponse
+                join ursq in _unpaidsDbContext.TbUnpaidRequest on ursp.UnpaidRequestId equals ursq.UnpaidRequestId
+                join n in _unpaidsDbContext.TbNotification on ursq.NotificationId equals n.NotificationId
+                join r in _unpaidsDbContext.TbResponse on ursp.ResponseId equals r.ResponseId
+                join s in _unpaidsDbContext.TbStatus on ursp.StatusId equals s.StatusId
+                select new TbUnpaidResponse
+                {
+                    UnpaidRequestId = ursp.UnpaidRequestId, UnpaidRequest = ursq, UnpaidResponseId = ursp.UnpaidResponseId, Response = r, Status = s, Accepted = ursp.Accepted,
+                    DateCreated = ursp.DateCreated
+                };
+
+            return await query.ToListAsync(cancellationToken);
+        }
     }
 }

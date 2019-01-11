@@ -16,20 +16,16 @@ namespace UnpaidApi.Controllers
     public class UnpaidsController : ControllerBase
     {
         private readonly IUnpaidEngineHandler _unpaidEngineHandler;
+        private readonly IUnpaidRequestClient _unpaidRequestClient;
+        private readonly IUnpaidResponseClient _unpaidResponseClient;
 
-        public UnpaidsController(IUnpaidEngineHandler unpaidEngineHandler)
+        public UnpaidsController(IUnpaidEngineHandler unpaidEngineHandler, IUnpaidRequestClient unpaidRequestClient, IUnpaidResponseClient unpaidResponseClient)
         {
             _unpaidEngineHandler = unpaidEngineHandler;
+            _unpaidRequestClient = unpaidRequestClient;
+            _unpaidResponseClient = unpaidResponseClient;
         }
 
-        //// GET: api/Todo
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
-        //{
-        //    return await _context.TodoItems.ToListAsync();
-        //}
-
-        // POST: api/Todo
         [HttpPost("Add")]
         public async Task<ActionResult<IEnumerable<UnpaidOutput>>> CreateUnpaidAsync([FromBody] IEnumerable<UnpaidInput> unpaids, CancellationToken cancellationToken)
         {
@@ -50,7 +46,7 @@ namespace UnpaidApi.Controllers
             return Ok(handleUnpaidResult);
         }
 
-        [HttpPost("response/add")]
+        [HttpPost("responses/add")]
         public async Task<ActionResult<IEnumerable<UnpaidOutput>>> AddNotificationResponse([FromBody] IEnumerable<UnpaidResponseInput> unpaidResponses, CancellationToken cancellationToken)
         {
             // Log Entry.
@@ -68,6 +64,106 @@ namespace UnpaidApi.Controllers
             }
 
             return Ok(handleUnpaidResponseResult);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<GetAllUnpaidRequestOutput>>> GetAllUnpaidRequestAsync(CancellationToken cancellationToken)
+        {
+            // Log Entry.
+
+            var getAllUnpaidRequestAsyncResult = await _unpaidRequestClient.GetAllUnpaidRequestAsync(cancellationToken);
+
+            if (getAllUnpaidRequestAsyncResult == null)
+            {
+                return BadRequest();
+            }
+
+            if (!getAllUnpaidRequestAsyncResult.Any())
+            {
+                return BadRequest();
+            }
+
+            return Ok(getAllUnpaidRequestAsyncResult);
+        }
+
+        [HttpGet("policynumber/{policyNumber}")]
+        public async Task<ActionResult<IEnumerable<GetAllUnpaidRequestOutput>>> GetAllUnpaidRequestAsync(string policyNumber, CancellationToken cancellationToken)
+        {
+            // Log Entry.
+
+            var getAllUnpaidRequestAsyncResult = await _unpaidRequestClient.GetAllUnpaidRequestAsync(policyNumber, cancellationToken);
+
+            if (getAllUnpaidRequestAsyncResult == null)
+            {
+                return BadRequest();
+            }
+
+            if (!getAllUnpaidRequestAsyncResult.Any())
+            {
+                return BadRequest();
+            }
+
+            return Ok(getAllUnpaidRequestAsyncResult);
+        }
+
+        [HttpGet("pageindex/{pageIndex}/pagesize/{pageSize}")]
+        public async Task<ActionResult<IEnumerable<GetAllUnpaidRequestOutput>>> GetAllUnpaidRequestAsync(int pageIndex, int pageSize, CancellationToken cancellationToken)
+        {
+            // Log Entry.
+
+            var getAllUnpaidRequestAsyncResult = await _unpaidRequestClient.GetAllUnpaidRequestAsync(pageIndex, pageSize, cancellationToken);
+
+            if (getAllUnpaidRequestAsyncResult == null)
+            {
+                return BadRequest();
+            }
+
+            if (!getAllUnpaidRequestAsyncResult.Any())
+            {
+                return BadRequest();
+            }
+
+            return Ok(getAllUnpaidRequestAsyncResult);
+        }
+
+        [HttpGet("responses")]
+        public async Task<ActionResult<IEnumerable<GetAllUnpaidResponseOutput>>> GetAllUnpaidResponseAsync(CancellationToken cancellationToken)
+        {
+            // Log Entry.
+
+            var getAllUnpaidResponseAsyncResult = await _unpaidResponseClient.GetAllUnpaidResponseAsync(cancellationToken);
+
+            if (getAllUnpaidResponseAsyncResult == null)
+            {
+                return BadRequest();
+            }
+
+            if (!getAllUnpaidResponseAsyncResult.Any())
+            {
+                return BadRequest();
+            }
+
+            return Ok(getAllUnpaidResponseAsyncResult);
+        }
+
+        [HttpGet("responses/policynumber/{policyNumber}")]
+        public async Task<ActionResult<IEnumerable<GetAllUnpaidResponseOutput>>> GetAllUnpaidResponseAsync(string policyNumber, CancellationToken cancellationToken)
+        {
+            // Log Entry.
+
+            var getAllUnpaidResponseAsyncResult = await _unpaidResponseClient.GetAllUnpaidResponseAsync(policyNumber, cancellationToken);
+
+            if (getAllUnpaidResponseAsyncResult == null)
+            {
+                return BadRequest();
+            }
+
+            if (!getAllUnpaidResponseAsyncResult.Any())
+            {
+                return BadRequest();
+            }
+
+            return Ok(getAllUnpaidResponseAsyncResult);
         }
 
     }
