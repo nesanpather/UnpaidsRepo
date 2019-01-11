@@ -15,15 +15,17 @@ namespace UnpaidManager
         private readonly IUnpaidClient _unpaidClient;
         private readonly IUnpaidRequestClient _unpaidRequestClient;
         private readonly INotification _notification;
+        private readonly IUnpaidResponseClient _unpaidResponseClient;
 
-        public UnpaidEngine(IUnpaidClient unpaidClient, IUnpaidRequestClient unpaidRequestClient, INotification notification)
+        public UnpaidEngine(IUnpaidClient unpaidClient, IUnpaidRequestClient unpaidRequestClient, INotification notification, IUnpaidResponseClient unpaidResponseClient)
         {
             _unpaidClient = unpaidClient;
             _unpaidRequestClient = unpaidRequestClient;
             _notification = notification;
+            _unpaidResponseClient = unpaidResponseClient;
         }
 
-        public async Task<IEnumerable<UnpaidOutput>> HandleUnpaidAsync(IEnumerable<Unpaid> unpaids, string idempotencyKey, CancellationToken cancellationToken)
+        public async Task<IEnumerable<UnpaidOutput>> HandleUnpaidAsync(IEnumerable<UnpaidInput> unpaids, string idempotencyKey, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(idempotencyKey))
             {
@@ -140,6 +142,74 @@ namespace UnpaidManager
             }
 
             return unpaidOutputList;
+        }
+
+        public async Task<IEnumerable<UnpaidResponseOutput>> HandleUnpaidResponseAsync(IEnumerable<UnpaidResponseInput> unpaidResponseInputs, CancellationToken cancellationToken)
+        {
+            if (unpaidResponseInputs == null)
+            {
+                // Log Error.
+                return null;
+            }
+
+            var responseInputList = unpaidResponseInputs.ToList();
+
+            if (!responseInputList.Any())
+            {
+                // Log Error.
+                return null;
+            }
+
+            var unpaidResponseOutputList = new List<UnpaidResponseOutput>();
+
+            foreach (var unpaidResponseInput in responseInputList)
+            {
+                var unpaidResonseOutput = new UnpaidResponseOutput
+                {
+                    PolicyNumber = unpaidResponseInput.PolicyNumber,
+                    IdNumber = unpaidResponseInput.IdNumber,
+                    Accepted = unpaidResponseInput.Accepted,
+                    ContactOption = unpaidResponseInput.ContactOption,
+                    HttpStatusCode = HttpStatusCode.NotFound,
+                    ErrorMessage = "Notification not found."
+                };
+
+                var unpaidRequest = await _unpaidRequestClient.GetLatestSuccessfulUnpaidRequestAsync(unpaidResponseInput, cancellationToken);
+                if (unpaidRequest == null)
+                {
+                    // Log Error.
+                    unpaidResponseOutputList.Add(unpaidResonseOutput);
+                    continue;
+                }
+
+                // Check if already exists.
+                var unpaidResponse = await _unpaidResponseClient.GetUnpaidResponseAsync(unpaidRequest.UnpaidRequestId, cancellationToken);
+                if (unpaidResponse != null && unpaidResponse.Any())
+                {
+                    // Log Warning.
+                    unpaidResonseOutput.HttpStatusCode = HttpStatusCode.AlreadyReported;
+                    unpaidResonseOutput.ErrorMessage = "Notification response already exists.";
+                    unpaidResponseOutputList.Add(unpaidResonseOutput);
+                    continue;
+                }
+
+                var addUnpaidResponseResult = await _unpaidResponseClient.AddPendingUnpaidResponseAsync(unpaidResponseInput, unpaidRequest.UnpaidRequestId, cancellationToken);
+
+                if (addUnpaidResponseResult <= 0)
+                {
+                    // Log Error.
+                    unpaidResonseOutput.HttpStatusCode = HttpStatusCode.InternalServerError;
+                    unpaidResonseOutput.ErrorMessage = "Error adding notification response.";
+                    unpaidResponseOutputList.Add(unpaidResonseOutput);
+                    continue;
+                }
+
+                unpaidResonseOutput.HttpStatusCode = HttpStatusCode.Accepted;
+                unpaidResonseOutput.ErrorMessage = string.Empty;
+                unpaidResponseOutputList.Add(unpaidResonseOutput);
+            }
+
+            return unpaidResponseOutputList;
         }
     }
 }

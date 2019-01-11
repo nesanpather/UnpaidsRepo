@@ -19,7 +19,7 @@ namespace UnpaidManager
             _unpaidOperations = unpaidOperations;
         }
 
-        public async Task<int> AddUnpaidAsync(IEnumerable<Unpaid> unpaids, string idempotencyKey, CancellationToken cancellationToken)
+        public async Task<int> AddUnpaidAsync(IEnumerable<UnpaidInput> unpaids, string idempotencyKey, CancellationToken cancellationToken)
         {
             if (unpaids == null)
             {

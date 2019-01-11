@@ -15,7 +15,7 @@
         Call
     }
 
-    public enum Response
+    public enum ContactOption
     {
         CallMe = 1,
         EmailMe

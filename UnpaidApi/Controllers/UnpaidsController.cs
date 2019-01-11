@@ -31,23 +31,43 @@ namespace UnpaidApi.Controllers
 
         // POST: api/Todo
         [HttpPost("Add")]
-        public async Task<ActionResult<IEnumerable<UnpaidOutput>>> CreateUnpaidAsync([FromBody] IEnumerable<Unpaid> unpaids, CancellationToken cancellationToken)
+        public async Task<ActionResult<IEnumerable<UnpaidOutput>>> CreateUnpaidAsync([FromBody] IEnumerable<UnpaidInput> unpaids, CancellationToken cancellationToken)
         {
             // Log Entry.
 
-            var handleUnpaidResponse = await _unpaidEngineHandler.HandleUnpaidAsync(unpaids, Guid.NewGuid().ToString(), cancellationToken);
+            var handleUnpaidResult = await _unpaidEngineHandler.HandleUnpaidAsync(unpaids, Guid.NewGuid().ToString(), cancellationToken);
 
-            if (handleUnpaidResponse == null)
+            if (handleUnpaidResult == null)
             {
                 return BadRequest();
             }
 
-            if (!handleUnpaidResponse.Any())
+            if (!handleUnpaidResult.Any())
             {
                 return BadRequest();
             }
 
-            return Ok(handleUnpaidResponse);
+            return Ok(handleUnpaidResult);
+        }
+
+        [HttpPost("response/add")]
+        public async Task<ActionResult<IEnumerable<UnpaidOutput>>> AddNotificationResponse([FromBody] IEnumerable<UnpaidResponseInput> unpaidResponses, CancellationToken cancellationToken)
+        {
+            // Log Entry.
+
+            var handleUnpaidResponseResult = await _unpaidEngineHandler.HandleUnpaidResponseAsync(unpaidResponses, cancellationToken);
+
+            if (handleUnpaidResponseResult == null)
+            {
+                return BadRequest();
+            }
+
+            if (!handleUnpaidResponseResult.Any())
+            {
+                return BadRequest();
+            }
+
+            return Ok(handleUnpaidResponseResult);
         }
 
     }

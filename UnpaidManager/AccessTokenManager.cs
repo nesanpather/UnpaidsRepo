@@ -15,7 +15,7 @@ namespace UnpaidManager
             _accessTokenStorageOperations = accessTokenStorageOperations;
         }
 
-        public async Task<int> AddUnpaidRequestAsync(TbAccessToken accessToken, CancellationToken cancellationToken)
+        public async Task<int> AddAccessTokenAsync(TbAccessToken accessToken, CancellationToken cancellationToken)
         {
             return await _accessTokenStorageOperations.AddUnpaidRequestAsync(accessToken, cancellationToken);
         }

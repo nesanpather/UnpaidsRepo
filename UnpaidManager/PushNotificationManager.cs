@@ -48,8 +48,8 @@ namespace UnpaidManager
                 return errorResponse;
             }
 
-            var accessToken = string.Empty;
-            var tokenType = string.Empty;
+            string accessToken;
+            string tokenType;
 
             var latestAccessTokenResult = await _accessTokenClient.GetLatestAccessTokenAsync(cancellationToken);
 
@@ -79,13 +79,15 @@ namespace UnpaidManager
                     DateExpires = accessTokenResult.Expires
                 };
 
-                var addAccessTokenResult = await _accessTokenClient.AddUnpaidRequestAsync(newAccessToken, cancellationToken);
+                var addAccessTokenResult = await _accessTokenClient.AddAccessTokenAsync(newAccessToken, cancellationToken);
 
-                if (addAccessTokenResult > 0)
+                if (addAccessTokenResult <= 0)
                 {
-                    accessToken = accessTokenResult.AccessToken;
-                    tokenType = accessTokenResult.TokenType;
+                    // Log Warning. Failed to new write access token to storage.
                 }
+
+                accessToken = accessTokenResult.AccessToken;
+                tokenType = accessTokenResult.TokenType;
             }
 
             var pushNotificationRequest = new PushNotificationRequest

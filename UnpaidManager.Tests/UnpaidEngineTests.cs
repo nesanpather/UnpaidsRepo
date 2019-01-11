@@ -58,7 +58,8 @@ namespace UnpaidManager.Tests
 
             var unpaidClient = Substitute.For<IUnpaidClient>();
 
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification);
+            var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, CancellationToken.None);
@@ -116,7 +117,8 @@ namespace UnpaidManager.Tests
 
             var unpaidClient = Substitute.For<IUnpaidClient>();
 
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification);
+            var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, CancellationToken.None);
@@ -236,7 +238,8 @@ namespace UnpaidManager.Tests
 
             var unpaidClient = Substitute.For<IUnpaidClient>();
 
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification);
+            var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, CancellationToken.None);
@@ -296,7 +299,8 @@ namespace UnpaidManager.Tests
 
             var unpaidClient = Substitute.For<IUnpaidClient>();
 
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification);
+            var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, CancellationToken.None);
@@ -345,7 +349,8 @@ namespace UnpaidManager.Tests
 
             var unpaidClient = Substitute.For<IUnpaidClient>();
 
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification);
+            var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, CancellationToken.None);
@@ -367,7 +372,7 @@ namespace UnpaidManager.Tests
             var unpaidClient = Substitute.For<IUnpaidClient>();
 
             unpaidClient
-                .AddUnpaidAsync(Arg.Any<IEnumerable<Unpaid>>(), "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+                .AddUnpaidAsync(Arg.Any<IEnumerable<UnpaidInput>>(), "7c9e6679-7425-40de-944b-e07fc1f90ae7",
                     CancellationToken.None).Returns(Task.FromResult(1));
 
             unpaidClient.GetUnpaidsByIdempotencyKeyAsync("7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None)
@@ -411,9 +416,9 @@ namespace UnpaidManager.Tests
                         AdditionalErrorMessage = ""
                     }));
 
-                var unpaidsInput = new List<Unpaid>
+                var unpaidsInput = new List<UnpaidInput>
                 {
-                    new Unpaid
+                    new UnpaidInput
                     {
                         PolicyNumber = "P1",
                         IdNumber = "9009165023080",
@@ -422,10 +427,11 @@ namespace UnpaidManager.Tests
                     }
                 };
 
-                var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification);
+                var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
+                var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient);
 
-                // Act.
-                var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None);
+            // Act.
+            var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None);
 
                 // Assert.
                 Assert.IsNotNull(actual);
@@ -446,15 +452,15 @@ namespace UnpaidManager.Tests
             var unpaidClient = Substitute.For<IUnpaidClient>();
 
             unpaidClient
-                .AddUnpaidAsync(Arg.Any<IEnumerable<Unpaid>>(), "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+                .AddUnpaidAsync(Arg.Any<IEnumerable<UnpaidInput>>(), "7c9e6679-7425-40de-944b-e07fc1f90ae7",
                     CancellationToken.None).Returns(Task.FromResult(input));            
 
             var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();            
             var notification = Substitute.For<INotification>();
             
-            var unpaidsInput = new List<Unpaid>
+            var unpaidsInput = new List<UnpaidInput>
                 {
-                    new Unpaid
+                    new UnpaidInput
                     {
                         PolicyNumber = "P1",
                         IdNumber = "9009165023080",
@@ -463,7 +469,8 @@ namespace UnpaidManager.Tests
                     }
                 };
 
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification);
+            var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None);
@@ -479,7 +486,7 @@ namespace UnpaidManager.Tests
             var unpaidClient = Substitute.For<IUnpaidClient>();
 
             unpaidClient
-                .AddUnpaidAsync(Arg.Any<IEnumerable<Unpaid>>(), "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+                .AddUnpaidAsync(Arg.Any<IEnumerable<UnpaidInput>>(), "7c9e6679-7425-40de-944b-e07fc1f90ae7",
                     CancellationToken.None).Returns(Task.FromResult(1));
 
             unpaidClient.GetUnpaidsByIdempotencyKeyAsync("7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None)
@@ -489,9 +496,9 @@ namespace UnpaidManager.Tests
 
             var notification = Substitute.For<INotification>();
 
-            var unpaidsInput = new List<Unpaid>
+            var unpaidsInput = new List<UnpaidInput>
                 {
-                    new Unpaid
+                    new UnpaidInput
                     {
                         PolicyNumber = "P1",
                         IdNumber = "9009165023080",
@@ -500,7 +507,8 @@ namespace UnpaidManager.Tests
                     }
                 };
 
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification);
+            var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None);
@@ -516,7 +524,7 @@ namespace UnpaidManager.Tests
             var unpaidClient = Substitute.For<IUnpaidClient>();
 
             unpaidClient
-                .AddUnpaidAsync(Arg.Any<IEnumerable<Unpaid>>(), "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+                .AddUnpaidAsync(Arg.Any<IEnumerable<UnpaidInput>>(), "7c9e6679-7425-40de-944b-e07fc1f90ae7",
                     CancellationToken.None).Returns(Task.FromResult(1));
 
             unpaidClient.GetUnpaidsByIdempotencyKeyAsync("7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None)
@@ -526,9 +534,9 @@ namespace UnpaidManager.Tests
 
             var notification = Substitute.For<INotification>();
 
-            var unpaidsInput = new List<Unpaid>
+            var unpaidsInput = new List<UnpaidInput>
             {
-                new Unpaid
+                new UnpaidInput
                 {
                     PolicyNumber = "P1",
                     IdNumber = "9009165023080",
@@ -537,7 +545,8 @@ namespace UnpaidManager.Tests
                 }
             };
 
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification);
+            var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None);
@@ -554,7 +563,7 @@ namespace UnpaidManager.Tests
             var unpaidClient = Substitute.For<IUnpaidClient>();
 
             unpaidClient
-                .AddUnpaidAsync(Arg.Any<IEnumerable<Unpaid>>(), "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+                .AddUnpaidAsync(Arg.Any<IEnumerable<UnpaidInput>>(), "7c9e6679-7425-40de-944b-e07fc1f90ae7",
                     CancellationToken.None).Returns(Task.FromResult(1));
 
             unpaidClient.GetUnpaidsByIdempotencyKeyAsync("7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None)
@@ -577,9 +586,9 @@ namespace UnpaidManager.Tests
 
             var notification = Substitute.For<INotification>();
 
-            var unpaidsInput = new List<Unpaid>
+            var unpaidsInput = new List<UnpaidInput>
                 {
-                    new Unpaid
+                    new UnpaidInput
                     {
                         PolicyNumber = "P1",
                         IdNumber = "9009165023080",
@@ -588,7 +597,8 @@ namespace UnpaidManager.Tests
                     }
                 };
 
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification);
+            var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None);
@@ -607,9 +617,9 @@ namespace UnpaidManager.Tests
             var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
             var notification = Substitute.For<INotification>();
 
-            var unpaidsInput = new List<Unpaid>
+            var unpaidsInput = new List<UnpaidInput>
             {
-                new Unpaid
+                new UnpaidInput
                 {
                     PolicyNumber = "P1",
                     IdNumber = "9009165023080",
@@ -618,7 +628,8 @@ namespace UnpaidManager.Tests
                 }
             };
 
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification);
+            var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, input, CancellationToken.None);
@@ -635,7 +646,8 @@ namespace UnpaidManager.Tests
             var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
             var notification = Substitute.For<INotification>();
 
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification);
+            var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidAsync(null, "7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None);
@@ -652,15 +664,361 @@ namespace UnpaidManager.Tests
             var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
             var notification = Substitute.For<INotification>();
 
-            var unpaidsInput = new List<Unpaid>();
+            var unpaidsInput = new List<UnpaidInput>();
 
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification);
+            var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None);
 
             // Assert.
             Assert.IsNull(actual);
+        }
+
+        [Test]
+        public async Task HandleUnpaidResponseAsync_GIVEN_Valid_Input_SingleUnpaidResponseInput_RETURNS_Valid_UnpaidResponseOutput()
+        {
+            // Arrange.
+            var unpaidClient = Substitute.For<IUnpaidClient>();
+            var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
+            var notification = Substitute.For<INotification>();
+            var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
+
+            unpaidRequestClient.GetLatestSuccessfulUnpaidRequestAsync(Arg.Any<UnpaidResponseInput>(), CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
+            {
+                UnpaidRequestId = 10,
+                UnpaidId = 2,
+                NotificationId = 1,
+                StatusId = 2,
+                StatusAdditionalInfo = null
+            }));
+
+            unpaidResponseClient.AddPendingUnpaidResponseAsync(Arg.Any<UnpaidResponseInput>(), 10, CancellationToken.None).Returns(Task.FromResult(1));
+
+            var unpaidResponseInputList = new List<UnpaidResponseInput>
+            {
+                new UnpaidResponseInput
+                {
+                    PolicyNumber = "P1Test",
+                    IdNumber = "9009165023080",
+                    Accepted = true,
+                    ContactOption = ContactOption.CallMe
+                }
+            };
+
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient);
+
+            // Act.
+            var actual = await unpaidEngine.HandleUnpaidResponseAsync(unpaidResponseInputList, CancellationToken.None);
+
+            // Assert.
+            Assert.IsNotNull(actual);
+            var unpaidResponseOutputs = actual.ToList();
+
+            Assert.AreEqual(1, unpaidResponseOutputs.Count);
+            Assert.AreEqual("P1Test", unpaidResponseOutputs[0].PolicyNumber);
+            Assert.AreEqual("9009165023080", unpaidResponseOutputs[0].IdNumber);
+            Assert.AreEqual(true, unpaidResponseOutputs[0].Accepted);
+            Assert.AreEqual(ContactOption.CallMe, unpaidResponseOutputs[0].ContactOption);
+            Assert.AreEqual(HttpStatusCode.Accepted, unpaidResponseOutputs[0].HttpStatusCode);
+            Assert.AreEqual(string.Empty, unpaidResponseOutputs[0].ErrorMessage);
+        }
+
+        [Test]
+        public async Task HandleUnpaidResponseAsync_GIVEN_Valid_Input_SingleUnpaidResponseInput_Duplicate_RETURNS_Valid_UnpaidResponseOutput()
+        {
+            // Arrange.
+            var unpaidClient = Substitute.For<IUnpaidClient>();
+            var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
+            var notification = Substitute.For<INotification>();
+            var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
+
+            unpaidRequestClient.GetLatestSuccessfulUnpaidRequestAsync(Arg.Any<UnpaidResponseInput>(), CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
+            {
+                UnpaidRequestId = 10,
+                UnpaidId = 2,
+                NotificationId = 1,
+                StatusId = 2,
+                StatusAdditionalInfo = null
+            }));
+
+            unpaidResponseClient.GetUnpaidResponseAsync(10, CancellationToken.None).Returns(Task.FromResult<IEnumerable<TbUnpaidResponse>>(new List<TbUnpaidResponse>
+            {
+                new TbUnpaidResponse
+                {
+                    UnpaidResponseId = 1,
+                    UnpaidRequestId = 10,
+                    ResponseId = 1,
+                    Accepted = true,
+                    StatusId = 1
+                }
+            }));
+
+            var unpaidResponseInputList = new List<UnpaidResponseInput>
+            {
+                new UnpaidResponseInput
+                {
+                    PolicyNumber = "P1Test",
+                    IdNumber = "9009165023080",
+                    Accepted = true,
+                    ContactOption = ContactOption.CallMe
+                }
+            };
+
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient);
+
+            // Act.
+            var actual = await unpaidEngine.HandleUnpaidResponseAsync(unpaidResponseInputList, CancellationToken.None);
+
+            // Assert.
+            Assert.IsNotNull(actual);
+            var unpaidResponseOutputs = actual.ToList();
+
+            Assert.AreEqual(1, unpaidResponseOutputs.Count);
+            Assert.AreEqual("P1Test", unpaidResponseOutputs[0].PolicyNumber);
+            Assert.AreEqual("9009165023080", unpaidResponseOutputs[0].IdNumber);
+            Assert.AreEqual(true, unpaidResponseOutputs[0].Accepted);
+            Assert.AreEqual(ContactOption.CallMe, unpaidResponseOutputs[0].ContactOption);
+            Assert.AreEqual(HttpStatusCode.AlreadyReported, unpaidResponseOutputs[0].HttpStatusCode);
+            Assert.AreEqual("Notification response already exists.", unpaidResponseOutputs[0].ErrorMessage);
+        }
+
+        [Test]
+        public async Task HandleUnpaidResponseAsync_GIVEN_Invalid_Input_EmptyUnpaidResponseInput_RETURNS_Null()
+        {
+            // Arrange.
+            var unpaidClient = Substitute.For<IUnpaidClient>();
+            var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
+            var notification = Substitute.For<INotification>();
+            var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
+
+            var unpaidResponseInputList = new List<UnpaidResponseInput>();
+
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient);
+
+            // Act.
+            var actual = await unpaidEngine.HandleUnpaidResponseAsync(unpaidResponseInputList, CancellationToken.None);
+
+            // Assert.
+            Assert.IsNull(actual);
+        }
+
+        [Test]
+        public async Task HandleUnpaidResponseAsync_GIVEN_Invalid_Input_NullUnpaidResponseInput_RETURNS_Null()
+        {
+            // Arrange.
+            var unpaidClient = Substitute.For<IUnpaidClient>();
+            var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
+            var notification = Substitute.For<INotification>();
+            var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
+
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient);
+
+            // Act.
+            var actual = await unpaidEngine.HandleUnpaidResponseAsync(null, CancellationToken.None);
+
+            // Assert.
+            Assert.IsNull(actual);
+        }
+
+        [Test]
+        public async Task HandleUnpaidResponseAsync_GIVEN_Valid_Input_BatchUnpaidResponseInput_ErrorAddPendingUnpaidResponseAsync_RETURNS_Valid_UnpaidResponseOutput()
+        {
+            // Arrange.
+            var unpaidClient = Substitute.For<IUnpaidClient>();
+            var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
+            var notification = Substitute.For<INotification>();
+            var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
+
+            var input1 = new UnpaidResponseInput
+            {
+                PolicyNumber = "P1Test",
+                IdNumber = "9009165023080",
+                Accepted = true,
+                ContactOption = ContactOption.CallMe
+            };
+
+            var input2 = new UnpaidResponseInput
+            {
+                PolicyNumber = "P2Test",
+                IdNumber = "9009165023081",
+                Accepted = false,
+                ContactOption = ContactOption.EmailMe
+            };
+
+            var input3 = new UnpaidResponseInput
+            {
+                PolicyNumber = "P3Test",
+                IdNumber = "9009165023082",
+                Accepted = true,
+                ContactOption = ContactOption.CallMe
+            };
+
+            unpaidRequestClient.GetLatestSuccessfulUnpaidRequestAsync(input1, CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
+            {
+                UnpaidRequestId = 10,
+                UnpaidId = 2,
+                NotificationId = 1,
+                StatusId = 2,
+                StatusAdditionalInfo = null
+            }));
+
+            unpaidRequestClient.GetLatestSuccessfulUnpaidRequestAsync(input2, CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
+            {
+                UnpaidRequestId = 11,
+                UnpaidId = 3,
+                NotificationId = 1,
+                StatusId = 2,
+                StatusAdditionalInfo = null
+            }));
+
+            unpaidRequestClient.GetLatestSuccessfulUnpaidRequestAsync(input3, CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
+            {
+                UnpaidRequestId = 12,
+                UnpaidId = 5,
+                NotificationId = 1,
+                StatusId = 2,
+                StatusAdditionalInfo = null
+            }));
+
+            unpaidResponseClient.AddPendingUnpaidResponseAsync(Arg.Any<UnpaidResponseInput>(), 10, CancellationToken.None).Returns(Task.FromResult(1));
+            unpaidResponseClient.AddPendingUnpaidResponseAsync(Arg.Any<UnpaidResponseInput>(), 11, CancellationToken.None).Returns(Task.FromResult(1));
+            unpaidResponseClient.AddPendingUnpaidResponseAsync(Arg.Any<UnpaidResponseInput>(), 12, CancellationToken.None).Returns(Task.FromResult(0));
+
+            var unpaidResponseInputList = new List<UnpaidResponseInput>
+            {
+                input1,
+                input2,
+                input3
+            };
+
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient);
+
+            // Act.
+            var actual = await unpaidEngine.HandleUnpaidResponseAsync(unpaidResponseInputList, CancellationToken.None);
+
+            // Assert.
+            Assert.IsNotNull(actual);
+            var unpaidResponseOutputs = actual.ToList();
+
+            Assert.AreEqual(3, unpaidResponseOutputs.Count);
+            Assert.AreEqual("P1Test", unpaidResponseOutputs[0].PolicyNumber);
+            Assert.AreEqual("9009165023080", unpaidResponseOutputs[0].IdNumber);
+            Assert.AreEqual(true, unpaidResponseOutputs[0].Accepted);
+            Assert.AreEqual(ContactOption.CallMe, unpaidResponseOutputs[0].ContactOption);
+            Assert.AreEqual(HttpStatusCode.Accepted, unpaidResponseOutputs[0].HttpStatusCode);
+            Assert.AreEqual(string.Empty, unpaidResponseOutputs[0].ErrorMessage);
+
+            Assert.AreEqual("P2Test", unpaidResponseOutputs[1].PolicyNumber);
+            Assert.AreEqual("9009165023081", unpaidResponseOutputs[1].IdNumber);
+            Assert.AreEqual(false, unpaidResponseOutputs[1].Accepted);
+            Assert.AreEqual(ContactOption.EmailMe, unpaidResponseOutputs[1].ContactOption);
+            Assert.AreEqual(HttpStatusCode.Accepted, unpaidResponseOutputs[1].HttpStatusCode);
+            Assert.AreEqual(string.Empty, unpaidResponseOutputs[1].ErrorMessage);
+
+            Assert.AreEqual("P3Test", unpaidResponseOutputs[2].PolicyNumber);
+            Assert.AreEqual("9009165023082", unpaidResponseOutputs[2].IdNumber);
+            Assert.AreEqual(true, unpaidResponseOutputs[2].Accepted);
+            Assert.AreEqual(ContactOption.CallMe, unpaidResponseOutputs[2].ContactOption);
+            Assert.AreEqual(HttpStatusCode.InternalServerError, unpaidResponseOutputs[2].HttpStatusCode);
+            Assert.AreEqual("Error adding notification response.", unpaidResponseOutputs[2].ErrorMessage);
+        }
+
+        [Test]
+        public async Task HandleUnpaidResponseAsync_GIVEN_Valid_Input_BatchUnpaidResponseInput_ErrorGetLatestSuccessfulUnpaidRequestAsync_RETURNS_Valid_UnpaidResponseOutput()
+        {
+            // Arrange.
+            var unpaidClient = Substitute.For<IUnpaidClient>();
+            var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
+            var notification = Substitute.For<INotification>();
+            var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
+
+            var input1 = new UnpaidResponseInput
+            {
+                PolicyNumber = "P1Test",
+                IdNumber = "9009165023080",
+                Accepted = true,
+                ContactOption = ContactOption.CallMe
+            };
+
+            var input2 = new UnpaidResponseInput
+            {
+                PolicyNumber = "P2Test",
+                IdNumber = "9009165023081",
+                Accepted = false,
+                ContactOption = ContactOption.EmailMe
+            };
+
+            var input3 = new UnpaidResponseInput
+            {
+                PolicyNumber = "P3Test",
+                IdNumber = "9009165023082",
+                Accepted = true,
+                ContactOption = ContactOption.CallMe
+            };
+
+            unpaidRequestClient.GetLatestSuccessfulUnpaidRequestAsync(input1, CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
+            {
+                UnpaidRequestId = 10,
+                UnpaidId = 2,
+                NotificationId = 1,
+                StatusId = 2,
+                StatusAdditionalInfo = null
+            }));
+
+            unpaidRequestClient.GetLatestSuccessfulUnpaidRequestAsync(input2, CancellationToken.None).Returns(Task.FromResult<TbUnpaidRequest>(null));
+
+            unpaidRequestClient.GetLatestSuccessfulUnpaidRequestAsync(input3, CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
+            {
+                UnpaidRequestId = 12,
+                UnpaidId = 5,
+                NotificationId = 1,
+                StatusId = 2,
+                StatusAdditionalInfo = null
+            }));
+
+            unpaidResponseClient.AddPendingUnpaidResponseAsync(Arg.Any<UnpaidResponseInput>(), 10, CancellationToken.None).Returns(Task.FromResult(1));
+            unpaidResponseClient.AddPendingUnpaidResponseAsync(Arg.Any<UnpaidResponseInput>(), 11, CancellationToken.None).Returns(Task.FromResult(1));
+            unpaidResponseClient.AddPendingUnpaidResponseAsync(Arg.Any<UnpaidResponseInput>(), 12, CancellationToken.None).Returns(Task.FromResult(1));
+
+            var unpaidResponseInputList = new List<UnpaidResponseInput>
+            {
+                input1,
+                input2,
+                input3
+            };
+
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient);
+
+            // Act.
+            var actual = await unpaidEngine.HandleUnpaidResponseAsync(unpaidResponseInputList, CancellationToken.None);
+
+            // Assert.
+            Assert.IsNotNull(actual);
+            var unpaidResponseOutputs = actual.ToList();
+
+            Assert.AreEqual(3, unpaidResponseOutputs.Count);
+            Assert.AreEqual("P1Test", unpaidResponseOutputs[0].PolicyNumber);
+            Assert.AreEqual("9009165023080", unpaidResponseOutputs[0].IdNumber);
+            Assert.AreEqual(true, unpaidResponseOutputs[0].Accepted);
+            Assert.AreEqual(ContactOption.CallMe, unpaidResponseOutputs[0].ContactOption);
+            Assert.AreEqual(HttpStatusCode.Accepted, unpaidResponseOutputs[0].HttpStatusCode);
+            Assert.AreEqual(string.Empty, unpaidResponseOutputs[0].ErrorMessage);
+
+            Assert.AreEqual("P2Test", unpaidResponseOutputs[1].PolicyNumber);
+            Assert.AreEqual("9009165023081", unpaidResponseOutputs[1].IdNumber);
+            Assert.AreEqual(false, unpaidResponseOutputs[1].Accepted);
+            Assert.AreEqual(ContactOption.EmailMe, unpaidResponseOutputs[1].ContactOption);
+            Assert.AreEqual(HttpStatusCode.NotFound, unpaidResponseOutputs[1].HttpStatusCode);
+            Assert.AreEqual("Notification not found.", unpaidResponseOutputs[1].ErrorMessage);
+
+            Assert.AreEqual("P3Test", unpaidResponseOutputs[2].PolicyNumber);
+            Assert.AreEqual("9009165023082", unpaidResponseOutputs[2].IdNumber);
+            Assert.AreEqual(true, unpaidResponseOutputs[2].Accepted);
+            Assert.AreEqual(ContactOption.CallMe, unpaidResponseOutputs[2].ContactOption);
+            Assert.AreEqual(HttpStatusCode.Accepted, unpaidResponseOutputs[2].HttpStatusCode);
+            Assert.AreEqual(string.Empty, unpaidResponseOutputs[2].ErrorMessage);
         }
     }
 }

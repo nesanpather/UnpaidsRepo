@@ -72,5 +72,28 @@ namespace UnpaidManager
 
             return await _unpaidRequestOperations.GetAllUnpaidRequestAsync(unpaidId, cancellationToken);
         }
+
+        public async Task<TbUnpaidRequest> GetLatestSuccessfulUnpaidRequestAsync(UnpaidResponseInput unpaidResponseInput, CancellationToken cancellationToken)
+        {
+            if (unpaidResponseInput == null)
+            {
+                // Log Error.
+                return null;
+            }
+
+            if (string.IsNullOrWhiteSpace(unpaidResponseInput.PolicyNumber))
+            {
+                // Log Error.
+                return null;
+            }
+
+            if (string.IsNullOrWhiteSpace(unpaidResponseInput.IdNumber))
+            {
+                // Log Error.
+                return null;
+            }
+
+            return await _unpaidRequestOperations.GetSingleUnpaidRequestAsync(unpaidResponseInput.PolicyNumber, unpaidResponseInput.IdNumber, Status.Success, cancellationToken);
+        }
     }
 }

@@ -53,6 +53,7 @@ namespace UnpaidApi
             services.AddScoped<INotification, PushNotificationManager>();
             services.AddScoped<IUnpaidClient, UnpaidManager.UnpaidManager>();
             services.AddScoped<IUnpaidRequestClient, UnpaidRequestManager>();
+            services.AddScoped<IUnpaidResponseClient, UnpaidResponseManager>();
             services.AddScoped<IAccessTokenClient, AccessTokenManager>();
             services.AddScoped<IUnpaidEngineHandler, UnpaidEngine>();
         }
