@@ -1,0 +1,14 @@
+C:\Source\git\UnpaidsRepo\DataManager\bin\Release\netcoreapp2.2\DataManager.deps.json
+C:\Source\git\UnpaidsRepo\DataManager\bin\Release\netcoreapp2.2\DataManager.dll
+C:\Source\git\UnpaidsRepo\DataManager\bin\Release\netcoreapp2.2\DataManager.pdb
+C:\Source\git\UnpaidsRepo\DataManager\bin\Release\netcoreapp2.2\UnpaidModels.dll
+C:\Source\git\UnpaidsRepo\DataManager\bin\Release\netcoreapp2.2\Newtonsoft.Json.dll
+C:\Source\git\UnpaidsRepo\DataManager\bin\Release\netcoreapp2.2\UnpaidModels.pdb
+C:\Source\git\UnpaidsRepo\DataManager\bin\Release\netcoreapp2.2\Newtonsoft.Json.xml
+C:\Source\git\UnpaidsRepo\DataManager\obj\Release\netcoreapp2.2\DataManager.csprojAssemblyReference.cache
+C:\Source\git\UnpaidsRepo\DataManager\obj\Release\netcoreapp2.2\DataManager.csproj.CoreCompileInputs.cache
+C:\Source\git\UnpaidsRepo\DataManager\obj\Release\netcoreapp2.2\DataManager.AssemblyInfoInputs.cache
+C:\Source\git\UnpaidsRepo\DataManager\obj\Release\netcoreapp2.2\DataManager.AssemblyInfo.cs
+C:\Source\git\UnpaidsRepo\DataManager\obj\Release\netcoreapp2.2\DataManager.csproj.CopyComplete
+C:\Source\git\UnpaidsRepo\DataManager\obj\Release\netcoreapp2.2\DataManager.dll
+C:\Source\git\UnpaidsRepo\DataManager\obj\Release\netcoreapp2.2\DataManager.pdb

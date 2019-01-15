@@ -1,0 +1,11 @@
+{
+  "unpaidApiBaseUrl": "https://tts.devtest.com/api/v1",
+  "exclude": [
+    "**/bin",
+    "**/bower_components",
+    "**/jspm_packages",
+    "**/node_modules",
+    "**/obj",
+    "**/platforms"
+  ]
+}

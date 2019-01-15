@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using UnpaidManager.Interfaces;
 using UnpaidModels;
@@ -11,6 +12,7 @@ using UnpaidModels;
 
 namespace UnpaidApi.Controllers
 {
+    [EnableCors("SiteCorsPolicy")]
     [Route("api/v1/[controller]")]
     [ApiController]
     public class UnpaidsController : ControllerBase

@@ -1,0 +1,16 @@
+<div class="mb-20" fxLayout.lt-md="column" fxFlex fxLayoutGap="20px">
+  <div fxFlex>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Please select a file to upload</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        
+        <!--<button mat-raised-button (click)="uploadFile()">Upload</button>-->
+       
+          <input #fileInput type="file" accept="csv/*" (change)="uploadFile(fileInput)">
+        <p *ngIf="addUnpaidStatus">You have successfully added a new unpaid file for processing.</p>
+      </mat-card-content>
+    </mat-card>  
+  </div>
+</div>

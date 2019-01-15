@@ -56,6 +56,21 @@ namespace UnpaidApi
             services.AddScoped<IUnpaidResponseClient, UnpaidResponseManager>();
             services.AddScoped<IAccessTokenClient, AccessTokenManager>();
             services.AddScoped<IUnpaidEngineHandler, UnpaidEngine>();
+
+            // ********************
+            // Setup CORS
+            // ********************
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("SiteCorsPolicy", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+            });
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowSpecificOrigin",
+            //        //builder => builder.WithOrigins("https://localhost:44348").AllowAnyHeader());
+            //        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,6 +88,7 @@ namespace UnpaidApi
 
             app.UseHttpsRedirection();
             app.UseMvc();
+            app.UseCors("SiteCorsPolicy");
         }
     }
 }
