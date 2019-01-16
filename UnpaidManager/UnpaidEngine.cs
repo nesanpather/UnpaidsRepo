@@ -25,7 +25,7 @@ namespace UnpaidManager
             _unpaidResponseClient = unpaidResponseClient;
         }
 
-        public async Task<IEnumerable<UnpaidOutput>> HandleUnpaidAsync(IEnumerable<UnpaidInput> unpaids, string idempotencyKey, CancellationToken cancellationToken)
+        public async Task<UnpaidOutput> HandleUnpaidAsync(IEnumerable<UnpaidInput> unpaids, string idempotencyKey, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(idempotencyKey))
             {
@@ -79,7 +79,13 @@ namespace UnpaidManager
                 return null;
             }
 
-            return await HandleUnpaidRequestAsync(byIdempotencyResultList, cancellationToken);
+            return new UnpaidOutput
+            {
+                Status = Status.Pending.ToString(),
+                ErrorMessage = string.Empty
+            };
+
+            //return await HandleUnpaidRequestAsync(byIdempotencyResultList, cancellationToken);
         }
 
         public async Task<IEnumerable<UnpaidOutput>> HandleUnpaidRequestAsync(IEnumerable<TbUnpaid> unpaids, CancellationToken cancellationToken)
@@ -88,16 +94,17 @@ namespace UnpaidManager
 
             foreach (var unpaid in unpaids)
             {
-                var unpaidOutput = new UnpaidOutput
-                {
-                    PolicyNumber = unpaid.PolicyNumber,
-                    IdNumber = unpaid.IdNumber,
-                    Name = unpaid.Name,
-                    Message = unpaid.Message,
-                    Status = Status.Pending.ToString(),
-                    ErrorMessage = string.Empty
-                };
+                //var unpaidOutput = new UnpaidOutput
+                //{
+                //    PolicyNumber = unpaid.PolicyNumber,
+                //    IdNumber = unpaid.IdNumber,
+                //    Name = unpaid.Name,
+                //    Message = unpaid.Message,
+                //    Status = Status.Pending.ToString(),
+                //    ErrorMessage = string.Empty
+                //};
 
+                var unpaidOutput = new UnpaidOutput();
                 // create notification task.
                 var notificationTask = _notification.SendAsync($"Dear {unpaid.Name}", unpaid.Message, unpaid.IdNumber, cancellationToken);
 

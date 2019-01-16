@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Papa } from 'ngx-papaparse';
-import { UnpaidInput } from '../../shared/models/unpaid-input';
+import { IUnpaidInput } from '../../shared/models/unpaid-input';
 import { UnpaidService } from '../../shared/services/unpaid.service';
 
 @Component({
@@ -32,30 +32,20 @@ export class UploadCsvComponent implements OnInit {
             console.log('data: ', results.data);
             
             if (results && results.data) {
-              //let unpaidInputs: UnpaidInput[] = [];
+              const unpaidInputs: IUnpaidInput[] = [];
 
-              //unpaidInputs.push(results.data);
+              unpaidInputs.push(results.data);
 
-              //this.unpaidService.addUnpaid(results.data).subscribe(
-              //  (response) => {
-              //    console.log("unpaidService.addUnpaid response", response);
-              //    this.addUnpaidStatus = true;
-              //  },
-              //  (error) => {
-              //    console.log("unpaidService.addUnpaid error", error);
-              //    this.addUnpaidStatus = false;
-              //  }
-              //);
-
-              this.unpaidService.getUnpaidNotifications().subscribe(
+              this.unpaidService.addUnpaid(results.data).subscribe(
                 (response) => {
-                  console.log("unpaidService.getUnpaidNotifications response", response);
+                  console.log("unpaidService.addUnpaid response", response);                  
+                  this.addUnpaidStatus = true;
                 },
                 (error) => {
-                  console.log("unpaidService.getUnpaidNotifications error", error);
+                  console.log("unpaidService.addUnpaid error", error);
+                  this.addUnpaidStatus = false;
                 }
               );
-
 
             }
             

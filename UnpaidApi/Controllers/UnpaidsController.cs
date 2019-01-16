@@ -29,18 +29,13 @@ namespace UnpaidApi.Controllers
         }
 
         [HttpPost("Add")]
-        public async Task<ActionResult<IEnumerable<UnpaidOutput>>> CreateUnpaidAsync([FromBody] IEnumerable<UnpaidInput> unpaids, CancellationToken cancellationToken)
+        public async Task<ActionResult<UnpaidOutput>> CreateUnpaidAsync([FromBody] IEnumerable<UnpaidInput> unpaids, CancellationToken cancellationToken)
         {
             // Log Entry.
 
             var handleUnpaidResult = await _unpaidEngineHandler.HandleUnpaidAsync(unpaids, Guid.NewGuid().ToString(), cancellationToken);
 
             if (handleUnpaidResult == null)
-            {
-                return BadRequest();
-            }
-
-            if (!handleUnpaidResult.Any())
             {
                 return BadRequest();
             }

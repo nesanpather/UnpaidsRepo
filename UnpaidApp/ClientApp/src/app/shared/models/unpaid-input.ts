@@ -1,4 +1,4 @@
-export class UnpaidInput {
+export interface IUnpaidInput {
   policyNumber: string;
   idNumber: string;
   name: string;

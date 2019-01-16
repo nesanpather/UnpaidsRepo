@@ -1,2 +1,3 @@
-export class UnpaidNotificationsResponse {
+export interface IUnpaidNotificationsResponse {
+
 }

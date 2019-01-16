@@ -44,6 +44,10 @@ const routes: Routes = [
       {
         path: 'add',
         loadChildren: './upload-csv/upload-csv.module#UploadCsvModule'
+      },
+      {
+        path: 'notifications/sent',
+        loadChildren: './notifications-table/notifications-table.module#NotificationsTableModule'
       }
     ]
   }
