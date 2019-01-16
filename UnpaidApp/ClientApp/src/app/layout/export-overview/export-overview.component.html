@@ -1,0 +1,11 @@
+<mat-nav-list>
+  <a href="https://keep.google.com/" mat-list-item (click)="export($event, 'csv')">
+    <span mat-line>CSV</span>
+    <span mat-line>Export as a CSV file.</span>
+  </a>
+
+  <a href="https://docs.google.com/" mat-list-item (click)="export($event, 'pdf')">
+    <span mat-line>PDF</span>
+    <span mat-line>Export as a PDF document.</span>
+  </a>
+</mat-nav-list>

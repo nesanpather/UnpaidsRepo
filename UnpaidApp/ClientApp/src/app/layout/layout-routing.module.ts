@@ -48,6 +48,10 @@ const routes: Routes = [
       {
         path: 'notifications/sent',
         loadChildren: './notifications-table/notifications-table.module#NotificationsTableModule'
+      },
+      {
+        path: 'notifications/responses',
+        loadChildren: './responses-table/responses-table.module#ResponsesTableModule'
       }
     ]
   }

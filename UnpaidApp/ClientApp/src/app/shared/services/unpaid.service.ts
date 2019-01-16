@@ -4,6 +4,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { IUnpaidInput } from '../models/unpaid-input';
 import { IUnpaidNotifications } from '../models/unpaid-notifications';
+import { IUnpaidNotificationsResponse } from '../models/unpaid-notifications-response';
 
 @Injectable({
   providedIn: 'root'
@@ -31,5 +32,15 @@ export class UnpaidService {
     };
 
     return this.httpClient.get<IUnpaidNotifications[]>(`${this.unpaidApiBaseUrl}/unpaids`, httpOptions);
+  }
+
+  public getUnpaidNotificationResponses(): Observable<IUnpaidNotificationsResponse[]> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    return this.httpClient.get<IUnpaidNotificationsResponse[]>(`${this.unpaidApiBaseUrl}/unpaids/responses`, httpOptions);
   }
 }
