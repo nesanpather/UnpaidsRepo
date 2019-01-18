@@ -1,0 +1,6 @@
+Run these in the follwing order.
+1. UnpaidsDB.sql
+2. PRESET_tb_Status.sql
+3. PRESET_tb_Response.sql
+4. PRESET_tb_Notification.sql
+5. UnpaidNotifcationsDB_Hangfire.sql
