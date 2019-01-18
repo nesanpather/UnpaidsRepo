@@ -82,20 +82,27 @@ namespace UnpaidManager
                 return null;
             }
 
-            //var delegateToNotificationApiResult = await _unpaidNotificationApiClient.DelegateToNotificationApiAsync(idempotencyKey, cancellationToken);
+            var delegateToNotificationApiResult = await _unpaidNotificationApiClient.DelegateToNotificationApiAsync(idempotencyKey, cancellationToken);
 
             return new UnpaidOutput
             {
                 Status = Status.Pending.ToString(),
                 ErrorMessage = string.Empty
             };
-
-            //return await HandleUnpaidRequestAsync(byIdempotencyResultList, cancellationToken); BackgroundJob.Enqueue(() => HandleUnpaidRequestAsync(byIdempotencyResultList, cancellationToken));
         }
 
+        // Hangfire proccesses this method.
         [AutomaticRetry(Attempts = 2)]
-        public async Task HandleUnpaidRequestAsync(IEnumerable<TbUnpaid> unpaids, CancellationToken cancellationToken)
+        public async Task<bool> HandleUnpaidRequestAsync(IEnumerable<TbUnpaid> unpaids, CancellationToken cancellationToken)
         {
+            if (unpaids == null)
+            {
+                // Log Error.
+                return false;
+            }
+
+            var isBatchSuccessful = false;
+
             foreach (var unpaid in unpaids)
             {
                 // create notification task.
@@ -108,6 +115,7 @@ namespace UnpaidManager
                 {
                     // Log Warning. No UnpaidRequests to update.
                     notificationTask.Dispose();
+                    isBatchSuccessful = false;
                     continue;
                 }
 
@@ -124,16 +132,20 @@ namespace UnpaidManager
                     if (notificationResult.StatusCode == HttpStatusCode.Accepted)
                     {
                         status = Status.Success;
+                        isBatchSuccessful = true;
                     }
 
                     var updateUnpaidRequestResult = await _unpaidRequestClient.UpdateUnpaidRequestAsync(singleUnpaidRequestToUpdate.UnpaidRequestId, Notification.Push, status, notificationResult.AdditionalErrorMessage, DateTime.UtcNow, cancellationToken);
                     if (updateUnpaidRequestResult <= 0)
                     {
                         // Log Error. Update failed.
-                    }
+                        isBatchSuccessful = false;
+                    }                    
                 }
 
             }
+
+            return isBatchSuccessful;
         }
 
         public async Task<IEnumerable<UnpaidResponseOutput>> HandleUnpaidResponseAsync(IEnumerable<UnpaidResponseInput> unpaidResponseInputs, CancellationToken cancellationToken)
