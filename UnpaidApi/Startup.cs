@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DataManager;
+﻿using DataManager;
 using DataManager.Interfaces;
 using DataManager.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using UnpaidManager;
 using UnpaidManager.Interfaces;
 using Utilities;
@@ -34,9 +28,19 @@ namespace UnpaidApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            // ********************
+            // Setup CORS
+            // ********************
 
-            services.AddDbContext<UnpaidsContext>(options => options.UseSqlServer(Configuration["ConnectionString:Local"]));
+            services.AddCors(options =>
+            {
+                options.AddPolicy("SiteCorsPolicy", builder => builder.WithOrigins("http://localhost:50565").AllowAnyMethod().AllowAnyHeader().AllowCredentials().SetIsOriginAllowed(s => true).Build());
+            });
+
+            services.AddAuthentication(IISDefaults.AuthenticationScheme);
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddDbContext<UnpaidsContext>(options => options.UseSqlServer(Configuration["UnpaidsDBConnectionString:SqlServer"]));
 
             services.AddHttpClient();
 
@@ -50,21 +54,23 @@ namespace UnpaidApi
             services.AddScoped<IAccessTokenStorageOperations, AccessTokenDataManager>();
 
             services.AddScoped<IPushNotificationClient, PushNotificationService>();
+            services.AddScoped<IUnpaidNotificationApiClient, UnpaidNotificationApiService>();
             services.AddScoped<INotification, PushNotificationManager>();
             services.AddScoped<IUnpaidClient, UnpaidManager.UnpaidManager>();
             services.AddScoped<IUnpaidRequestClient, UnpaidRequestManager>();
             services.AddScoped<IUnpaidResponseClient, UnpaidResponseManager>();
             services.AddScoped<IAccessTokenClient, AccessTokenManager>();
             services.AddScoped<IUnpaidEngineHandler, UnpaidEngine>();
+            services.AddScoped<IUnpaidNotificationsEngineHandler, UnpaidNotificationsEngine>();
 
-            // ********************
-            // Setup CORS
-            // ********************
+            //services.AddAuthorization(options => {
+            //    options.AddPolicy("AllUsers", policy => {
+            //        policy.AddAuthenticationSchemes(IISDefaults.AuthenticationScheme);
+            //        policy.RequireRole("S - 1 - 1 - 0");
+            //    });
+            //});
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy("SiteCorsPolicy", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
-            });
+
             //services.AddCors(options =>
             //{
             //    options.AddPolicy("AllowSpecificOrigin",
@@ -86,9 +92,10 @@ namespace UnpaidApi
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-            app.UseMvc();
+            app.UseHttpsRedirection();                                    
             app.UseCors("SiteCorsPolicy");
+            //app.UseAuthentication();
+            app.UseMvc();                        
         }
     }
 }

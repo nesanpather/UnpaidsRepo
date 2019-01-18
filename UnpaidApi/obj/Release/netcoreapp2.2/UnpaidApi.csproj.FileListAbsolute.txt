@@ -21,3 +21,8 @@ C:\Source\git\UnpaidsRepo\UnpaidApi\obj\Release\netcoreapp2.2\UnpaidApi.RazorTar
 C:\Source\git\UnpaidsRepo\UnpaidApi\obj\Release\netcoreapp2.2\UnpaidApi.csproj.CopyComplete
 C:\Source\git\UnpaidsRepo\UnpaidApi\obj\Release\netcoreapp2.2\UnpaidApi.dll
 C:\Source\git\UnpaidsRepo\UnpaidApi\obj\Release\netcoreapp2.2\UnpaidApi.pdb
+C:\Source\git\UnpaidsRepo\UnpaidApi\bin\Release\netcoreapp2.2\Hangfire.Core.dll
+C:\Source\git\UnpaidsRepo\UnpaidApi\bin\Release\netcoreapp2.2\Hangfire.Core.xml
+C:\Source\git\UnpaidsRepo\UnpaidApi\bin\Release\netcoreapp2.2\es\Hangfire.Core.resources.dll
+C:\Source\git\UnpaidsRepo\UnpaidApi\bin\Release\netcoreapp2.2\zh\Hangfire.Core.resources.dll
+C:\Source\git\UnpaidsRepo\UnpaidApi\bin\Release\netcoreapp2.2\zh-TW\Hangfire.Core.resources.dll

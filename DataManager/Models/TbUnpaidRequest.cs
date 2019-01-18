@@ -16,6 +16,7 @@ namespace DataManager.Models
         public int StatusId { get; set; }
         public DateTime DateCreated { get; set; }
         public string StatusAdditionalInfo { get; set; }
+        public DateTime? DateModified { get; set; }
 
         public virtual TbNotification Notification { get; set; }
         public virtual TbStatus Status { get; set; }

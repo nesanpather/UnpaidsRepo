@@ -21,3 +21,8 @@ C:\Source\git\UnpaidsRepo\UnpaidManager.Tests\obj\Debug\netcoreapp2.2\UnpaidMana
 C:\Source\git\UnpaidsRepo\UnpaidManager.Tests\obj\Debug\netcoreapp2.2\UnpaidManager.Tests.csproj.CopyComplete
 C:\Source\git\UnpaidsRepo\UnpaidManager.Tests\obj\Debug\netcoreapp2.2\UnpaidManager.Tests.dll
 C:\Source\git\UnpaidsRepo\UnpaidManager.Tests\obj\Debug\netcoreapp2.2\UnpaidManager.Tests.pdb
+C:\Source\git\UnpaidsRepo\UnpaidManager.Tests\bin\Debug\netcoreapp2.2\Hangfire.Core.dll
+C:\Source\git\UnpaidsRepo\UnpaidManager.Tests\bin\Debug\netcoreapp2.2\Hangfire.Core.xml
+C:\Source\git\UnpaidsRepo\UnpaidManager.Tests\bin\Debug\netcoreapp2.2\es\Hangfire.Core.resources.dll
+C:\Source\git\UnpaidsRepo\UnpaidManager.Tests\bin\Debug\netcoreapp2.2\zh\Hangfire.Core.resources.dll
+C:\Source\git\UnpaidsRepo\UnpaidManager.Tests\bin\Debug\netcoreapp2.2\zh-TW\Hangfire.Core.resources.dll

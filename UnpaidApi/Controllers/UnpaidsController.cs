@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using UnpaidManager.Interfaces;
@@ -11,7 +14,7 @@ using UnpaidModels;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace UnpaidApi.Controllers
-{
+{    
     [EnableCors("SiteCorsPolicy")]
     [Route("api/v1/[controller]")]
     [ApiController]
@@ -26,6 +29,30 @@ namespace UnpaidApi.Controllers
             _unpaidEngineHandler = unpaidEngineHandler;
             _unpaidRequestClient = unpaidRequestClient;
             _unpaidResponseClient = unpaidResponseClient;
+        }
+
+        /// <summary>  
+        /// This method contains Authorize attribute for authentication and authroization  
+        /// </summary>  
+        /// <returns></returns>  
+        [HttpGet]        
+        [Authorize]
+        [Route("AuthenticateUser")]
+        public ActionResult<HttpResponseMessage> AuthenticateUser()
+        {
+            if (User != null)
+            {                                       
+                //return Ok(new
+                //{
+                //    status = (int)HttpStatusCode.OK,
+                //    isAuthenticated = true,
+                //    isLibraryAdmin = User.IsInRole(@"domain\AdminGroup"),
+                //    username = User.Identity.Name.Substring(User.Identity.Name.LastIndexOf(@"\", StringComparison.InvariantCultureIgnoreCase) + 1)
+                //});
+                return Ok(new { a = User.Identity.IsAuthenticated, b = User.Identity.Name, c = User.Identity.AuthenticationType});
+            }
+
+            return BadRequest();
         }
 
         [HttpPost("Add")]

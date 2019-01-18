@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using DataManager.Models;
+using Hangfire;
 using UnpaidManager.Interfaces;
 using UnpaidModels;
 
@@ -16,13 +17,15 @@ namespace UnpaidManager
         private readonly IUnpaidRequestClient _unpaidRequestClient;
         private readonly INotification _notification;
         private readonly IUnpaidResponseClient _unpaidResponseClient;
+        private readonly IUnpaidNotificationApiClient _unpaidNotificationApiClient;
 
-        public UnpaidEngine(IUnpaidClient unpaidClient, IUnpaidRequestClient unpaidRequestClient, INotification notification, IUnpaidResponseClient unpaidResponseClient)
+        public UnpaidEngine(IUnpaidClient unpaidClient, IUnpaidRequestClient unpaidRequestClient, INotification notification, IUnpaidResponseClient unpaidResponseClient, IUnpaidNotificationApiClient unpaidNotificationApiClient)
         {
             _unpaidClient = unpaidClient;
             _unpaidRequestClient = unpaidRequestClient;
             _notification = notification;
             _unpaidResponseClient = unpaidResponseClient;
+            _unpaidNotificationApiClient = unpaidNotificationApiClient;
         }
 
         public async Task<UnpaidOutput> HandleUnpaidAsync(IEnumerable<UnpaidInput> unpaids, string idempotencyKey, CancellationToken cancellationToken)
@@ -79,32 +82,22 @@ namespace UnpaidManager
                 return null;
             }
 
+            //var delegateToNotificationApiResult = await _unpaidNotificationApiClient.DelegateToNotificationApiAsync(idempotencyKey, cancellationToken);
+
             return new UnpaidOutput
             {
                 Status = Status.Pending.ToString(),
                 ErrorMessage = string.Empty
             };
 
-            //return await HandleUnpaidRequestAsync(byIdempotencyResultList, cancellationToken);
+            //return await HandleUnpaidRequestAsync(byIdempotencyResultList, cancellationToken); BackgroundJob.Enqueue(() => HandleUnpaidRequestAsync(byIdempotencyResultList, cancellationToken));
         }
 
-        public async Task<IEnumerable<UnpaidOutput>> HandleUnpaidRequestAsync(IEnumerable<TbUnpaid> unpaids, CancellationToken cancellationToken)
+        [AutomaticRetry(Attempts = 2)]
+        public async Task HandleUnpaidRequestAsync(IEnumerable<TbUnpaid> unpaids, CancellationToken cancellationToken)
         {
-            var unpaidOutputList = new List<UnpaidOutput>();
-
             foreach (var unpaid in unpaids)
             {
-                //var unpaidOutput = new UnpaidOutput
-                //{
-                //    PolicyNumber = unpaid.PolicyNumber,
-                //    IdNumber = unpaid.IdNumber,
-                //    Name = unpaid.Name,
-                //    Message = unpaid.Message,
-                //    Status = Status.Pending.ToString(),
-                //    ErrorMessage = string.Empty
-                //};
-
-                var unpaidOutput = new UnpaidOutput();
                 // create notification task.
                 var notificationTask = _notification.SendAsync($"Dear {unpaid.Name}", unpaid.Message, unpaid.IdNumber, cancellationToken);
 
@@ -115,7 +108,6 @@ namespace UnpaidManager
                 {
                     // Log Warning. No UnpaidRequests to update.
                     notificationTask.Dispose();
-                    unpaidOutputList.Add(unpaidOutput);
                     continue;
                 }
 
@@ -134,21 +126,14 @@ namespace UnpaidManager
                         status = Status.Success;
                     }
 
-                    var updateUnpaidRequestResult = await _unpaidRequestClient.UpdateUnpaidRequestAsync(singleUnpaidRequestToUpdate.UnpaidRequestId, Notification.Push, status, notificationResult.AdditionalErrorMessage, cancellationToken);
+                    var updateUnpaidRequestResult = await _unpaidRequestClient.UpdateUnpaidRequestAsync(singleUnpaidRequestToUpdate.UnpaidRequestId, Notification.Push, status, notificationResult.AdditionalErrorMessage, DateTime.UtcNow, cancellationToken);
                     if (updateUnpaidRequestResult <= 0)
                     {
                         // Log Error. Update failed.
-                        return null;
                     }
-
-                    unpaidOutput.Status = status.ToString();
-                    unpaidOutput.ErrorMessage = notificationResult.AdditionalErrorMessage;
                 }
 
-                unpaidOutputList.Add(unpaidOutput);
             }
-
-            return unpaidOutputList;
         }
 
         public async Task<IEnumerable<UnpaidResponseOutput>> HandleUnpaidResponseAsync(IEnumerable<UnpaidResponseInput> unpaidResponseInputs, CancellationToken cancellationToken)

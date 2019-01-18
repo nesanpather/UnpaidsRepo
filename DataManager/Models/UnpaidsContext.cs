@@ -20,6 +20,7 @@ namespace DataManager.Models
         public virtual DbSet<TbResponse> TbResponse { get; set; }
         public virtual DbSet<TbStatus> TbStatus { get; set; }
         public virtual DbSet<TbUnpaid> TbUnpaid { get; set; }
+        public virtual DbSet<TbUnpaidBatch> TbUnpaidBatch { get; set; }
         public virtual DbSet<TbUnpaidRequest> TbUnpaidRequest { get; set; }
         public virtual DbSet<TbUnpaidResponse> TbUnpaidResponse { get; set; }
 
@@ -27,7 +28,6 @@ namespace DataManager.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Persist Security Info=False;User ID=UnpaidsUser;Password=Password1234$;Initial Catalog=Unpaids;Server=localhost");
             }
         }
@@ -125,6 +125,27 @@ namespace DataManager.Models
                     .HasMaxLength(100);
             });
 
+            modelBuilder.Entity<TbUnpaidBatch>(entity =>
+            {
+                entity.HasKey(e => e.UnpaidBatchId);
+
+                entity.ToTable("tb_UnpaidBatch");
+
+                entity.Property(e => e.DateCreated)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getutcdate())");
+
+                entity.Property(e => e.IdempotencyKey)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.HasOne(d => d.Status)
+                    .WithMany(p => p.TbUnpaidBatch)
+                    .HasForeignKey(d => d.StatusId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_tb_UnpaidBatch_tb_Status");
+            });
+
             modelBuilder.Entity<TbUnpaidRequest>(entity =>
             {
                 entity.HasKey(e => e.UnpaidRequestId);
@@ -132,6 +153,10 @@ namespace DataManager.Models
                 entity.ToTable("tb_UnpaidRequest");
 
                 entity.Property(e => e.DateCreated)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getutcdate())");
+
+                entity.Property(e => e.DateModified)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())");
 

@@ -7,6 +7,7 @@ namespace DataManager.Models
     {
         public TbStatus()
         {
+            TbUnpaidBatch = new HashSet<TbUnpaidBatch>();
             TbUnpaidRequest = new HashSet<TbUnpaidRequest>();
             TbUnpaidResponse = new HashSet<TbUnpaidResponse>();
         }
@@ -14,6 +15,7 @@ namespace DataManager.Models
         public int StatusId { get; set; }
         public string Status { get; set; }
 
+        public virtual ICollection<TbUnpaidBatch> TbUnpaidBatch { get; set; }
         public virtual ICollection<TbUnpaidRequest> TbUnpaidRequest { get; set; }
         public virtual ICollection<TbUnpaidResponse> TbUnpaidResponse { get; set; }
     }

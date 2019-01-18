@@ -16,3 +16,8 @@ C:\Source\git\UnpaidsRepo\UnpaidManager\obj\Release\netcoreapp2.2\UnpaidManager.
 C:\Source\git\UnpaidsRepo\UnpaidManager\obj\Release\netcoreapp2.2\UnpaidManager.csproj.CopyComplete
 C:\Source\git\UnpaidsRepo\UnpaidManager\obj\Release\netcoreapp2.2\UnpaidManager.dll
 C:\Source\git\UnpaidsRepo\UnpaidManager\obj\Release\netcoreapp2.2\UnpaidManager.pdb
+C:\Source\git\UnpaidsRepo\UnpaidManager\bin\Release\netcoreapp2.2\Hangfire.Core.dll
+C:\Source\git\UnpaidsRepo\UnpaidManager\bin\Release\netcoreapp2.2\Hangfire.Core.xml
+C:\Source\git\UnpaidsRepo\UnpaidManager\bin\Release\netcoreapp2.2\es\Hangfire.Core.resources.dll
+C:\Source\git\UnpaidsRepo\UnpaidManager\bin\Release\netcoreapp2.2\zh\Hangfire.Core.resources.dll
+C:\Source\git\UnpaidsRepo\UnpaidManager\bin\Release\netcoreapp2.2\zh-TW\Hangfire.Core.resources.dll

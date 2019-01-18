@@ -338,7 +338,8 @@
         "dependencies": {
           "DataManager": "1.0.0",
           "UnpaidModels": "1.0.0",
-          "Utilities": "1.0.0"
+          "Utilities": "1.0.0",
+          "Hangfire.Core": "1.6.21.0"
         },
         "runtime": {
           "UnpaidManager.dll": {}
@@ -366,6 +367,25 @@
         },
         "compile": {
           "Utilities.dll": {}
+        }
+      },
+      "Hangfire.Core.Reference/1.6.21.0": {
+        "runtime": {
+          "Hangfire.Core.dll": {
+            "assemblyVersion": "1.6.21.0",
+            "fileVersion": "1.6.21.0"
+          }
+        },
+        "resources": {
+          "es/Hangfire.Core.resources.dll": {
+            "locale": "es"
+          },
+          "zh/Hangfire.Core.resources.dll": {
+            "locale": "zh"
+          },
+          "zh-TW/Hangfire.Core.resources.dll": {
+            "locale": "zh-TW"
+          }
         }
       },
       "Microsoft.AspNet.WebApi.Client/5.2.6": {
@@ -3426,6 +3446,11 @@
     },
     "Utilities/1.0.0": {
       "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Hangfire.Core.Reference/1.6.21.0": {
+      "type": "reference",
       "serviceable": false,
       "sha512": ""
     },

@@ -43,4 +43,12 @@ export class UnpaidService {
 
     return this.httpClient.get<IUnpaidNotificationsResponse[]>(`${this.unpaidApiBaseUrl}/unpaids/responses`, httpOptions);
   }
+
+  public authenticateUser(): any {
+    const httpOptions = {
+      withCredentials: true
+    };
+
+    return this.httpClient.get<IUnpaidNotificationsResponse[]>(`${this.unpaidApiBaseUrl}/unpaids/AuthenticateUser`, httpOptions);
+  }
 }

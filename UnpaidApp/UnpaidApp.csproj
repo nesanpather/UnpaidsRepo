@@ -27,7 +27,6 @@
   <ItemGroup>
     <Folder Include="ClientApp\src\app\layout\components\" />
     <Folder Include="ClientApp\src\app\shared\models\" />
-    <Folder Include="ClientApp\src\app\shared\services\" />
     <Folder Include="ClientApp\src\styles\" />
   </ItemGroup>
 

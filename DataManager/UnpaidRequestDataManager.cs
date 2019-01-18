@@ -81,7 +81,7 @@ namespace DataManager
             return await query.ToListAsync(cancellationToken);
         }
 
-        public async Task<int> UpdateUnpaidRequestAsync(int unpaidRequestId, Notification notification, Status status, string statusAdditionalInfo, CancellationToken cancellationToken)
+        public async Task<int> UpdateUnpaidRequestAsync(int unpaidRequestId, Notification notification, Status status, string statusAdditionalInfo, DateTime dateModified, CancellationToken cancellationToken)
         {
             var entity = _unpaidsDbContext.TbUnpaidRequest.FirstOrDefault(item => item.UnpaidRequestId == unpaidRequestId);
 
@@ -94,6 +94,7 @@ namespace DataManager
             entity.NotificationId = (int) notification;
             entity.StatusId = (int) status;
             entity.StatusAdditionalInfo = statusAdditionalInfo;
+            entity.DateModified = dateModified;
 
             _unpaidsDbContext.TbUnpaidRequest.Update(entity);
             return await _unpaidsDbContext.SaveChangesAsync(cancellationToken);

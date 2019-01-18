@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Microsoft.EntityFrameworkCore;
@@ -266,7 +267,7 @@ namespace DataManager.Tests
             using (var context = new UnpaidsContext(options))
             {
                 var service = new UnpaidRequestDataManager(context);
-                await service.UpdateUnpaidRequestAsync(3, Notification.Call, Status.Failed, "Testing.", CancellationToken.None);
+                await service.UpdateUnpaidRequestAsync(3, Notification.Call, Status.Failed, "Testing.", DateTime.Now, CancellationToken.None);
             }
 
             // Assert.

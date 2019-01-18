@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using DataManager.Models;
@@ -13,7 +14,7 @@ namespace DataManager.Interfaces
         Task<TbUnpaidRequest> GetSingleUnpaidRequestAsync(string policyNumber, string idNumber, Status status, CancellationToken cancellationToken);
         Task<IEnumerable<TbUnpaidRequest>> GetAllUnpaidRequestAsync(int unpaidId, CancellationToken cancellationToken);
         Task<IEnumerable<TbUnpaidRequest>> GetAllUnpaidRequestAsync(CancellationToken cancellationToken);
-        Task<int> UpdateUnpaidRequestAsync(int unpaidRequestId, Notification notification, Status status, string statusAdditionalInfo, CancellationToken cancellationToken);
+        Task<int> UpdateUnpaidRequestAsync(int unpaidRequestId, Notification notification, Status status, string statusAdditionalInfo, DateTime dateModified, CancellationToken cancellationToken);
         Task<IEnumerable<TbUnpaidRequest>> GetUnpaidRequestJoinUnpaidAsync(int pageIndex, int pageSize, CancellationToken cancellationToken);
         Task<IEnumerable<TbUnpaidRequest>> GetUnpaidRequestJoinUnpaidAsync(CancellationToken cancellationToken);        
     }
