@@ -8,6 +8,7 @@ using DataManager.Interfaces;
 using DataManager.Models;
 using UnpaidManager.Interfaces;
 using UnpaidModels;
+using Utilities;
 
 namespace UnpaidManager
 {
@@ -142,6 +143,54 @@ namespace UnpaidManager
             }
 
             return GetAllUnpaidRequestOutputs(unpaidRequests.Where(u => string.Equals(u.Unpaid.PolicyNumber, policyNumber, StringComparison.InvariantCultureIgnoreCase)));
+        }
+
+        public async Task<IEnumerable<GetAllUnpaidRequestOutput>> GetAllUnpaidRequestAsync(DateTime dateFrom, DateTime dateTo, DateType dateType, CancellationToken cancellationToken)
+        {
+            if (dateFrom == DateTime.MinValue || dateFrom == DateTime.MaxValue)
+            {
+                // Log Error.
+
+                return await GetAllUnpaidRequestAsync(cancellationToken);
+            }
+
+            if (dateTo == DateTime.MinValue || dateTo == DateTime.MaxValue)
+            {
+                // Log Error.
+
+                return await GetAllUnpaidRequestAsync(cancellationToken);
+            }
+
+            if (dateType <= 0)
+            {
+                dateType = DateType.DateAdded;
+            }
+
+            var unpaidRequests = await _unpaidRequestOperations.GetUnpaidRequestJoinUnpaidAsync(cancellationToken);
+
+            if (unpaidRequests == null)
+            {
+                return null;
+            }
+
+            dateFrom = dateFrom.StartOfDay();
+            dateTo = dateTo.EndOfDay();
+
+            switch (dateType)
+            {
+                case DateType.DateAdded:
+                {
+                    return GetAllUnpaidRequestOutputs(unpaidRequests.Where(u => u.Unpaid.DateCreated >= dateFrom && u.Unpaid.DateCreated <= dateTo));
+                }
+                case DateType.DateNotificationSent:
+                {
+                    // TODO: Change to DateModified once api and integration tests are all working.
+                    return GetAllUnpaidRequestOutputs(unpaidRequests.Where(u => u.DateCreated >= dateFrom && u.DateCreated <= dateTo));
+                }
+            }
+
+            // Log Warning. Invalid DateType. 
+            return await GetAllUnpaidRequestAsync(cancellationToken);
         }
 
         private static IEnumerable<GetAllUnpaidRequestOutput> GetAllUnpaidRequestOutputs(IEnumerable<TbUnpaidRequest> unpaidRequests)

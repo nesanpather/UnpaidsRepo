@@ -12,7 +12,6 @@ using UnpaidManager;
 using UnpaidManager.Interfaces;
 using Utilities;
 using Utilities.Interfaces;
-using ILogger = Utilities.Interfaces.ILogger;
 
 namespace UnpaidNotificationsApi
 {
@@ -42,7 +41,7 @@ namespace UnpaidNotificationsApi
 
             services.AddScoped<ISettings, AppConfigSettings>();
             services.AddScoped<IHttpClientOperations, HttpClientManager>();
-            services.AddSingleton<ILogger, ConsoleLogger>();
+            services.AddSingleton<ICustomLogger, ConsoleLogger>();
 
             services.AddScoped<IUnpaidStorageOperations, UnpaidDataManager>();
             services.AddScoped<IUnpaidRequestStorageOperations, UnpaidRequestDataManager>();

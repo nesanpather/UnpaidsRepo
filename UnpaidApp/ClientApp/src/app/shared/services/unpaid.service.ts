@@ -34,6 +34,16 @@ export class UnpaidService {
     return this.httpClient.get<IUnpaidNotifications[]>(`${this.unpaidApiBaseUrl}/unpaids`, httpOptions);
   }
 
+  public getUnpaidNotificationsByDateRange(dateType: number, dateFrom: string, dateTo: string): Observable<IUnpaidNotifications[]> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    return this.httpClient.get<IUnpaidNotifications[]>(`${this.unpaidApiBaseUrl}/unpaids/datefrom/${dateFrom}/dateto/${dateTo}/datetype/${dateType}`, httpOptions);
+  }
+
   public getUnpaidNotificationResponses(): Observable<IUnpaidNotificationsResponse[]> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -42,6 +52,16 @@ export class UnpaidService {
     };
 
     return this.httpClient.get<IUnpaidNotificationsResponse[]>(`${this.unpaidApiBaseUrl}/unpaids/responses`, httpOptions);
+  }
+
+  public getUnpaidNotificationResponsesByDateRange(dateType: number, dateFrom: string, dateTo: string): Observable<IUnpaidNotificationsResponse[]> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    return this.httpClient.get<IUnpaidNotificationsResponse[]>(`${this.unpaidApiBaseUrl}/unpaids/responses/datefrom/${dateFrom}/dateto/${dateTo}/datetype/${dateType}`, httpOptions);
   }
 
   public authenticateUser(): any {

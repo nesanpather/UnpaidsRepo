@@ -3,7 +3,7 @@ using Utilities.Interfaces;
 
 namespace Utilities
 {
-    public sealed class ConsoleLogger : ILogger
+    public sealed class ConsoleLogger : ICustomLogger
     {
         static int _instanceCounter;
         private static readonly Lazy<ConsoleLogger> singleInstance = new Lazy<ConsoleLogger>(() => new ConsoleLogger());

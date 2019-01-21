@@ -3,6 +3,9 @@ import { NgModule } from '@angular/core';
 import { MatTableModule } from '@angular/material';
 import { MatFormFieldModule, MatPaginatorModule, MatButtonModule, MatListModule } from '@angular/material';
 import { MatInputModule, MatBottomSheetModule } from '@angular/material';
+import { MatRadioModule, MatDatepickerModule, MatNativeDateModule, MatSlideToggleModule } from '@angular/material';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { ResponsesTableRoutingModule } from './responses-table-routing.module';
 import { ResponsesTableComponent } from './responses-table.component';
@@ -18,7 +21,14 @@ import { ExportOverviewComponent } from '../export-overview/export-overview.comp
     MatButtonModule,
     MatListModule,
     MatInputModule,
-    MatBottomSheetModule
+    MatBottomSheetModule,
+    MatRadioModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSlideToggleModule,
+    FormsModule,
+    ReactiveFormsModule,
+    FlexLayoutModule
     ],
   declarations: [ResponsesTableComponent, ExportOverviewComponent],
   entryComponents: [ExportOverviewComponent]

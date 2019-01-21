@@ -1,7 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+
 import { IUnpaidNotifications } from '../../shared/models/unpaid-notifications';
 import { UnpaidService } from '../../shared/services/unpaid.service';
+import { HelperService } from '../../shared/services/helper.service';
 
 @Component({
   selector: 'app-notifications-table',
@@ -11,11 +14,23 @@ import { UnpaidService } from '../../shared/services/unpaid.service';
 export class NotificationsTableComponent implements OnInit {
   displayedColumns = ['unpaidId', 'policyNumber', 'idNumber', 'name', 'message', 'dateAdded', 'notificationRequestId', 'notificationType', 'notificationSentStatus', 'notificationErrorMessage', 'dateNotificationSent'];
   dataSource: MatTableDataSource<IUnpaidNotifications>;
+  dateRangeType: string = "1";
+  startDate: Date;
+  endDate: Date;
+  showDateFilter: boolean = false;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private unpaidService: UnpaidService) {
+  constructor(private unpaidService: UnpaidService, private helperService: HelperService) {
+
+  }
+
+  ngOnInit() {
+    this.getAllUnpaidNotifications();
+  }
+
+  private getAllUnpaidNotifications() {
     this.unpaidService.getUnpaidNotifications().subscribe(
       (response) => {
         console.log("unpaidService.getUnpaidNotifications response", response);
@@ -32,9 +47,6 @@ export class NotificationsTableComponent implements OnInit {
     );
   }
 
-  ngOnInit() {
-  }
-
   private mapNotifications(response: IUnpaidNotifications[]): IUnpaidNotifications[] {
     const notifications: IUnpaidNotifications[] = [];
 
@@ -43,6 +55,13 @@ export class NotificationsTableComponent implements OnInit {
     }
 
     return response;
+  }
+
+  private mapDataSource(notifications: IUnpaidNotifications[]) {
+    this.dataSource = new MatTableDataSource(notifications);
+
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   public applyFilter(filterValue: string) {
@@ -70,6 +89,49 @@ export class NotificationsTableComponent implements OnInit {
       default:
         return "black";
     }
+  }
+
+  public addEvent(type: number, event: MatDatepickerInputEvent<Date>) {
+    if (type === 1) {
+      this.startDate = event.value;
+    } else if (type === 2) {
+      this.endDate = event.value;
+    }
+
+    this.getUnpaidNotificationsByDateRange(this.startDate, this.endDate, +this.dateRangeType);
+  }
+
+  public dateTypeChange(dateType: number) {
+    this.getUnpaidNotificationsByDateRange(this.startDate, this.endDate, dateType);
+  }
+
+  public toggleDateFilter() {
+    this.showDateFilter = !this.showDateFilter;
+
+    if (!this.showDateFilter) {
+      this.getAllUnpaidNotifications();
+    }
+  }
+
+  private getUnpaidNotificationsByDateRange(startDate: Date, endDate: Date, dateType: number) {
+    if (!startDate || !endDate || !dateType) {
+      return;
+    }
+
+    if (dateType <= 0) {
+      return;
+    }
+
+
+    this.unpaidService.getUnpaidNotificationsByDateRange(dateType, this.helperService.formatDate(startDate), this.helperService.formatDate(endDate)).subscribe(
+      (response) => {
+
+        this.mapDataSource(this.mapNotifications(response));
+      },
+      (error) => {
+        this.mapDataSource(this.mapNotifications([]));
+      }
+    );
   }
 
 }

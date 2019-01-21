@@ -20,4 +20,11 @@
         CallMe = 1,
         EmailMe
     }
+
+    public enum DateType
+    {
+        DateAdded = 1,
+        DateNotificationSent,
+        DateNotificationResponseAdded,        
+    }
 }

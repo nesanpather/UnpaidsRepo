@@ -130,6 +130,26 @@ namespace UnpaidApi.Controllers
             return Ok(getAllUnpaidRequestAsyncResult);
         }
 
+        [HttpGet("datefrom/{dateFrom}/dateto/{dateTo}/datetype/{dateType}")]
+        public async Task<ActionResult<IEnumerable<GetAllUnpaidRequestOutput>>> GetAllUnpaidRequestAsync(DateTime dateFrom, DateTime dateTo, DateType dateType, CancellationToken cancellationToken)
+        {
+            // Log Entry.
+
+            var getAllUnpaidRequestAsyncResult = await _unpaidRequestClient.GetAllUnpaidRequestAsync(dateFrom, dateTo, dateType, cancellationToken);
+
+            if (getAllUnpaidRequestAsyncResult == null)
+            {
+                return BadRequest();
+            }
+
+            if (!getAllUnpaidRequestAsyncResult.Any())
+            {
+                return BadRequest();
+            }
+
+            return Ok(getAllUnpaidRequestAsyncResult);
+        }
+
         [HttpGet("pageindex/{pageIndex}/pagesize/{pageSize}")]
         public async Task<ActionResult<IEnumerable<GetAllUnpaidRequestOutput>>> GetAllUnpaidRequestAsync(int pageIndex, int pageSize, CancellationToken cancellationToken)
         {
@@ -176,6 +196,26 @@ namespace UnpaidApi.Controllers
             // Log Entry.
 
             var getAllUnpaidResponseAsyncResult = await _unpaidResponseClient.GetAllUnpaidResponseAsync(policyNumber, cancellationToken);
+
+            if (getAllUnpaidResponseAsyncResult == null)
+            {
+                return BadRequest();
+            }
+
+            if (!getAllUnpaidResponseAsyncResult.Any())
+            {
+                return BadRequest();
+            }
+
+            return Ok(getAllUnpaidResponseAsyncResult);
+        }
+
+        [HttpGet("responses/datefrom/{dateFrom}/dateto/{dateTo}/datetype/{dateType}")]
+        public async Task<ActionResult<IEnumerable<GetAllUnpaidResponseOutput>>> GetAllUnpaidResponseAsync(DateTime dateFrom, DateTime dateTo, DateType dateType, CancellationToken cancellationToken)
+        {
+            // Log Entry.
+
+            var getAllUnpaidResponseAsyncResult = await _unpaidResponseClient.GetAllUnpaidResponseAsync(dateFrom, dateTo, dateType, cancellationToken);
 
             if (getAllUnpaidResponseAsyncResult == null)
             {

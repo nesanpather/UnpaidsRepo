@@ -8,6 +8,7 @@ using DataManager.Interfaces;
 using DataManager.Models;
 using UnpaidManager.Interfaces;
 using UnpaidModels;
+using Utilities;
 
 namespace UnpaidManager
 {
@@ -113,7 +114,58 @@ namespace UnpaidManager
             var getAllUnpaidResponseResult = await GetAllUnpaidResponseAsync(cancellationToken);
 
             // TODO: There is a more efficient way of doing this.
-            return getAllUnpaidResponseResult.Where(u => string.Equals(u.PolicyNumber, policyNumber));
+            return getAllUnpaidResponseResult?.Where(u => string.Equals(u.PolicyNumber, policyNumber));
+        }
+
+        public async Task<IEnumerable<GetAllUnpaidResponseOutput>> GetAllUnpaidResponseAsync(DateTime dateFrom, DateTime dateTo, DateType dateType, CancellationToken cancellationToken)
+        {
+            if (dateFrom == DateTime.MinValue || dateFrom == DateTime.MaxValue)
+            {
+                // Log Error.
+
+                return await GetAllUnpaidResponseAsync(cancellationToken);
+            }
+
+            if (dateTo == DateTime.MinValue || dateTo == DateTime.MaxValue)
+            {
+                // Log Error.
+
+                return await GetAllUnpaidResponseAsync(cancellationToken);
+            }
+
+            if (dateType <= 0)
+            {
+                dateType = DateType.DateNotificationResponseAdded;
+            }
+
+            var getAllUnpaidResponseResult = await GetAllUnpaidResponseAsync(cancellationToken);
+            if (getAllUnpaidResponseResult == null)
+            {
+                // Log Error.
+                return null;
+            }
+
+            dateFrom = dateFrom.StartOfDay();
+            dateTo = dateTo.EndOfDay();
+
+            switch (dateType)
+            {
+                case DateType.DateAdded:
+                {
+                    return getAllUnpaidResponseResult.Where(ur => ur.DateAdded >= dateFrom && ur.DateAdded <= dateTo);
+                }
+                case DateType.DateNotificationSent:
+                {
+                    return getAllUnpaidResponseResult.Where(ur => ur.DateNotificationSent >= dateFrom && ur.DateNotificationSent <= dateTo);
+                }
+                case DateType.DateNotificationResponseAdded:
+                {
+                    return getAllUnpaidResponseResult.Where(ur => ur.DateNotificationResponseAdded >= dateFrom && ur.DateNotificationResponseAdded <= dateTo);
+                }
+            }
+
+            // Log Warning. Invalid DateType.
+            return getAllUnpaidResponseResult;
         }
     }
 }
