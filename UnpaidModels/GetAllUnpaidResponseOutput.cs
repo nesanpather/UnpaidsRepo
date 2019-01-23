@@ -14,6 +14,7 @@ namespace UnpaidModels
         public string ContactOptionType { get; set; }
         public string ContactOptionStatus { get; set; }
         public bool Accepted { get; set; }
-        public DateTime DateNotificationResponseAdded { get; set; }        
+        public DateTime DateNotificationResponseAdded { get; set; }
+        public string CorrelationId { get; set; }
     }
 }

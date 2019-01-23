@@ -28,6 +28,7 @@ namespace DataManager.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Persist Security Info=False;User ID=UnpaidsUser;Password=Password1234$;Initial Catalog=Unpaids;Server=localhost");
             }
         }
@@ -108,10 +109,6 @@ namespace DataManager.Models
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.Property(e => e.IdempotencyKey)
-                    .IsRequired()
-                    .HasMaxLength(100);
-
                 entity.Property(e => e.Message)
                     .IsRequired()
                     .HasMaxLength(200);
@@ -123,6 +120,16 @@ namespace DataManager.Models
                 entity.Property(e => e.PolicyNumber)
                     .IsRequired()
                     .HasMaxLength(100);
+
+                entity.Property(e => e.Title)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.HasOne(d => d.UnpaidBatch)
+                    .WithMany(p => p.TbUnpaid)
+                    .HasForeignKey(d => d.UnpaidBatchId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_tb_Unpaid_tb_UnpaidBatch");
             });
 
             modelBuilder.Entity<TbUnpaidBatch>(entity =>
@@ -131,13 +138,19 @@ namespace DataManager.Models
 
                 entity.ToTable("tb_UnpaidBatch");
 
+                entity.Property(e => e.BatchKey)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
                 entity.Property(e => e.DateCreated)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())");
 
-                entity.Property(e => e.IdempotencyKey)
-                    .IsRequired()
-                    .HasMaxLength(200);
+                entity.Property(e => e.DateModified)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getutcdate())");
+
+                entity.Property(e => e.UserName).HasMaxLength(50);
 
                 entity.HasOne(d => d.Status)
                     .WithMany(p => p.TbUnpaidBatch)
@@ -151,6 +164,10 @@ namespace DataManager.Models
                 entity.HasKey(e => e.UnpaidRequestId);
 
                 entity.ToTable("tb_UnpaidRequest");
+
+                entity.Property(e => e.CorrelationId)
+                    .IsRequired()
+                    .HasMaxLength(400);
 
                 entity.Property(e => e.DateCreated)
                     .HasColumnType("datetime")

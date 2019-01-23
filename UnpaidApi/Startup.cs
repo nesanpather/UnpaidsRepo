@@ -31,10 +31,23 @@ namespace UnpaidApi
             // Setup CORS
             // ********************
 
-            services.AddCors(options =>
+            var origins = Configuration["Cors:AllowedOrigins"].Split(";");
+
+            if (origins.Length >= 0)
             {
-                options.AddPolicy("SiteCorsPolicy", builder => builder.WithOrigins("http://localhost:50565").AllowAnyMethod().AllowAnyHeader().AllowCredentials().SetIsOriginAllowed(s => true).Build());
-            });
+                services.AddCors(options =>
+                {
+                    options.AddPolicy("SiteCorsPolicy", builder => builder.WithOrigins(origins).AllowAnyMethod().AllowAnyHeader().AllowCredentials().SetIsOriginAllowed(s => true).Build());
+                });
+            }
+            else
+            {
+                services.AddCors(options =>
+                {
+                    options.AddPolicy("SiteCorsPolicy", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials().SetIsOriginAllowed(s => true).SetIsOriginAllowedToAllowWildcardSubdomains().Build());
+                });
+            }
+
 
             services.AddAuthentication(IISDefaults.AuthenticationScheme);
 
@@ -51,6 +64,7 @@ namespace UnpaidApi
             services.AddScoped<IUnpaidRequestStorageOperations, UnpaidRequestDataManager>();
             services.AddScoped<IUnpaidResponseStorageOperations, UnpaidResponseDataManager>();
             services.AddScoped<IAccessTokenStorageOperations, AccessTokenDataManager>();
+            services.AddScoped<IUnpaidBatchStorageOperations, UnpaidBatchDataManager>();
 
             services.AddScoped<IPushNotificationClient, PushNotificationService>();
             services.AddScoped<IUnpaidNotificationApiClient, UnpaidNotificationApiService>();
@@ -59,6 +73,7 @@ namespace UnpaidApi
             services.AddScoped<IUnpaidRequestClient, UnpaidRequestManager>();
             services.AddScoped<IUnpaidResponseClient, UnpaidResponseManager>();
             services.AddScoped<IAccessTokenClient, AccessTokenManager>();
+            services.AddScoped<IUnpaidBatchClient, UnpaidBatchManager>();
             services.AddScoped<IUnpaidEngineHandler, UnpaidEngine>();
             services.AddScoped<IUnpaidNotificationsEngineHandler, UnpaidNotificationsEngine>();
 

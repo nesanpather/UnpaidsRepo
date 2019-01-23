@@ -97,7 +97,8 @@ namespace UnpaidManager
                     DateAdded = tbUnpaidRequest.Unpaid.DateCreated, NotificationRequestId = tbUnpaidRequest.UnpaidRequestId,
                     NotificationType = tbUnpaidRequest.Notification.Notification,
                     DateNotificationSent = tbUnpaidRequest.DateCreated, ContactOptionType = a.Response.Response, ContactOptionStatus = a.Status.Status, Accepted = a.Accepted,
-                    DateNotificationResponseAdded = a.DateCreated
+                    DateNotificationResponseAdded = a.DateCreated,
+                    CorrelationId = tbUnpaidRequest.CorrelationId                    
                 };
 
             return query;

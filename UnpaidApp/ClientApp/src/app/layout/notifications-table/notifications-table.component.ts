@@ -12,7 +12,7 @@ import { HelperService } from '../../shared/services/helper.service';
   styleUrls: ['./notifications-table.component.scss']
 })
 export class NotificationsTableComponent implements OnInit {
-  displayedColumns = ['unpaidId', 'policyNumber', 'idNumber', 'name', 'message', 'dateAdded', 'notificationRequestId', 'notificationType', 'notificationSentStatus', 'notificationErrorMessage', 'dateNotificationSent'];
+  displayedColumns = ['policyNumber', 'idNumber', 'name', 'message', 'dateAdded', 'notificationType', 'correlationId', 'notificationSentStatus', 'notificationErrorMessage', 'dateNotificationSent'];
   dataSource: MatTableDataSource<IUnpaidNotifications>;
   dateRangeType: string = "1";
   startDate: Date;

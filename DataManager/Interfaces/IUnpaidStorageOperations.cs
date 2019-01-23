@@ -10,7 +10,7 @@ namespace DataManager.Interfaces
     {
         Task<int> AddUnpaidAsync(IEnumerable<TbUnpaid> unpaids, CancellationToken cancellationToken);
         Task<TbUnpaid> GetSingleUnpaidAsync(int unpaidId, CancellationToken cancellationToken);
-        Task<IEnumerable<TbUnpaid>> GetAllUnpaidAsync(string idempotencyKey, CancellationToken cancellationToken);
+        Task<IEnumerable<TbUnpaid>> GetAllUnpaidAsync(string batchKey, CancellationToken cancellationToken);
         Task<IEnumerable<TbUnpaid>> GetAllUnpaidAsync(CancellationToken cancellationToken);
     }
 }

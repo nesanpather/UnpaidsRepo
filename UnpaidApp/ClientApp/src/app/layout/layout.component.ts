@@ -12,10 +12,10 @@ export class LayoutComponent implements OnInit {
 
   ngOnInit() {
 
-    var loginStatus = localStorage.getItem("isLoggedin");
-    if (!loginStatus || loginStatus === "false") {
-      this.router.navigate(['/login']);
-    }
+    //var loginStatus = localStorage.getItem("isLoggedin");
+    //if (!loginStatus || loginStatus === "false") {
+    //  this.router.navigate(['/login']);
+    //}
 
   }
 

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { IUnpaidInput } from '../models/unpaid-input';
 import { IUnpaidNotifications } from '../models/unpaid-notifications';
 import { IUnpaidNotificationsResponse } from '../models/unpaid-notifications-response';
+import { IUser } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -64,11 +65,11 @@ export class UnpaidService {
     return this.httpClient.get<IUnpaidNotificationsResponse[]>(`${this.unpaidApiBaseUrl}/unpaids/responses/datefrom/${dateFrom}/dateto/${dateTo}/datetype/${dateType}`, httpOptions);
   }
 
-  public authenticateUser(): any {
+  public authenticateUser(): Observable<IUser> {
     const httpOptions = {
       withCredentials: true
     };
 
-    return this.httpClient.get<IUnpaidNotificationsResponse[]>(`${this.unpaidApiBaseUrl}/unpaids/AuthenticateUser`, httpOptions);
+    return this.httpClient.get<IUser>(`${this.unpaidApiBaseUrl}/unpaids/AuthenticateUser`, httpOptions);
   }
 }

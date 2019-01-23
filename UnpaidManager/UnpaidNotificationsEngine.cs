@@ -41,7 +41,7 @@ namespace UnpaidManager
                 return;
             }
 
-            BackgroundJob.Enqueue(() => _unpaidEngineHandler.HandleUnpaidRequestAsync(byIdempotencyResultList, cancellationToken));
+            BackgroundJob.Enqueue(() => _unpaidEngineHandler.HandleUnpaidRequestAsync(byIdempotencyResultList, idempotencyKey, cancellationToken));
         }
     }
 }

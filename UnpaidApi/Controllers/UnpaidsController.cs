@@ -35,13 +35,13 @@ namespace UnpaidApi.Controllers
         /// This method contains Authorize attribute for authentication and authroization  
         /// </summary>  
         /// <returns></returns>  
-        [HttpGet]        
+        [HttpGet]
         [Authorize]
         [Route("AuthenticateUser")]
         public ActionResult<HttpResponseMessage> AuthenticateUser()
         {
             if (User != null)
-            {                                       
+            {
                 //return Ok(new
                 //{
                 //    status = (int)HttpStatusCode.OK,
@@ -49,7 +49,7 @@ namespace UnpaidApi.Controllers
                 //    isLibraryAdmin = User.IsInRole(@"domain\AdminGroup"),
                 //    username = User.Identity.Name.Substring(User.Identity.Name.LastIndexOf(@"\", StringComparison.InvariantCultureIgnoreCase) + 1)
                 //});
-                return Ok(new { a = User.Identity.IsAuthenticated, b = User.Identity.Name, c = User.Identity.AuthenticationType});
+                return Ok(new { IsAuthenticated = User.Identity.IsAuthenticated, UserName = User.Identity.Name.Substring(User.Identity.Name.LastIndexOf(@"\", StringComparison.InvariantCultureIgnoreCase) + 1) });
             }
 
             return BadRequest();
@@ -60,7 +60,7 @@ namespace UnpaidApi.Controllers
         {
             // Log Entry.
 
-            var handleUnpaidResult = await _unpaidEngineHandler.HandleUnpaidAsync(unpaids, Guid.NewGuid().ToString(), cancellationToken);
+            var handleUnpaidResult = await _unpaidEngineHandler.HandleUnpaidAsync(unpaids, Guid.NewGuid().ToString(), string.Empty, cancellationToken);
 
             if (handleUnpaidResult == null)
             {

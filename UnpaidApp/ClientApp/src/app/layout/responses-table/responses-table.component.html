@@ -39,11 +39,6 @@
 
   <div class="mat-elevation-z8">
     <table id="contentToConvert" mat-table [dataSource]="dataSource" matSort>
-      <!-- Unpaid ID Column -->
-      <ng-container matColumnDef="unpaidId">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> UnpaidId </th>
-        <td mat-cell *matCellDef="let row"> {{row.unpaidId}} </td>
-      </ng-container>
       <!-- PolicyNumber Column -->
       <ng-container matColumnDef="policyNumber">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> PolicyNumber </th>
@@ -59,17 +54,16 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header> DateAdded </th>
         <td mat-cell *matCellDef="let row"> {{row.dateAdded | date:'short'}} </td>
       </ng-container>
-      <!-- NotificationRequestId Column -->
-      <ng-container matColumnDef="notificationRequestId">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> RequestId </th>
-        <td mat-cell *matCellDef="let row"> {{row.notificationRequestId}} </td>
-      </ng-container>
       <!-- NotificationType Column -->
       <ng-container matColumnDef="notificationType">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
         <td mat-cell *matCellDef="let row"> {{row.notificationType}} </td>
       </ng-container>
-
+      <!-- Correlation ID Column -->
+      <ng-container matColumnDef="correlationId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> CorrelationId </th>
+        <td mat-cell *matCellDef="let row"> {{row.correlationId}} </td>
+      </ng-container>
       <!-- DateNotificationSent Column -->
       <ng-container matColumnDef="dateNotificationSent">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> DateSent </th>

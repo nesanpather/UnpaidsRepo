@@ -15,5 +15,6 @@ namespace UnpaidModels
         public string NotificationSentStatus { get; set; }
         public string NotificationErrorMessage { get; set; }
         public DateTime DateNotificationSent { get; set; }
+        public string CorrelationId { get; set; }
     }
 }

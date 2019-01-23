@@ -20,7 +20,7 @@ namespace UnpaidManager
             _accessTokenClient = accessTokenClient;
         }
 
-        public async Task<NotificationResponse> SendAsync(string title, string message, string idNumber, CancellationToken cancellationToken)
+        public async Task<NotificationResponse> SendAsync(string title, string message, string idNumber, string correlationId, CancellationToken cancellationToken)
         {
             var errorResponse = new NotificationResponse
             {

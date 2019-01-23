@@ -8,8 +8,8 @@ namespace UnpaidManager.Interfaces
 {
     public interface IUnpaidEngineHandler
     {
-        Task<UnpaidOutput> HandleUnpaidAsync(IEnumerable<UnpaidInput> unpaids, string idempotencyKey, CancellationToken cancellationToken);
-        Task<bool> HandleUnpaidRequestAsync(IEnumerable<TbUnpaid> unpaids, CancellationToken cancellationToken);
+        Task<UnpaidOutput> HandleUnpaidAsync(IEnumerable<UnpaidInput> unpaids, string idempotencyKey, string userName, CancellationToken cancellationToken);
+        Task<bool> HandleUnpaidRequestAsync(IEnumerable<TbUnpaid> unpaids, string idempotencyKey, CancellationToken cancellationToken);
         Task<IEnumerable<UnpaidResponseOutput>> HandleUnpaidResponseAsync(IEnumerable<UnpaidResponseInput> unpaidResponseInputs, CancellationToken cancellationToken);
     }
 }

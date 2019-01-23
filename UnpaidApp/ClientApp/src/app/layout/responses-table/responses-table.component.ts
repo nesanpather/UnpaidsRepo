@@ -14,7 +14,7 @@ import { HelperService } from '../../shared/services/helper.service';
   styleUrls: ['./responses-table.component.scss']
 })
 export class ResponsesTableComponent implements OnInit {
-  displayedColumns = ['unpaidId', 'policyNumber', 'idNumber', 'dateAdded', 'notificationRequestId', 'notificationType', 'dateNotificationSent', 'contactOptionType', 'accepted', 'dateNotificationResponseAdded'];
+  displayedColumns = ['policyNumber', 'idNumber', 'dateAdded', 'notificationType', 'correlationId', 'dateNotificationSent', 'contactOptionType', 'accepted', 'dateNotificationResponseAdded'];
   dataSource: MatTableDataSource<IUnpaidNotificationsResponse>;
   dateRangeType: string = "1";
   startDate: Date;

@@ -47,6 +47,7 @@ namespace UnpaidNotificationsApi
             services.AddScoped<IUnpaidRequestStorageOperations, UnpaidRequestDataManager>();
             services.AddScoped<IUnpaidResponseStorageOperations, UnpaidResponseDataManager>();
             services.AddScoped<IAccessTokenStorageOperations, AccessTokenDataManager>();
+            services.AddScoped<IUnpaidBatchStorageOperations, UnpaidBatchDataManager>();
 
             services.AddScoped<IPushNotificationClient, PushNotificationService>();
             services.AddScoped<IUnpaidNotificationApiClient, UnpaidNotificationApiService>();
@@ -55,6 +56,7 @@ namespace UnpaidNotificationsApi
             services.AddScoped<IUnpaidRequestClient, UnpaidRequestManager>();
             services.AddScoped<IUnpaidResponseClient, UnpaidResponseManager>();
             services.AddScoped<IAccessTokenClient, AccessTokenManager>();
+            services.AddScoped<IUnpaidBatchClient, UnpaidBatchManager>();
             services.AddScoped<IUnpaidEngineHandler, UnpaidEngine>();
             services.AddScoped<IUnpaidNotificationsEngineHandler, UnpaidNotificationsEngine>();
         }

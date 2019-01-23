@@ -10,4 +10,5 @@ export interface IUnpaidNotifications {
   notificationSentStatus: string;
   notificationErrorMessage: string;
   dateNotificationSent: string;
+  correlationId: string;
 }

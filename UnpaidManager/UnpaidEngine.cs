@@ -18,17 +18,19 @@ namespace UnpaidManager
         private readonly INotification _notification;
         private readonly IUnpaidResponseClient _unpaidResponseClient;
         private readonly IUnpaidNotificationApiClient _unpaidNotificationApiClient;
+        private readonly IUnpaidBatchClient _unpaidBatchClient;
 
-        public UnpaidEngine(IUnpaidClient unpaidClient, IUnpaidRequestClient unpaidRequestClient, INotification notification, IUnpaidResponseClient unpaidResponseClient, IUnpaidNotificationApiClient unpaidNotificationApiClient)
+        public UnpaidEngine(IUnpaidClient unpaidClient, IUnpaidRequestClient unpaidRequestClient, INotification notification, IUnpaidResponseClient unpaidResponseClient, IUnpaidNotificationApiClient unpaidNotificationApiClient, IUnpaidBatchClient unpaidBatchClient)
         {
             _unpaidClient = unpaidClient;
             _unpaidRequestClient = unpaidRequestClient;
             _notification = notification;
             _unpaidResponseClient = unpaidResponseClient;
             _unpaidNotificationApiClient = unpaidNotificationApiClient;
+            _unpaidBatchClient = unpaidBatchClient;
         }
 
-        public async Task<UnpaidOutput> HandleUnpaidAsync(IEnumerable<UnpaidInput> unpaids, string idempotencyKey, CancellationToken cancellationToken)
+        public async Task<UnpaidOutput> HandleUnpaidAsync(IEnumerable<UnpaidInput> unpaids, string idempotencyKey, string userName, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(idempotencyKey))
             {
@@ -49,8 +51,33 @@ namespace UnpaidManager
                 return null;
             }
 
-            // First add the unpaids to the storage.
-            var unpaidResult = await _unpaidClient.AddUnpaidAsync(unpaidList, idempotencyKey, cancellationToken);
+            // First add create new unpaid batch.
+            var unpaidBatchResult = await _unpaidBatchClient.AddUnpaidBatchAsync(idempotencyKey, Status.Pending, userName, cancellationToken);
+            if (unpaidBatchResult <= 0)
+            {
+                // Log Error.
+                return null;
+            }
+
+            // Get the batchId that was just added.
+            var getUnpaidBatchResult = await _unpaidBatchClient.GetUnpaidBatchByBatchKeyAsync(idempotencyKey, cancellationToken);
+            if (getUnpaidBatchResult == null)
+            {
+                // Log Error.
+                return null;
+            }
+
+            var singleBatchToUpdate = getUnpaidBatchResult.FirstOrDefault();
+            if (singleBatchToUpdate == null)
+            {
+                return new UnpaidOutput
+                {
+                    Status = Status.Failed.ToString(),
+                    ErrorMessage = string.Empty
+                };
+            }
+           
+            var unpaidResult = await _unpaidClient.AddUnpaidAsync(unpaidList, singleBatchToUpdate.UnpaidBatchId, cancellationToken);
             if (unpaidResult <= 0)
             {
                 // Log Error.
@@ -92,8 +119,8 @@ namespace UnpaidManager
         }
 
         // Hangfire proccesses this method.
-        [AutomaticRetry(Attempts = 2)]
-        public async Task<bool> HandleUnpaidRequestAsync(IEnumerable<TbUnpaid> unpaids, CancellationToken cancellationToken)
+        [AutomaticRetry(Attempts = 3)]
+        public async Task<bool> HandleUnpaidRequestAsync(IEnumerable<TbUnpaid> unpaids, string idempotencyKey, CancellationToken cancellationToken)
         {
             if (unpaids == null)
             {
@@ -105,44 +132,55 @@ namespace UnpaidManager
 
             foreach (var unpaid in unpaids)
             {
-                // create notification task.
-                var notificationTask = _notification.SendAsync($"Dear {unpaid.Name}", unpaid.Message, unpaid.IdNumber, cancellationToken);
-
-                // Get all UnpaidRequests by idempotencyKey
-                var unpaidRequestsToUpdate = await _unpaidRequestClient.GetAllUnpaidRequestAsync(unpaid.UnpaidId, cancellationToken);
+                // Get all pending UnpaidRequests by idempotencyKey
+                var unpaidRequestsToUpdate = await _unpaidRequestClient.GetAllUnpaidRequestAsync(unpaid.UnpaidId, Status.Pending, cancellationToken);
 
                 if (unpaidRequestsToUpdate == null)
                 {
                     // Log Warning. No UnpaidRequests to update.
-                    notificationTask.Dispose();
                     isBatchSuccessful = false;
                     continue;
                 }
 
                 var singleUnpaidRequestToUpdate = unpaidRequestsToUpdate.FirstOrDefault();
+                
+                if (singleUnpaidRequestToUpdate == null) continue;
 
-                // Update UnpaidRequest status.
-                if (singleUnpaidRequestToUpdate != null)
+                var correlationId = $"{idempotencyKey}_{singleUnpaidRequestToUpdate.UnpaidRequestId}";
+
+                // Send notification.
+                var notificationResult = await _notification.SendAsync($"Dear {unpaid.Name}", unpaid.Message, unpaid.IdNumber, correlationId, cancellationToken); ;
+
+                var status = Status.Failed;
+
+                if (notificationResult.StatusCode == HttpStatusCode.Accepted)
                 {
-                    // evaluate notification task result.
-                    var notificationResult = await notificationTask;
-
-                    var status = Status.Failed;
-
-                    if (notificationResult.StatusCode == HttpStatusCode.Accepted)
-                    {
-                        status = Status.Success;
-                        isBatchSuccessful = true;
-                    }
-
-                    var updateUnpaidRequestResult = await _unpaidRequestClient.UpdateUnpaidRequestAsync(singleUnpaidRequestToUpdate.UnpaidRequestId, Notification.Push, status, notificationResult.AdditionalErrorMessage, DateTime.UtcNow, cancellationToken);
-                    if (updateUnpaidRequestResult <= 0)
-                    {
-                        // Log Error. Update failed.
-                        isBatchSuccessful = false;
-                    }                    
+                    status = Status.Success;
+                    isBatchSuccessful = true;
                 }
 
+                // Update UnpaidRequest status.
+                var updateUnpaidRequestResult = await _unpaidRequestClient.UpdateUnpaidRequestAsync(singleUnpaidRequestToUpdate.UnpaidRequestId, Notification.Push, status, notificationResult.AdditionalErrorMessage, DateTime.UtcNow, correlationId, cancellationToken);
+                if (updateUnpaidRequestResult <= 0)
+                {
+                    // Log Error. Update failed.
+                    isBatchSuccessful = false;
+                }
+
+            }
+
+            // Update Batch Status.
+            var batchStatus = Status.Failed;
+            if (isBatchSuccessful)
+            {
+                batchStatus = Status.Success;
+            }
+
+            var updateUnpaidBatchResult = await _unpaidBatchClient.UpdateUnpaidBatchAsync(idempotencyKey, batchStatus, DateTime.UtcNow, cancellationToken);
+            if (updateUnpaidBatchResult <= 0)
+            {
+                // Log Error. Update failed.
+                isBatchSuccessful = false;
             }
 
             return isBatchSuccessful;
@@ -178,7 +216,7 @@ namespace UnpaidManager
                     ErrorMessage = "Notification not found."
                 };
 
-                var unpaidRequest = await _unpaidRequestClient.GetLatestSuccessfulUnpaidRequestAsync(unpaidResponseInput, cancellationToken);
+                var unpaidRequest = await _unpaidRequestClient.GetUnpaidRequestByIdAsync(unpaidResponseInput, cancellationToken);
                 if (unpaidRequest == null)
                 {
                     // Log Error.

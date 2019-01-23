@@ -45,15 +45,15 @@ namespace UnpaidManager
               {
                   UnpaidId = unpaid.UnpaidId,
                   NotificationId = (int) notification,
-                  StatusId = (int) status
+                  StatusId = (int) status,
+                  CorrelationId = string.Empty
               });  
             }
 
             return await _unpaidRequestOperations.AddUnpaidRequestAsync(unpaidRequestList, cancellationToken);
         }
 
-        public async Task<int> UpdateUnpaidRequestAsync(int unpaidRequestId, Notification notification, Status status, string statusAdditionalInfo, DateTime dateModified,
-            CancellationToken cancellationToken)
+        public async Task<int> UpdateUnpaidRequestAsync(int unpaidRequestId, Notification notification, Status status, string statusAdditionalInfo, DateTime dateModified, string correlationId, CancellationToken cancellationToken)
         {
             if (unpaidRequestId <= 0)
             {
@@ -61,10 +61,10 @@ namespace UnpaidManager
                 return 0;
             }
 
-            return await _unpaidRequestOperations.UpdateUnpaidRequestAsync(unpaidRequestId, notification, status, statusAdditionalInfo, dateModified, cancellationToken);
+            return await _unpaidRequestOperations.UpdateUnpaidRequestAsync(unpaidRequestId, notification, status, statusAdditionalInfo, dateModified, correlationId, cancellationToken);
         }
 
-        public async Task<IEnumerable<TbUnpaidRequest>> GetAllUnpaidRequestAsync(int unpaidId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<TbUnpaidRequest>> GetAllUnpaidRequestAsync(int unpaidId, Status status, CancellationToken cancellationToken)
         {
             if (unpaidId <= 0)
             {
@@ -72,10 +72,12 @@ namespace UnpaidManager
                 return null;
             }
 
-            return await _unpaidRequestOperations.GetAllUnpaidRequestAsync(unpaidId, cancellationToken);
+            var unpaidRequests = await _unpaidRequestOperations.GetAllUnpaidRequestAsync(unpaidId, cancellationToken);
+
+            return unpaidRequests.Where(request => request.StatusId == (int) status);
         }
 
-        public async Task<TbUnpaidRequest> GetLatestSuccessfulUnpaidRequestAsync(UnpaidResponseInput unpaidResponseInput, CancellationToken cancellationToken)
+        public async Task<TbUnpaidRequest> GetUnpaidRequestByIdAsync(UnpaidResponseInput unpaidResponseInput, CancellationToken cancellationToken)
         {
             if (unpaidResponseInput == null)
             {
@@ -95,7 +97,20 @@ namespace UnpaidManager
                 return null;
             }
 
-            return await _unpaidRequestOperations.GetSingleUnpaidRequestAsync(unpaidResponseInput.PolicyNumber, unpaidResponseInput.IdNumber, Status.Success, cancellationToken);
+            if (string.IsNullOrWhiteSpace(unpaidResponseInput.CorrelationId))
+            {
+                // Log Error.
+                return null;
+            }
+
+            var correlationIdSplit = unpaidResponseInput.CorrelationId.Split("_");
+            if (correlationIdSplit.Length < 2)
+            {
+                // Log Error. Invalid CorrelationId
+                return null;
+            }
+
+            return await _unpaidRequestOperations.GetSingleUnpaidRequestAsync(unpaidResponseInput.IdNumber, Convert.ToInt32(correlationIdSplit[1]), Status.Success, cancellationToken);
         }
 
         public async Task<IEnumerable<GetAllUnpaidRequestOutput>> GetAllUnpaidRequestAsync(int pageIndex, int pageSize, CancellationToken cancellationToken)
@@ -218,7 +233,8 @@ namespace UnpaidManager
                     NotificationType = unpaidRequest.Notification.Notification,
                     DateNotificationSent = unpaidRequest.DateCreated,
                     NotificationSentStatus = unpaidRequest.Status.Status,
-                    NotificationErrorMessage = unpaidRequest.StatusAdditionalInfo
+                    NotificationErrorMessage = unpaidRequest.StatusAdditionalInfo,
+                    CorrelationId = unpaidRequest.CorrelationId,
                 });
             }
 

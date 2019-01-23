@@ -19,9 +19,15 @@ namespace UnpaidManager
             _unpaidOperations = unpaidOperations;
         }
 
-        public async Task<int> AddUnpaidAsync(IEnumerable<UnpaidInput> unpaids, string idempotencyKey, CancellationToken cancellationToken)
+        public async Task<int> AddUnpaidAsync(IEnumerable<UnpaidInput> unpaids, int unpaidBatchId, CancellationToken cancellationToken)
         {
             if (unpaids == null)
+            {
+                // Log Error.
+                return 0;
+            }
+
+            if (unpaidBatchId <= 0)
             {
                 // Log Error.
                 return 0;
@@ -45,7 +51,8 @@ namespace UnpaidManager
                     IdNumber = unpaid.IdNumber,
                     Name = unpaid.Name,
                     Message = unpaid.Message,
-                    IdempotencyKey = idempotencyKey
+                    Title = unpaid.MessageTitle,
+                    UnpaidBatchId = unpaidBatchId
                 });
             }
 

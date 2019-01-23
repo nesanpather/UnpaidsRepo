@@ -6,6 +6,6 @@ namespace UnpaidManager.Interfaces
 {
     public interface INotification
     {
-        Task<NotificationResponse> SendAsync(string title, string message, string idNumber, CancellationToken cancellationToken);
+        Task<NotificationResponse> SendAsync(string title, string message, string idNumber, string correlationId, CancellationToken cancellationToken);
     }
 }

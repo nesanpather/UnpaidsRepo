@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Utilities.Interfaces;
 
 namespace Utilities
@@ -43,8 +41,6 @@ namespace Utilities
             var uri = new Uri(url);
             
             var request = new HttpRequestMessage(httpMethod, uri);
-            //request.Headers.Add("Accept", "application/json");
-            //request.Headers.Add("User-Agent", "Unpaids-Sample");
 
             request.Headers.Authorization = authenticationHeaderValue;
             
@@ -52,9 +48,6 @@ namespace Utilities
             {
                 request.Headers.Add(header.Key, header.Value);
             }
-
-            //var serializedRequest = JsonConvert.SerializeObject(content);
-            //request.Content = new StringContent(serializedRequest, Encoding.UTF8, "application/json");
 
             request.Content = httpContent;
 

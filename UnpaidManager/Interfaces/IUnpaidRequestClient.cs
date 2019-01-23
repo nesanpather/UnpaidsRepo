@@ -11,9 +11,9 @@ namespace UnpaidManager.Interfaces
     {
         Task<int> AddUnpaidRequestAsync(IEnumerable<TbUnpaid> unpaids, Notification notification, Status status, CancellationToken cancellationToken);
 
-        Task<int> UpdateUnpaidRequestAsync(int unpaidRequestId, Notification notification, Status status, string statusAdditionalInfo, DateTime dateModified, CancellationToken cancellationToken);
-        Task<IEnumerable<TbUnpaidRequest>> GetAllUnpaidRequestAsync(int unpaidId, CancellationToken cancellationToken);
-        Task<TbUnpaidRequest> GetLatestSuccessfulUnpaidRequestAsync(UnpaidResponseInput unpaidResponseInput, CancellationToken cancellationToken);
+        Task<int> UpdateUnpaidRequestAsync(int unpaidRequestId, Notification notification, Status status, string statusAdditionalInfo, DateTime dateModified, string correlationId, CancellationToken cancellationToken);
+        Task<IEnumerable<TbUnpaidRequest>> GetAllUnpaidRequestAsync(int unpaidId, Status status, CancellationToken cancellationToken);
+        Task<TbUnpaidRequest> GetUnpaidRequestByIdAsync(UnpaidResponseInput unpaidResponseInput, CancellationToken cancellationToken);
         Task<IEnumerable<GetAllUnpaidRequestOutput>> GetAllUnpaidRequestAsync(int pageIndex, int pageSize, CancellationToken cancellationToken);
         Task<IEnumerable<GetAllUnpaidRequestOutput>> GetAllUnpaidRequestAsync(CancellationToken cancellationToken);
         Task<IEnumerable<GetAllUnpaidRequestOutput>> GetAllUnpaidRequestAsync(string policyNumber, CancellationToken cancellationToken);

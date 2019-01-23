@@ -214,24 +214,6 @@ namespace DataManager.Tests
             using (var context = new UnpaidsContext(options))
             {
                 var service = new UnpaidRequestDataManager(context);
-                //var unpaids = new List<UnpaidDb>
-                //{
-                //    new UnpaidDb
-                //    {
-                //        UnpaidId = 10, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom",
-                //        Message = "Test Message 1.", IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
-                //    },
-                //    new UnpaidDb
-                //    {
-                //        UnpaidId = 12, PolicyNumber = "P2", Name = "Bob", IdNumber = "9009165023081",
-                //        Message = "Test Message 2.", IdempotencyKey = "0f8fad5b-d9cb-469f-a165-70867728950e"
-                //    },
-                //    new UnpaidDb
-                //    {
-                //        UnpaidId = 55, PolicyNumber = "P4", IdNumber = "9009165023082", Name = "Brad",
-                //        Message = "Test Message 4.", IdempotencyKey = "1f9fad5b-d9cb-469f-a165-70867728950e"
-                //    }
-                //};
 
                 var actual = await service.GetAllUnpaidRequestAsync(10, CancellationToken.None);
                 var unpaidRequests = actual.ToList();
@@ -267,7 +249,7 @@ namespace DataManager.Tests
             using (var context = new UnpaidsContext(options))
             {
                 var service = new UnpaidRequestDataManager(context);
-                await service.UpdateUnpaidRequestAsync(3, Notification.Call, Status.Failed, "Testing.", DateTime.Now, CancellationToken.None);
+                await service.UpdateUnpaidRequestAsync(3, Notification.Call, Status.Failed, "Testing.", DateTime.Now, "GUID_1", CancellationToken.None);
             }
 
             // Assert.
@@ -282,6 +264,7 @@ namespace DataManager.Tests
                     Assert.AreEqual(3, actual.StatusId);
                     Assert.AreEqual(4, actual.NotificationId);
                     Assert.AreEqual("Testing.", actual.StatusAdditionalInfo);
+                    Assert.AreEqual("GUID_1", actual.CorrelationId);
                 }
             }
         }

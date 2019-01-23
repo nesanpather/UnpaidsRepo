@@ -28,10 +28,16 @@
       <span>{{ 'Urdu' }}s</span>
     </button>
   </mat-menu>-->
-  <button class="hidden-sm" mat-icon-button [matMenuTriggerFor]="profile">
+
+  <mat-icon>account_circle</mat-icon>
+  <div class="nav-user">
+    {{userName}}
+  </div>
+
+  <!--<button class="hidden-sm" mat-icon-button [matMenuTriggerFor]="profile">
     <mat-icon>account_circle</mat-icon>
-  </button>
-  <mat-menu #profile="matMenu">
+  </button>-->
+  <!--<mat-menu #profile="matMenu">
     <button mat-menu-item>
       <mat-icon>person</mat-icon>
       <span>{{ 'Profile' }}</span>
@@ -44,8 +50,8 @@
       <mat-icon>settings</mat-icon>
       <span>{{ 'Settings' }}</span>
     </button>
-  </mat-menu>
-  <button mat-icon-button (click)="onLoggedout()">
-    <mat-icon>exit_to_app</mat-icon>
-  </button>
+  </mat-menu>-->
+  <!--<button mat-icon-button (click)="onLoggedout()">
+    <mat-icon>exit_to_appn></mat-icon>
+  </button>-->
 </mat-toolbar>

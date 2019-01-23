@@ -20,7 +20,7 @@ namespace UnpaidManager.Tests
         {
             // Arrange.
             var notification = Substitute.For<INotification>();
-            notification.SendAsync(Arg.Any<string>(), Arg.Any<string>(), "9009165023080", CancellationToken.None)
+            notification.SendAsync(Arg.Any<string>(), Arg.Any<string>(), "9009165023080", "GUID_1", CancellationToken.None)
                 .Returns(Task.FromResult(new NotificationResponse
                 {
                     StatusCode = HttpStatusCode.Accepted,
@@ -28,7 +28,7 @@ namespace UnpaidManager.Tests
                 }));
 
             var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
-            unpaidRequestClient.GetAllUnpaidRequestAsync(10, CancellationToken.None)
+            unpaidRequestClient.GetAllUnpaidRequestAsync((int) 10, (Status) Status.Pending, CancellationToken.None)
                 .Returns(Task.FromResult<IEnumerable<TbUnpaidRequest>>(new List<TbUnpaidRequest>
                 {
                     new TbUnpaidRequest
@@ -40,7 +40,7 @@ namespace UnpaidManager.Tests
                     }
                 }));
 
-            unpaidRequestClient.UpdateUnpaidRequestAsync(1, Notification.Push, Status.Success, "", Arg.Any<DateTime>(), CancellationToken.None)
+            unpaidRequestClient.UpdateUnpaidRequestAsync(1, Notification.Push, Status.Success, "", Arg.Any<DateTime>(), "GUID_1", CancellationToken.None)
                 .Returns(Task.FromResult(1));
 
             var unpaidsInput = new List<TbUnpaid>
@@ -52,7 +52,7 @@ namespace UnpaidManager.Tests
                     IdNumber = "9009165023080",
                     Message = "Test Message",
                     Name = "Test Name",
-                    IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+                    Title = "Test"
                 }
             };
 
@@ -60,10 +60,14 @@ namespace UnpaidManager.Tests
 
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient);
+            var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
+
+            unpaidBatchClient.UpdateUnpaidBatchAsync("GUID", Status.Success, Arg.Any<DateTime>(), CancellationToken.None).Returns(Task.FromResult(1));
+
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
 
             // Act.
-            var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, CancellationToken.None);
+            var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, "GUID", CancellationToken.None);
 
             // Assert.
             Assert.IsTrue(actual);
@@ -74,7 +78,7 @@ namespace UnpaidManager.Tests
         {
             // Arrange.
             var notification = Substitute.For<INotification>();
-            notification.SendAsync(Arg.Any<string>(), Arg.Any<string>(), "9009165023080", CancellationToken.None)
+            notification.SendAsync(Arg.Any<string>(), Arg.Any<string>(), "9009165023080", "GUID_1", CancellationToken.None)
                 .Returns(Task.FromResult(new NotificationResponse
                 {
                     StatusCode = HttpStatusCode.ServiceUnavailable,
@@ -82,7 +86,7 @@ namespace UnpaidManager.Tests
                 }));
 
             var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
-            unpaidRequestClient.GetAllUnpaidRequestAsync(10, CancellationToken.None)
+            unpaidRequestClient.GetAllUnpaidRequestAsync((int) 10, (Status) Status.Pending, CancellationToken.None)
                 .Returns(Task.FromResult<IEnumerable<TbUnpaidRequest>>(new List<TbUnpaidRequest>
                 {
                     new TbUnpaidRequest
@@ -94,7 +98,7 @@ namespace UnpaidManager.Tests
                     }
                 }));
 
-            unpaidRequestClient.UpdateUnpaidRequestAsync(1, Notification.Push, Status.Failed, "Error getting a WebToken.", Arg.Any<DateTime>(), CancellationToken.None)
+            unpaidRequestClient.UpdateUnpaidRequestAsync(1, Notification.Push, Status.Failed, "Error getting a WebToken.", Arg.Any<DateTime>(), "GUID_1", CancellationToken.None)
                 .Returns(Task.FromResult(1));
 
             var unpaidsInput = new List<TbUnpaid>
@@ -106,7 +110,7 @@ namespace UnpaidManager.Tests
                     IdNumber = "9009165023080",
                     Message = "Test Message",
                     Name = "Test Name",
-                    IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+                    Title = "Test"
                 }
             };
 
@@ -114,10 +118,11 @@ namespace UnpaidManager.Tests
 
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient);
+            var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
 
             // Act.
-            var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, CancellationToken.None);
+            var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, "GUID", CancellationToken.None);
 
             // Assert.
             Assert.False(actual);
@@ -128,21 +133,21 @@ namespace UnpaidManager.Tests
         {
             // Arrange.
             var notification = Substitute.For<INotification>();
-            notification.SendAsync(Arg.Any<string>(), Arg.Any<string>(), "9009165023080", CancellationToken.None)
+            notification.SendAsync(Arg.Any<string>(), Arg.Any<string>(), "9009165023080", "GUID_1", CancellationToken.None)
                 .Returns(Task.FromResult(new NotificationResponse
                 {
                     StatusCode = HttpStatusCode.Accepted,
                     AdditionalErrorMessage = ""
                 }));
 
-            notification.SendAsync(Arg.Any<string>(), Arg.Any<string>(), "9009165023081", CancellationToken.None)
+            notification.SendAsync(Arg.Any<string>(), Arg.Any<string>(), "9009165023081", "GUID_2", CancellationToken.None)
                 .Returns(Task.FromResult(new NotificationResponse
                 {
                     StatusCode = HttpStatusCode.BadRequest,
                     AdditionalErrorMessage = "Error."
                 }));
 
-            notification.SendAsync(Arg.Any<string>(), Arg.Any<string>(), "9009165023082", CancellationToken.None)
+            notification.SendAsync(Arg.Any<string>(), Arg.Any<string>(), "9009165023082", "GUID_3", CancellationToken.None)
                 .Returns(Task.FromResult(new NotificationResponse
                 {
                     StatusCode = HttpStatusCode.Accepted,
@@ -150,7 +155,7 @@ namespace UnpaidManager.Tests
                 }));
 
             var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
-            unpaidRequestClient.GetAllUnpaidRequestAsync(10, CancellationToken.None)
+            unpaidRequestClient.GetAllUnpaidRequestAsync((int) 10, (Status) Status.Pending, CancellationToken.None)
                 .Returns(Task.FromResult<IEnumerable<TbUnpaidRequest>>(new List<TbUnpaidRequest>
                 {
                     new TbUnpaidRequest
@@ -162,7 +167,7 @@ namespace UnpaidManager.Tests
                     }
                 }));
 
-            unpaidRequestClient.GetAllUnpaidRequestAsync(11, CancellationToken.None)
+            unpaidRequestClient.GetAllUnpaidRequestAsync((int) 11, (Status) Status.Pending, CancellationToken.None)
                 .Returns(Task.FromResult<IEnumerable<TbUnpaidRequest>>(new List<TbUnpaidRequest>
                 {
                     new TbUnpaidRequest
@@ -174,7 +179,7 @@ namespace UnpaidManager.Tests
                     }
                 }));
 
-            unpaidRequestClient.GetAllUnpaidRequestAsync(12, CancellationToken.None)
+            unpaidRequestClient.GetAllUnpaidRequestAsync((int) 12, (Status) Status.Pending, CancellationToken.None)
                 .Returns(Task.FromResult<IEnumerable<TbUnpaidRequest>>(new List<TbUnpaidRequest>
                 {
                     new TbUnpaidRequest
@@ -186,13 +191,13 @@ namespace UnpaidManager.Tests
                     }
                 }));
 
-            unpaidRequestClient.UpdateUnpaidRequestAsync(1, Notification.Push, Status.Success, "", Arg.Any<DateTime>(), CancellationToken.None)
+            unpaidRequestClient.UpdateUnpaidRequestAsync(1, Notification.Push, Status.Success, "", Arg.Any<DateTime>(), "GUID_1", CancellationToken.None)
                 .Returns(Task.FromResult(1));
 
-            unpaidRequestClient.UpdateUnpaidRequestAsync(2, Notification.Push, Status.Failed, "Error.", Arg.Any<DateTime>(), CancellationToken.None)
+            unpaidRequestClient.UpdateUnpaidRequestAsync(2, Notification.Push, Status.Failed, "Error.", Arg.Any<DateTime>(), "GUID_2", CancellationToken.None)
                 .Returns(Task.FromResult(1));
 
-            unpaidRequestClient.UpdateUnpaidRequestAsync(3, Notification.Push, Status.Success, "", Arg.Any<DateTime>(), CancellationToken.None)
+            unpaidRequestClient.UpdateUnpaidRequestAsync(3, Notification.Push, Status.Success, "", Arg.Any<DateTime>(), "GUID_3", CancellationToken.None)
                 .Returns(Task.FromResult(1));
 
             var unpaidsInput = new List<TbUnpaid>
@@ -204,7 +209,7 @@ namespace UnpaidManager.Tests
                     IdNumber = "9009165023080",
                     Message = "Test Message",
                     Name = "Test Name",
-                    IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+                    Title = "Test1"
                 },
                 new TbUnpaid
                 {
@@ -213,7 +218,7 @@ namespace UnpaidManager.Tests
                     IdNumber = "9009165023081",
                     Message = "Test Message",
                     Name = "Test Name",
-                    IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+                    Title = "Test2"
                 },
                 new TbUnpaid
                 {
@@ -222,7 +227,7 @@ namespace UnpaidManager.Tests
                     IdNumber = "9009165023082",
                     Message = "Test Message",
                     Name = "Test Name",
-                    IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+                    Title = "Test3"
                 }
             };
 
@@ -230,10 +235,11 @@ namespace UnpaidManager.Tests
 
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient);
+            var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
 
             // Act.
-            var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, CancellationToken.None);
+            var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, "GUID", CancellationToken.None);
 
             // Assert.
             Assert.IsTrue(true);
@@ -244,7 +250,7 @@ namespace UnpaidManager.Tests
         {
             // Arrange.
             var notification = Substitute.For<INotification>();
-            notification.SendAsync(Arg.Any<string>(), Arg.Any<string>(), "9009165023080", CancellationToken.None)
+            notification.SendAsync(Arg.Any<string>(), Arg.Any<string>(), "9009165023080", "GUID_1", CancellationToken.None)
                 .Returns(Task.FromResult(new NotificationResponse
                 {
                     StatusCode = HttpStatusCode.Accepted,
@@ -252,10 +258,10 @@ namespace UnpaidManager.Tests
                 }));
 
             var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
-            unpaidRequestClient.GetAllUnpaidRequestAsync(10, CancellationToken.None)
+            unpaidRequestClient.GetAllUnpaidRequestAsync((int) 10, (Status) Status.Pending, CancellationToken.None)
                 .Returns(Task.FromResult<IEnumerable<TbUnpaidRequest>>(new List<TbUnpaidRequest>()));
 
-            unpaidRequestClient.UpdateUnpaidRequestAsync(1, Notification.Push, Status.Success, "", Arg.Any<DateTime>(), CancellationToken.None)
+            unpaidRequestClient.UpdateUnpaidRequestAsync(1, Notification.Push, Status.Success, "", Arg.Any<DateTime>(), "GUID_1", CancellationToken.None)
                 .Returns(Task.FromResult(1));
 
             var unpaidsInput = new List<TbUnpaid>
@@ -267,7 +273,7 @@ namespace UnpaidManager.Tests
                     IdNumber = "9009165023080",
                     Message = "Test Message",
                     Name = "Test Name",
-                    IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+                    Title = "Test1"
                 }
             };
 
@@ -275,10 +281,11 @@ namespace UnpaidManager.Tests
 
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient);
+            var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
 
             // Act.
-            var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, CancellationToken.None);
+            var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, "GUID", CancellationToken.None);
 
             // Assert.
             Assert.IsFalse(actual);
@@ -289,7 +296,7 @@ namespace UnpaidManager.Tests
         {
             // Arrange.
             var notification = Substitute.For<INotification>();
-            notification.SendAsync(Arg.Any<string>(), Arg.Any<string>(), "9009165023080", CancellationToken.None)
+            notification.SendAsync(Arg.Any<string>(), Arg.Any<string>(), "9009165023080", "GUID_1", CancellationToken.None)
                 .Returns(Task.FromResult(new NotificationResponse
                 {
                     StatusCode = HttpStatusCode.Accepted,
@@ -297,10 +304,10 @@ namespace UnpaidManager.Tests
                 }));
 
             var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();
-            unpaidRequestClient.GetAllUnpaidRequestAsync(10, CancellationToken.None)
+            unpaidRequestClient.GetAllUnpaidRequestAsync((int) 10, (Status) Status.Pending, CancellationToken.None)
                 .Returns(Task.FromResult<IEnumerable<TbUnpaidRequest>>(null));
 
-            unpaidRequestClient.UpdateUnpaidRequestAsync(1, Notification.Push, Status.Success, "", Arg.Any<DateTime>(), CancellationToken.None)
+            unpaidRequestClient.UpdateUnpaidRequestAsync(1, Notification.Push, Status.Success, "", Arg.Any<DateTime>(), "GUID_1", CancellationToken.None)
                 .Returns(Task.FromResult(1));
 
             var unpaidsInput = new List<TbUnpaid>
@@ -312,7 +319,7 @@ namespace UnpaidManager.Tests
                     IdNumber = "9009165023080",
                     Message = "Test Message",
                     Name = "Test Name",
-                    IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+                    Title = "Test1"
                 }
             };
 
@@ -320,10 +327,11 @@ namespace UnpaidManager.Tests
 
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient);
+            var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
 
             // Act.
-            var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, CancellationToken.None);
+            var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, "GUID", CancellationToken.None);
 
             // Assert.
             Assert.IsFalse(actual);
@@ -336,10 +344,10 @@ namespace UnpaidManager.Tests
             var unpaidClient = Substitute.For<IUnpaidClient>();
 
             unpaidClient
-                .AddUnpaidAsync(Arg.Any<IEnumerable<UnpaidInput>>(), "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+                .AddUnpaidAsync(Arg.Any<IEnumerable<UnpaidInput>>(), 1,
                     CancellationToken.None).Returns(Task.FromResult(1));
 
-            unpaidClient.GetUnpaidsByIdempotencyKeyAsync("7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None)
+            unpaidClient.GetUnpaidsByIdempotencyKeyAsync("GUID", CancellationToken.None)
                 .Returns(Task.FromResult<IEnumerable<TbUnpaid>>(new List<TbUnpaid>
                 {
                     new TbUnpaid
@@ -349,7 +357,7 @@ namespace UnpaidManager.Tests
                         IdNumber = "9009165023080",
                         Message = "Test Message",
                         Name = "Test Name",
-                        IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+                        Title = "Test1"
                     }
                 }));
 
@@ -357,7 +365,7 @@ namespace UnpaidManager.Tests
             unpaidRequestClient.AddUnpaidRequestAsync(Arg.Any<IEnumerable<TbUnpaid>>(), Notification.Push,
                 Status.Pending, CancellationToken.None).Returns(Task.FromResult(1));
 
-            unpaidRequestClient.GetAllUnpaidRequestAsync(10, CancellationToken.None)
+            unpaidRequestClient.GetAllUnpaidRequestAsync((int) 10, (Status) Status.Pending, CancellationToken.None)
                 .Returns(Task.FromResult<IEnumerable<TbUnpaidRequest>>(new List<TbUnpaidRequest>
                 {
                     new TbUnpaidRequest
@@ -369,11 +377,11 @@ namespace UnpaidManager.Tests
                     }
                 }));
 
-            unpaidRequestClient.UpdateUnpaidRequestAsync(1, Notification.Push, Status.Success, "", Arg.Any<DateTime>(), CancellationToken.None)
+            unpaidRequestClient.UpdateUnpaidRequestAsync(1, Notification.Push, Status.Success, "", Arg.Any<DateTime>(), "GUID_1", CancellationToken.None)
                 .Returns(Task.FromResult(1));
 
             var notification = Substitute.For<INotification>();
-            notification.SendAsync(Arg.Any<string>(), Arg.Any<string>(), "9009165023080", CancellationToken.None)
+            notification.SendAsync(Arg.Any<string>(), Arg.Any<string>(), "9009165023080", "GUID_1", CancellationToken.None)
                 .Returns(Task.FromResult(new NotificationResponse
                 {
                     StatusCode = HttpStatusCode.Accepted,
@@ -393,10 +401,19 @@ namespace UnpaidManager.Tests
 
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient);
+            var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
+
+            unpaidBatchClient.AddUnpaidBatchAsync("GUID", Status.Pending, "XX", CancellationToken.None).Returns(Task.FromResult(1));
+
+            unpaidBatchClient.GetUnpaidBatchByBatchKeyAsync("GUID", CancellationToken.None).Returns(Task.FromResult<IEnumerable<TbUnpaidBatch>>(new List<TbUnpaidBatch>
+            {
+                new TbUnpaidBatch{UnpaidBatchId = 1, BatchKey = "GUID", StatusId = 1, UserName = "XX"}
+            }));
+
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
 
             // Act.
-            var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None);
+            var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "GUID", "XX", CancellationToken.None);
 
             // Assert.
             Assert.IsNotNull(actual);
@@ -413,7 +430,7 @@ namespace UnpaidManager.Tests
             var unpaidClient = Substitute.For<IUnpaidClient>();
 
             unpaidClient
-                .AddUnpaidAsync(Arg.Any<IEnumerable<UnpaidInput>>(), "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+                .AddUnpaidAsync(Arg.Any<IEnumerable<UnpaidInput>>(), 1,
                     CancellationToken.None).Returns(Task.FromResult(input));            
 
             var unpaidRequestClient = Substitute.For<IUnpaidRequestClient>();            
@@ -432,10 +449,11 @@ namespace UnpaidManager.Tests
 
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient);
+            var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
 
             // Act.
-            var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None);
+            var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", "XX", CancellationToken.None);
 
             // Assert.
             Assert.IsNull(actual);
@@ -448,7 +466,7 @@ namespace UnpaidManager.Tests
             var unpaidClient = Substitute.For<IUnpaidClient>();
 
             unpaidClient
-                .AddUnpaidAsync(Arg.Any<IEnumerable<UnpaidInput>>(), "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+                .AddUnpaidAsync(Arg.Any<IEnumerable<UnpaidInput>>(), 1,
                     CancellationToken.None).Returns(Task.FromResult(1));
 
             unpaidClient.GetUnpaidsByIdempotencyKeyAsync("7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None)
@@ -470,10 +488,11 @@ namespace UnpaidManager.Tests
                 };
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient);
+            var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
 
             // Act.
-            var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None);
+            var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", "XX", CancellationToken.None);
 
             // Assert.
             Assert.IsNull(actual);
@@ -486,7 +505,7 @@ namespace UnpaidManager.Tests
             var unpaidClient = Substitute.For<IUnpaidClient>();
 
             unpaidClient
-                .AddUnpaidAsync(Arg.Any<IEnumerable<UnpaidInput>>(), "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+                .AddUnpaidAsync(Arg.Any<IEnumerable<UnpaidInput>>(), 1,
                     CancellationToken.None).Returns(Task.FromResult(1));
 
             unpaidClient.GetUnpaidsByIdempotencyKeyAsync("7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None)
@@ -509,10 +528,11 @@ namespace UnpaidManager.Tests
 
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient);
+            var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
 
             // Act.
-            var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None);
+            var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", "XX", CancellationToken.None);
 
             // Assert.
             Assert.IsNull(actual);
@@ -526,7 +546,7 @@ namespace UnpaidManager.Tests
             var unpaidClient = Substitute.For<IUnpaidClient>();
 
             unpaidClient
-                .AddUnpaidAsync(Arg.Any<IEnumerable<UnpaidInput>>(), "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+                .AddUnpaidAsync(Arg.Any<IEnumerable<UnpaidInput>>(), 1,
                     CancellationToken.None).Returns(Task.FromResult(1));
 
             unpaidClient.GetUnpaidsByIdempotencyKeyAsync("7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None)
@@ -539,7 +559,7 @@ namespace UnpaidManager.Tests
                         IdNumber = "9009165023080",
                         Message = "Test Message",
                         Name = "Test Name",
-                        IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+                        Title = "Test1"
                     }
                 }));
 
@@ -562,10 +582,11 @@ namespace UnpaidManager.Tests
 
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient);
+            var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
 
             // Act.
-            var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None);
+            var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", "XX", CancellationToken.None);
 
             // Assert.
             Assert.IsNull(actual);
@@ -594,10 +615,11 @@ namespace UnpaidManager.Tests
 
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient);
+            var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
 
             // Act.
-            var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, input, CancellationToken.None);
+            var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, input, "XX", CancellationToken.None);
 
             // Assert.
             Assert.IsNull(actual);
@@ -613,10 +635,11 @@ namespace UnpaidManager.Tests
 
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient);
+            var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
 
             // Act.
-            var actual = await unpaidEngine.HandleUnpaidAsync(null, "7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None);
+            var actual = await unpaidEngine.HandleUnpaidAsync(null, "7c9e6679-7425-40de-944b-e07fc1f90ae7", "XX", CancellationToken.None);
 
             // Assert.
             Assert.IsNull(actual);
@@ -634,10 +657,11 @@ namespace UnpaidManager.Tests
 
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient);
+            var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
 
             // Act.
-            var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", CancellationToken.None);
+            var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", "XX", CancellationToken.None);
 
             // Assert.
             Assert.IsNull(actual);
@@ -652,7 +676,7 @@ namespace UnpaidManager.Tests
             var notification = Substitute.For<INotification>();
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
 
-            unpaidRequestClient.GetLatestSuccessfulUnpaidRequestAsync(Arg.Any<UnpaidResponseInput>(), CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
+            unpaidRequestClient.GetUnpaidRequestByIdAsync(Arg.Any<UnpaidResponseInput>(), CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
             {
                 UnpaidRequestId = 10,
                 UnpaidId = 2,
@@ -677,7 +701,8 @@ namespace UnpaidManager.Tests
             
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
 
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient);
+            var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidResponseAsync(unpaidResponseInputList, CancellationToken.None);
@@ -704,7 +729,7 @@ namespace UnpaidManager.Tests
             var notification = Substitute.For<INotification>();
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
 
-            unpaidRequestClient.GetLatestSuccessfulUnpaidRequestAsync(Arg.Any<UnpaidResponseInput>(), CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
+            unpaidRequestClient.GetUnpaidRequestByIdAsync(Arg.Any<UnpaidResponseInput>(), CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
             {
                 UnpaidRequestId = 10,
                 UnpaidId = 2,
@@ -737,7 +762,8 @@ namespace UnpaidManager.Tests
             };
             
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient);
+            var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidResponseAsync(unpaidResponseInputList, CancellationToken.None);
@@ -767,7 +793,8 @@ namespace UnpaidManager.Tests
             var unpaidResponseInputList = new List<UnpaidResponseInput>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
 
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient);
+            var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidResponseAsync(unpaidResponseInputList, CancellationToken.None);
@@ -786,7 +813,8 @@ namespace UnpaidManager.Tests
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
 
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient);
+            var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidResponseAsync(null, CancellationToken.None);
@@ -828,7 +856,7 @@ namespace UnpaidManager.Tests
                 ContactOption = ContactOption.CallMe
             };
 
-            unpaidRequestClient.GetLatestSuccessfulUnpaidRequestAsync(input1, CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
+            unpaidRequestClient.GetUnpaidRequestByIdAsync(input1, CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
             {
                 UnpaidRequestId = 10,
                 UnpaidId = 2,
@@ -837,7 +865,7 @@ namespace UnpaidManager.Tests
                 StatusAdditionalInfo = null
             }));
 
-            unpaidRequestClient.GetLatestSuccessfulUnpaidRequestAsync(input2, CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
+            unpaidRequestClient.GetUnpaidRequestByIdAsync(input2, CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
             {
                 UnpaidRequestId = 11,
                 UnpaidId = 3,
@@ -846,7 +874,7 @@ namespace UnpaidManager.Tests
                 StatusAdditionalInfo = null
             }));
 
-            unpaidRequestClient.GetLatestSuccessfulUnpaidRequestAsync(input3, CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
+            unpaidRequestClient.GetUnpaidRequestByIdAsync(input3, CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
             {
                 UnpaidRequestId = 12,
                 UnpaidId = 5,
@@ -868,7 +896,8 @@ namespace UnpaidManager.Tests
 
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
 
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient);
+            var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidResponseAsync(unpaidResponseInputList, CancellationToken.None);
@@ -933,7 +962,7 @@ namespace UnpaidManager.Tests
                 ContactOption = ContactOption.CallMe
             };
 
-            unpaidRequestClient.GetLatestSuccessfulUnpaidRequestAsync(input1, CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
+            unpaidRequestClient.GetUnpaidRequestByIdAsync(input1, CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
             {
                 UnpaidRequestId = 10,
                 UnpaidId = 2,
@@ -942,9 +971,9 @@ namespace UnpaidManager.Tests
                 StatusAdditionalInfo = null
             }));
 
-            unpaidRequestClient.GetLatestSuccessfulUnpaidRequestAsync(input2, CancellationToken.None).Returns(Task.FromResult<TbUnpaidRequest>(null));
+            unpaidRequestClient.GetUnpaidRequestByIdAsync(input2, CancellationToken.None).Returns(Task.FromResult<TbUnpaidRequest>(null));
 
-            unpaidRequestClient.GetLatestSuccessfulUnpaidRequestAsync(input3, CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
+            unpaidRequestClient.GetUnpaidRequestByIdAsync(input3, CancellationToken.None).Returns(Task.FromResult(new TbUnpaidRequest
             {
                 UnpaidRequestId = 12,
                 UnpaidId = 5,
@@ -965,7 +994,8 @@ namespace UnpaidManager.Tests
             };
 
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient);
+            var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidResponseAsync(unpaidResponseInputList, CancellationToken.None);

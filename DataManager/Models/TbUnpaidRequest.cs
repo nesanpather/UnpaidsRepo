@@ -17,6 +17,7 @@ namespace DataManager.Models
         public DateTime DateCreated { get; set; }
         public string StatusAdditionalInfo { get; set; }
         public DateTime? DateModified { get; set; }
+        public string CorrelationId { get; set; }
 
         public virtual TbNotification Notification { get; set; }
         public virtual TbStatus Status { get; set; }

@@ -37,7 +37,7 @@ namespace DataManager.Tests
                         IdNumber = "9009165023080",
                         Name = "Nesan Pather",
                         Message = "Payment bounced. Please accept a call back.",
-                        IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+                        Title = "Test1"
                     }
                 }, CancellationToken.None);
             }
@@ -51,7 +51,7 @@ namespace DataManager.Tests
                 Assert.AreEqual("9009165023080", context.TbUnpaid.Single().IdNumber);
                 Assert.AreEqual("Nesan Pather", context.TbUnpaid.Single().Name);
                 Assert.AreEqual("Payment bounced. Please accept a call back.", context.TbUnpaid.Single().Message);
-                Assert.AreEqual("7c9e6679-7425-40de-944b-e07fc1f90ae7", context.TbUnpaid.Single().IdempotencyKey);
+                Assert.AreEqual("Test1", context.TbUnpaid.Single().Title);
             }
 
             options = null;
@@ -78,7 +78,7 @@ namespace DataManager.Tests
                         IdNumber = "9009165023080",
                         Name = "Nesan Pather",
                         Message = "Payment bounced. Please accept a call back.",
-                        IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+                        Title = "Test1"
                     },
                     new TbUnpaid
                     {
@@ -86,7 +86,7 @@ namespace DataManager.Tests
                         IdNumber = "9009165023081",
                         Name = "Tom Smith",
                         Message = "Payment bounced. Please accept a call back.",
-                        IdempotencyKey = "0f8fad5b-d9cb-469f-a165-70867728950e"
+                        Title = "Test2"
                     }
                 }, CancellationToken.None);
             }
@@ -100,12 +100,12 @@ namespace DataManager.Tests
                 Assert.AreEqual("9009165023080", context.TbUnpaid.ToList()[0].IdNumber);
                 Assert.AreEqual("Nesan Pather", context.TbUnpaid.ToList()[0].Name);
                 Assert.AreEqual("Payment bounced. Please accept a call back.", context.TbUnpaid.ToList()[0].Message);
-                Assert.AreEqual("7c9e6679-7425-40de-944b-e07fc1f90ae7", context.TbUnpaid.ToList()[0].IdempotencyKey);
+                Assert.AreEqual("Test1", context.TbUnpaid.ToList()[0].Title);
                 Assert.AreEqual("Test12345", context.TbUnpaid.ToList()[1].PolicyNumber);
                 Assert.AreEqual("9009165023081", context.TbUnpaid.ToList()[1].IdNumber);
                 Assert.AreEqual("Tom Smith", context.TbUnpaid.ToList()[1].Name);
                 Assert.AreEqual("Payment bounced. Please accept a call back.", context.TbUnpaid.ToList()[1].Message);
-                Assert.AreEqual("0f8fad5b-d9cb-469f-a165-70867728950e", context.TbUnpaid.ToList()[1].IdempotencyKey);
+                Assert.AreEqual("Test2", context.TbUnpaid.ToList()[1].Title);
             }
         }
 
@@ -144,10 +144,10 @@ namespace DataManager.Tests
             // Insert seed data into the database using one instance of the context.
             using (var context = new UnpaidsContext(options))
             {
-                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 1, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 1.", IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7" });
-                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 2, PolicyNumber = "P2", Name = "Bob", IdNumber = "9009165023081", Message = "Test Message 2.", IdempotencyKey = "0f8fad5b-d9cb-469f-a165-70867728950e" });
-                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 3, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 3.", IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7" });
-                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 4, PolicyNumber = "P4", IdNumber = "9009165023082", Name = "Brad", Message = "Test Message 4.", IdempotencyKey = "1f9fad5b-d9cb-469f-a165-70867728950e" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 1, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 1.", Title = "Test1" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 2, PolicyNumber = "P2", Name = "Bob", IdNumber = "9009165023081", Message = "Test Message 2.", Title = "Test2" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 3, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 3.", Title = "Test3" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 4, PolicyNumber = "P4", IdNumber = "9009165023082", Name = "Brad", Message = "Test Message 4.", Title = "Test4" });
                 context.SaveChanges();
             }
 
@@ -162,7 +162,7 @@ namespace DataManager.Tests
                 Assert.AreEqual("9009165023080", actual.IdNumber);
                 Assert.AreEqual("Tom", actual.Name);
                 Assert.AreEqual("Test Message 3.", actual.Message);
-                Assert.AreEqual("7c9e6679-7425-40de-944b-e07fc1f90ae7", actual.IdempotencyKey);
+                Assert.AreEqual("Test3", actual.Title);
             }
         }
 
@@ -202,10 +202,10 @@ namespace DataManager.Tests
             // Insert seed data into the database using one instance of the context.
             using (var context = new UnpaidsContext(options))
             {
-                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 1, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 1.", IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7" });
-                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 2, PolicyNumber = "P2", Name = "Bob", IdNumber = "9009165023081", Message = "Test Message 2.", IdempotencyKey = "0f8fad5b-d9cb-469f-a165-70867728950e" });
-                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 3, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 3.", IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7" });
-                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 4, PolicyNumber = "P4", IdNumber = "9009165023082", Name = "Brad", Message = "Test Message 4.", IdempotencyKey = "1f9fad5b-d9cb-469f-a165-70867728950e" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 1, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 1.", Title = "Test1" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 2, PolicyNumber = "P2", Name = "Bob", IdNumber = "9009165023081", Message = "Test Message 2.", Title = "Test2" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 3, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 3.", Title = "Test3" });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 4, PolicyNumber = "P4", IdNumber = "9009165023082", Name = "Brad", Message = "Test Message 4.", Title = "Test4" });
                 context.SaveChanges();
             }
 
@@ -230,10 +230,18 @@ namespace DataManager.Tests
             // Insert seed data into the database using one instance of the context.
             using (var context = new UnpaidsContext(options))
             {
-                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 1, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 1.", IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7" });
-                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 2, PolicyNumber = "P2", Name = "Bob", IdNumber = "9009165023081", Message = "Test Message 2.", IdempotencyKey = "0f8fad5b-d9cb-469f-a165-70867728950e" });
-                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 3, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 3.", IdempotencyKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7" });
-                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 4, PolicyNumber = "P4", IdNumber = "9009165023082", Name = "Brad", Message = "Test Message 4.", IdempotencyKey = "1f9fad5b-d9cb-469f-a165-70867728950e" });
+                context.TbUnpaidBatch.Add(new TbUnpaidBatch{BatchKey = "7c9e6679-7425-40de-944b-e07fc1f90ae7", StatusId = (int) Status.Pending, UserName = "XX", UnpaidBatchId = 1});
+                context.TbUnpaidBatch.Add(new TbUnpaidBatch { BatchKey = "7c9e6679-7425-40de-944b-e07fc1f90ae9", StatusId = (int)Status.Pending, UserName = "XX", UnpaidBatchId = 2 });
+                context.SaveChanges();
+            }
+
+            // Insert seed data into the database using one instance of the context.
+            using (var context = new UnpaidsContext(options))
+            {
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 1, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 1.", Title = "Test1", UnpaidBatchId = 1});
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 2, PolicyNumber = "P2", Name = "Bob", IdNumber = "9009165023081", Message = "Test Message 2.", Title = "Test2", UnpaidBatchId = 2 });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 3, PolicyNumber = "P1", IdNumber = "9009165023080", Name = "Tom", Message = "Test Message 3.", Title = "Test3", UnpaidBatchId = 1 });
+                context.TbUnpaid.Add(new TbUnpaid { UnpaidId = 4, PolicyNumber = "P4", IdNumber = "9009165023082", Name = "Brad", Message = "Test Message 4.", Title = "Test4", UnpaidBatchId = 2 });
                 context.SaveChanges();
             }
 

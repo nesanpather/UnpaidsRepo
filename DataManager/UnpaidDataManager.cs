@@ -35,9 +35,14 @@ namespace DataManager
             return await _unpaidsDbContext.TbUnpaid.FirstOrDefaultAsync(u => u.UnpaidId == unpaidId, cancellationToken: cancellationToken);
         }
 
-        public async Task<IEnumerable<TbUnpaid>> GetAllUnpaidAsync(string idempotencyKey, CancellationToken cancellationToken)
+        public async Task<IEnumerable<TbUnpaid>> GetAllUnpaidAsync(string batchKey, CancellationToken cancellationToken)
         {
-            return await _unpaidsDbContext.TbUnpaid.Where(u => u.IdempotencyKey.Equals(idempotencyKey, StringComparison.InvariantCultureIgnoreCase)).ToListAsync(cancellationToken: cancellationToken);
+            var query = from u in _unpaidsDbContext.TbUnpaid
+                        join ub in _unpaidsDbContext.TbUnpaidBatch on u.UnpaidBatchId equals ub.UnpaidBatchId
+                        where ub.BatchKey.Equals(batchKey, StringComparison.InvariantCultureIgnoreCase) && ub.StatusId == (int) Status.Pending
+                        select u;
+                
+            return await query.ToListAsync(cancellationToken: cancellationToken);
         }
 
         public async Task<IEnumerable<TbUnpaid>> GetAllUnpaidAsync(CancellationToken cancellationToken)

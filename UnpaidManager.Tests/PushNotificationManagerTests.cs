@@ -47,7 +47,7 @@ namespace UnpaidManager.Tests
             var pushNotificationManager = new PushNotificationManager(pushNotificationClient, accessTokenClient);
 
             // Act.
-            var actual = await pushNotificationManager.SendAsync(title, message, idNumber, CancellationToken.None);
+            var actual = await pushNotificationManager.SendAsync(title, message, idNumber, "GUID_1", CancellationToken.None);
 
             // Assert.
             Assert.AreEqual(HttpStatusCode.Accepted, actual.StatusCode);
@@ -90,7 +90,7 @@ namespace UnpaidManager.Tests
             var pushNotificationManager = new PushNotificationManager(pushNotificationClient, accessTokenClient);
 
             // Act.
-            var actual = await pushNotificationManager.SendAsync(title, message, idNumber, CancellationToken.None);
+            var actual = await pushNotificationManager.SendAsync(title, message, idNumber, "GUID_1", CancellationToken.None);
 
             // Assert.
             Assert.AreEqual(HttpStatusCode.BadRequest, actual.StatusCode);
@@ -115,7 +115,7 @@ namespace UnpaidManager.Tests
             var pushNotificationManager = new PushNotificationManager(pushNotificationClient, accessTokenClient);
 
             // Act.
-            var actual = await pushNotificationManager.SendAsync(title, message, idNumber, CancellationToken.None);
+            var actual = await pushNotificationManager.SendAsync(title, message, idNumber, "GUID_1", CancellationToken.None);
 
             // Assert.
             Assert.AreEqual(HttpStatusCode.ServiceUnavailable, actual.StatusCode);
@@ -154,7 +154,7 @@ namespace UnpaidManager.Tests
             var pushNotificationManager = new PushNotificationManager(pushNotificationClient, accessTokenClient);
 
             // Act.
-            var actual = await pushNotificationManager.SendAsync(title, message, idNumber, CancellationToken.None);
+            var actual = await pushNotificationManager.SendAsync(title, message, idNumber, "GUID_1", CancellationToken.None);
 
             // Assert.
             Assert.AreEqual(HttpStatusCode.ServiceUnavailable, actual.StatusCode);
@@ -178,7 +178,7 @@ namespace UnpaidManager.Tests
             var pushNotificationManager = new PushNotificationManager(pushNotificationClient, accessTokenClient);
 
             // Act.
-            var actual = await pushNotificationManager.SendAsync(title, message, idNumber, CancellationToken.None);
+            var actual = await pushNotificationManager.SendAsync(title, message, idNumber, "GUID_1", CancellationToken.None);
 
             // Assert.
             Assert.AreEqual(HttpStatusCode.BadRequest, actual.StatusCode);
@@ -202,7 +202,7 @@ namespace UnpaidManager.Tests
             var pushNotificationManager = new PushNotificationManager(pushNotificationClient, accessTokenClient);
 
             // Act.
-            var actual = await pushNotificationManager.SendAsync(title, message, idNumber, CancellationToken.None);
+            var actual = await pushNotificationManager.SendAsync(title, message, idNumber, "GUID_1", CancellationToken.None);
 
             // Assert.
             Assert.AreEqual(HttpStatusCode.BadRequest, actual.StatusCode);
@@ -226,7 +226,7 @@ namespace UnpaidManager.Tests
             var pushNotificationManager = new PushNotificationManager(pushNotificationClient, accessTokenClient);
 
             // Act.
-            var actual = await pushNotificationManager.SendAsync(title, message, idNumber, CancellationToken.None);
+            var actual = await pushNotificationManager.SendAsync(title, message, idNumber, "GUID_1", CancellationToken.None);
 
             // Assert.
             Assert.AreEqual(HttpStatusCode.BadRequest, actual.StatusCode);
