@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { MatTableModule } from '@angular/material';
 import { MatFormFieldModule, MatPaginatorModule } from '@angular/material';
 import { MatInputModule } from '@angular/material';
-import { MatRadioModule, MatDatepickerModule, MatNativeDateModule, MatSlideToggleModule } from '@angular/material';
+import { MatRadioModule, MatDatepickerModule, MatNativeDateModule, MatSlideToggleModule, MatSortModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
@@ -24,8 +24,10 @@ import { NotificationsTableComponent } from './notifications-table.component';
     MatSlideToggleModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MatSortModule
   ],
-  declarations: [NotificationsTableComponent]
+  declarations: [NotificationsTableComponent],
+  exports: [MatSortModule]
 })
 export class NotificationsTableModule { }

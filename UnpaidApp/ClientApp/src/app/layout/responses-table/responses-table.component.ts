@@ -36,11 +36,7 @@ export class ResponsesTableComponent implements OnInit {
       (response) => {
         console.log("unpaidService.getUnpaidNotificationResponses response", response);
 
-        // Assign the data to the data source for the table to render
-        this.dataSource = new MatTableDataSource(this.mapNotificationResponses(response));
-
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
+        this.mapDataSource(this.mapNotificationResponses(response));
       },
       (error) => {
         console.log("unpaidService.getUnpaidNotificationResponses error", error);
@@ -86,7 +82,6 @@ export class ResponsesTableComponent implements OnInit {
   public openExportOptions(): void {
     this.bottomSheet.open(ExportOverviewComponent);
   }
-
 
   public addEvent(type: number, event: MatDatepickerInputEvent<Date>) {
 

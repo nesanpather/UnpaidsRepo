@@ -35,11 +35,7 @@ export class NotificationsTableComponent implements OnInit {
       (response) => {
         console.log("unpaidService.getUnpaidNotifications response", response);
 
-        // Assign the data to the data source for the table to render
-        this.dataSource = new MatTableDataSource(this.mapNotifications(response));
-
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
+        this.mapDataSource(this.mapNotifications(response));
       },
       (error) => {
         console.log("unpaidService.getUnpaidNotifications error", error);

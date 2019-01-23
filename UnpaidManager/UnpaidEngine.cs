@@ -118,7 +118,7 @@ namespace UnpaidManager
             };
         }
 
-        // Hangfire proccesses this method.
+        // Hangfire processes this method.
         [AutomaticRetry(Attempts = 3)]
         public async Task<bool> HandleUnpaidRequestAsync(IEnumerable<TbUnpaid> unpaids, string idempotencyKey, CancellationToken cancellationToken)
         {

@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { MatTableModule } from '@angular/material';
 import { MatFormFieldModule, MatPaginatorModule, MatButtonModule, MatListModule } from '@angular/material';
 import { MatInputModule, MatBottomSheetModule } from '@angular/material';
-import { MatRadioModule, MatDatepickerModule, MatNativeDateModule, MatSlideToggleModule } from '@angular/material';
+import { MatRadioModule, MatDatepickerModule, MatNativeDateModule, MatSlideToggleModule, MatSortModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
@@ -28,9 +28,11 @@ import { ExportOverviewComponent } from '../export-overview/export-overview.comp
     MatSlideToggleModule,
     FormsModule,
     ReactiveFormsModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MatSortModule
     ],
   declarations: [ResponsesTableComponent, ExportOverviewComponent],
+  exports: [MatSortModule],
   entryComponents: [ExportOverviewComponent]
 })
 export class ResponsesTableModule { }

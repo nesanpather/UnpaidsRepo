@@ -20,6 +20,11 @@ th {
   font-size: 14px;
 }
 
+.mat-header-cell {
+  font-size: 15px;
+  font-weight: bold;
+}
+
 .mat-row:nth-child(even) {
   background-color: white;
 }
