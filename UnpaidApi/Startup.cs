@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using UnpaidApi.Controllers;
 using UnpaidManager;
 using UnpaidManager.Interfaces;
 using Utilities;
@@ -48,7 +50,6 @@ namespace UnpaidApi
                 });
             }
 
-
             services.AddAuthentication(IISDefaults.AuthenticationScheme);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -76,7 +77,7 @@ namespace UnpaidApi
             services.AddScoped<IUnpaidBatchClient, UnpaidBatchManager>();
             services.AddScoped<IUnpaidEngineHandler, UnpaidEngine>();
             services.AddScoped<IUnpaidNotificationsEngineHandler, UnpaidNotificationsEngine>();
-
+            services.AddSingleton<ILoggerFactory, LoggerFactory>();
             //services.AddAuthorization(options => {
             //    options.AddPolicy("AllUsers", policy => {
             //        policy.AddAuthenticationSchemes(IISDefaults.AuthenticationScheme);
@@ -109,7 +110,7 @@ namespace UnpaidApi
             app.UseHttpsRedirection();                                    
             app.UseCors("SiteCorsPolicy");
             //app.UseAuthentication();
-            app.UseMvc();                        
+            app.UseMvc(); 
         }
     }
 }

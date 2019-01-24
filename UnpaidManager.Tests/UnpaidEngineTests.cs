@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DataManager.Models;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using NSubstitute;
 using UnpaidManager.Interfaces;
@@ -64,7 +65,8 @@ namespace UnpaidManager.Tests
 
             unpaidBatchClient.UpdateUnpaidBatchAsync("GUID", Status.Success, Arg.Any<DateTime>(), CancellationToken.None).Returns(Task.FromResult(1));
 
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
+            var logger = Substitute.For<ILogger<UnpaidEngine>>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient, logger);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, "GUID", CancellationToken.None);
@@ -119,7 +121,8 @@ namespace UnpaidManager.Tests
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
             var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
+            var logger = Substitute.For<ILogger<UnpaidEngine>>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient, logger);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, "GUID", CancellationToken.None);
@@ -236,7 +239,8 @@ namespace UnpaidManager.Tests
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
             var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
+            var logger = Substitute.For<ILogger<UnpaidEngine>>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient, logger);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, "GUID", CancellationToken.None);
@@ -282,7 +286,8 @@ namespace UnpaidManager.Tests
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
             var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
+            var logger = Substitute.For<ILogger<UnpaidEngine>>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient, logger);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, "GUID", CancellationToken.None);
@@ -328,7 +333,8 @@ namespace UnpaidManager.Tests
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
             var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
+            var logger = Substitute.For<ILogger<UnpaidEngine>>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient, logger);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidRequestAsync(unpaidsInput, "GUID", CancellationToken.None);
@@ -410,7 +416,8 @@ namespace UnpaidManager.Tests
                 new TbUnpaidBatch{UnpaidBatchId = 1, BatchKey = "GUID", StatusId = 1, UserName = "XX"}
             }));
 
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
+            var logger = Substitute.For<ILogger<UnpaidEngine>>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient, logger);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "GUID", "XX", CancellationToken.None);
@@ -450,7 +457,8 @@ namespace UnpaidManager.Tests
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
             var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
+            var logger = Substitute.For<ILogger<UnpaidEngine>>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient, logger);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", "XX", CancellationToken.None);
@@ -489,7 +497,8 @@ namespace UnpaidManager.Tests
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
             var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
+            var logger = Substitute.For<ILogger<UnpaidEngine>>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient, logger);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", "XX", CancellationToken.None);
@@ -529,7 +538,8 @@ namespace UnpaidManager.Tests
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
             var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
+            var logger = Substitute.For<ILogger<UnpaidEngine>>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient, logger);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", "XX", CancellationToken.None);
@@ -583,7 +593,8 @@ namespace UnpaidManager.Tests
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
             var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
+            var logger = Substitute.For<ILogger<UnpaidEngine>>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient, logger);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", "XX", CancellationToken.None);
@@ -616,7 +627,8 @@ namespace UnpaidManager.Tests
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
             var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
+            var logger = Substitute.For<ILogger<UnpaidEngine>>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient, logger);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, input, "XX", CancellationToken.None);
@@ -636,7 +648,8 @@ namespace UnpaidManager.Tests
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
             var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
+            var logger = Substitute.For<ILogger<UnpaidEngine>>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient, logger);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidAsync(null, "7c9e6679-7425-40de-944b-e07fc1f90ae7", "XX", CancellationToken.None);
@@ -658,7 +671,8 @@ namespace UnpaidManager.Tests
             var unpaidResponseClient = Substitute.For<IUnpaidResponseClient>();
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
             var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
+            var logger = Substitute.For<ILogger<UnpaidEngine>>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient, logger);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidAsync(unpaidsInput, "7c9e6679-7425-40de-944b-e07fc1f90ae7", "XX", CancellationToken.None);
@@ -702,7 +716,8 @@ namespace UnpaidManager.Tests
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
 
             var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
+            var logger = Substitute.For<ILogger<UnpaidEngine>>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient, logger);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidResponseAsync(unpaidResponseInputList, CancellationToken.None);
@@ -763,7 +778,8 @@ namespace UnpaidManager.Tests
             
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
             var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
+            var logger = Substitute.For<ILogger<UnpaidEngine>>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient, logger);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidResponseAsync(unpaidResponseInputList, CancellationToken.None);
@@ -794,7 +810,8 @@ namespace UnpaidManager.Tests
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
 
             var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
+            var logger = Substitute.For<ILogger<UnpaidEngine>>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient, logger);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidResponseAsync(unpaidResponseInputList, CancellationToken.None);
@@ -814,7 +831,8 @@ namespace UnpaidManager.Tests
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
 
             var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
+            var logger = Substitute.For<ILogger<UnpaidEngine>>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient, logger);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidResponseAsync(null, CancellationToken.None);
@@ -897,7 +915,8 @@ namespace UnpaidManager.Tests
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
 
             var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
+            var logger = Substitute.For<ILogger<UnpaidEngine>>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient, logger);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidResponseAsync(unpaidResponseInputList, CancellationToken.None);
@@ -995,7 +1014,8 @@ namespace UnpaidManager.Tests
 
             var unpaidNotificationClient = Substitute.For<IUnpaidNotificationApiClient>();
             var unpaidBatchClient = Substitute.For<IUnpaidBatchClient>();
-            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient);
+            var logger = Substitute.For<ILogger<UnpaidEngine>>();
+            var unpaidEngine = new UnpaidEngine(unpaidClient, unpaidRequestClient, notification, unpaidResponseClient, unpaidNotificationClient, unpaidBatchClient, logger);
 
             // Act.
             var actual = await unpaidEngine.HandleUnpaidResponseAsync(unpaidResponseInputList, CancellationToken.None);

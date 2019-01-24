@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using UnpaidManager;
 using UnpaidManager.Interfaces;
 using Utilities;
@@ -60,6 +61,7 @@ namespace UnpaidNotificationsApi
             services.AddScoped<IUnpaidBatchClient, UnpaidBatchManager>();
             services.AddScoped<IUnpaidEngineHandler, UnpaidEngine>();
             services.AddScoped<IUnpaidNotificationsEngineHandler, UnpaidNotificationsEngine>();
+            services.AddSingleton<ILoggerFactory, LoggerFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

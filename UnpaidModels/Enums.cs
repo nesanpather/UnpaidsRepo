@@ -27,4 +27,20 @@
         DateNotificationSent,
         DateNotificationResponseAdded,        
     }
+
+    public enum LoggingEvents
+    {
+        EntryMethod = 10,
+        LeaveMethod,
+        GenerateItems = 1000,
+        ListItems,
+        GetItem,
+        InsertItem,
+        UpdateItem,
+        DeleteItem,
+        ValidationFailed = 3000,
+        GetItemNotFound = 4000,
+        UpdateItemNotFound,
+        ExternalCall = 5000
+    }
 }

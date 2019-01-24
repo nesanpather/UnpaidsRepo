@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DataManager.Models;
 using Hangfire;
+using Microsoft.Extensions.Logging;
 using UnpaidManager.Interfaces;
 using UnpaidModels;
 
@@ -19,8 +20,9 @@ namespace UnpaidManager
         private readonly IUnpaidResponseClient _unpaidResponseClient;
         private readonly IUnpaidNotificationApiClient _unpaidNotificationApiClient;
         private readonly IUnpaidBatchClient _unpaidBatchClient;
+        private readonly ILogger<UnpaidEngine> _logger;
 
-        public UnpaidEngine(IUnpaidClient unpaidClient, IUnpaidRequestClient unpaidRequestClient, INotification notification, IUnpaidResponseClient unpaidResponseClient, IUnpaidNotificationApiClient unpaidNotificationApiClient, IUnpaidBatchClient unpaidBatchClient)
+        public UnpaidEngine(IUnpaidClient unpaidClient, IUnpaidRequestClient unpaidRequestClient, INotification notification, IUnpaidResponseClient unpaidResponseClient, IUnpaidNotificationApiClient unpaidNotificationApiClient, IUnpaidBatchClient unpaidBatchClient, ILogger<UnpaidEngine> logger)
         {
             _unpaidClient = unpaidClient;
             _unpaidRequestClient = unpaidRequestClient;
@@ -28,26 +30,27 @@ namespace UnpaidManager
             _unpaidResponseClient = unpaidResponseClient;
             _unpaidNotificationApiClient = unpaidNotificationApiClient;
             _unpaidBatchClient = unpaidBatchClient;
+            _logger = logger;
         }
 
         public async Task<UnpaidOutput> HandleUnpaidAsync(IEnumerable<UnpaidInput> unpaids, string idempotencyKey, string userName, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(idempotencyKey))
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.ValidationFailed, "UnpaidEngine.HandleUnpaidAsync - idempotencyKey is null or empty");
                 return null;
             }
 
             if (unpaids == null)
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.ValidationFailed, "UnpaidEngine.HandleUnpaidAsync - unpaids is null");
                 return null;
             }
 
             var unpaidList = unpaids.ToList();
             if (!unpaidList.Any())
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.ValidationFailed, "UnpaidEngine.HandleUnpaidAsync - unpaids is empty");
                 return null;
             }
 
@@ -55,7 +58,7 @@ namespace UnpaidManager
             var unpaidBatchResult = await _unpaidBatchClient.AddUnpaidBatchAsync(idempotencyKey, Status.Pending, userName, cancellationToken);
             if (unpaidBatchResult <= 0)
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.InsertItem, "UnpaidEngine.HandleUnpaidAsync - _unpaidBatchClient.AddUnpaidBatchAsync returned no rows", new { BatchKey = idempotencyKey });
                 return null;
             }
 
@@ -63,7 +66,7 @@ namespace UnpaidManager
             var getUnpaidBatchResult = await _unpaidBatchClient.GetUnpaidBatchByBatchKeyAsync(idempotencyKey, cancellationToken);
             if (getUnpaidBatchResult == null)
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.GetItem, "UnpaidEngine.HandleUnpaidAsync - _unpaidBatchClient.GetUnpaidBatchByBatchKeyAsync returned null", new { BatchKey = idempotencyKey });
                 return null;
             }
 
@@ -80,7 +83,7 @@ namespace UnpaidManager
             var unpaidResult = await _unpaidClient.AddUnpaidAsync(unpaidList, singleBatchToUpdate.UnpaidBatchId, cancellationToken);
             if (unpaidResult <= 0)
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.InsertItem, "UnpaidEngine.HandleUnpaidAsync - _unpaidClient.AddUnpaidAsync returned no rows", new { BatchId = singleBatchToUpdate.UnpaidBatchId });
                 return null;
             }
 
@@ -88,7 +91,7 @@ namespace UnpaidManager
             var unpaidsByIdempotencyResult = await _unpaidClient.GetUnpaidsByIdempotencyKeyAsync(idempotencyKey, cancellationToken);
             if (unpaidsByIdempotencyResult == null)
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.GetItem, "UnpaidEngine.HandleUnpaidAsync - _unpaidClient.GetUnpaidsByIdempotencyKeyAsync returned null", new { BatchKey = idempotencyKey });
                 return null;
             }
 
@@ -96,16 +99,15 @@ namespace UnpaidManager
 
             if (!byIdempotencyResultList.Any())
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.GetItem, "UnpaidEngine.HandleUnpaidAsync - _unpaidClient.GetUnpaidsByIdempotencyKeyAsync returned no rows", new { BatchKey = idempotencyKey });
                 return null;
             }
 
             // Add UnpaidRequest to storage and default status as pending.
             var unpaidRequestResult = await _unpaidRequestClient.AddUnpaidRequestAsync(byIdempotencyResultList, Notification.Push, Status.Pending, cancellationToken);
-
             if (unpaidRequestResult <= 0)
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.InsertItem, "UnpaidEngine.HandleUnpaidAsync - _unpaidRequestClient.AddUnpaidRequestAsync returned no rows", new { BatchKey = idempotencyKey });
                 return null;
             }
 
@@ -124,7 +126,7 @@ namespace UnpaidManager
         {
             if (unpaids == null)
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.ValidationFailed, "UnpaidEngine.HandleUnpaidRequestAsync - unpaids is null");
                 return false;
             }
 
@@ -137,7 +139,7 @@ namespace UnpaidManager
 
                 if (unpaidRequestsToUpdate == null)
                 {
-                    // Log Warning. No UnpaidRequests to update.
+                    _logger.LogWarning((int)LoggingEvents.GetItem, "UnpaidEngine.HandleUnpaidRequestAsync - _unpaidRequestClient.GetAllUnpaidRequestAsync returned null", new { BatchKey = idempotencyKey });
                     isBatchSuccessful = false;
                     continue;
                 }
@@ -163,7 +165,7 @@ namespace UnpaidManager
                 var updateUnpaidRequestResult = await _unpaidRequestClient.UpdateUnpaidRequestAsync(singleUnpaidRequestToUpdate.UnpaidRequestId, Notification.Push, status, notificationResult.AdditionalErrorMessage, DateTime.UtcNow, correlationId, cancellationToken);
                 if (updateUnpaidRequestResult <= 0)
                 {
-                    // Log Error. Update failed.
+                    _logger.LogWarning((int)LoggingEvents.UpdateItem, "UnpaidEngine.HandleUnpaidRequestAsync - _unpaidRequestClient.UpdateUnpaidRequestAsync returned no results", new { BatchKey = idempotencyKey });
                     isBatchSuccessful = false;
                 }
 
@@ -179,7 +181,7 @@ namespace UnpaidManager
             var updateUnpaidBatchResult = await _unpaidBatchClient.UpdateUnpaidBatchAsync(idempotencyKey, batchStatus, DateTime.UtcNow, cancellationToken);
             if (updateUnpaidBatchResult <= 0)
             {
-                // Log Error. Update failed.
+                _logger.LogWarning((int)LoggingEvents.UpdateItem, "UnpaidEngine.HandleUnpaidRequestAsync - _unpaidRequestClient.UpdateUnpaidBatchAsync returned no results", new { BatchKey = idempotencyKey });
                 isBatchSuccessful = false;
             }
 
@@ -190,7 +192,7 @@ namespace UnpaidManager
         {
             if (unpaidResponseInputs == null)
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.ValidationFailed, "UnpaidEngine.HandleUnpaidResponseAsync - unpaidResponseInputs is null");
                 return null;
             }
 
@@ -198,7 +200,7 @@ namespace UnpaidManager
 
             if (!responseInputList.Any())
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.ValidationFailed, "UnpaidEngine.HandleUnpaidResponseAsync - unpaidResponseInputs is empty");
                 return null;
             }
 
@@ -219,7 +221,7 @@ namespace UnpaidManager
                 var unpaidRequest = await _unpaidRequestClient.GetUnpaidRequestByIdAsync(unpaidResponseInput, cancellationToken);
                 if (unpaidRequest == null)
                 {
-                    // Log Error.
+                    _logger.LogWarning((int)LoggingEvents.GetItem, "UnpaidEngine.HandleUnpaidResponseAsync - _unpaidRequestClient.GetUnpaidRequestByIdAsync returned null", new { CorrelationId = unpaidResponseInput.CorrelationId });
                     unpaidResponseOutputList.Add(unpaidResonseOutput);
                     continue;
                 }
@@ -228,7 +230,7 @@ namespace UnpaidManager
                 var unpaidResponse = await _unpaidResponseClient.GetUnpaidResponseAsync(unpaidRequest.UnpaidRequestId, cancellationToken);
                 if (unpaidResponse != null && unpaidResponse.Any())
                 {
-                    // Log Warning.
+                    _logger.LogWarning((int)LoggingEvents.GetItem, "UnpaidEngine.HandleUnpaidResponseAsync - _unpaidResponseClient.GetUnpaidResponseAsync returned null or empty. Possible cause could be notification response already exists.", new { CorrelationId = unpaidResponseInput.CorrelationId });
                     unpaidResonseOutput.HttpStatusCode = HttpStatusCode.AlreadyReported;
                     unpaidResonseOutput.ErrorMessage = "Notification response already exists.";
                     unpaidResponseOutputList.Add(unpaidResonseOutput);
@@ -239,7 +241,7 @@ namespace UnpaidManager
 
                 if (addUnpaidResponseResult <= 0)
                 {
-                    // Log Error.
+                    _logger.LogWarning((int)LoggingEvents.InsertItem, "UnpaidEngine.HandleUnpaidResponseAsync - _unpaidResponseClient.AddPendingUnpaidResponseAsync returned no rows", new { CorrelationId = unpaidResponseInput.CorrelationId });
                     unpaidResonseOutput.HttpStatusCode = HttpStatusCode.InternalServerError;
                     unpaidResonseOutput.ErrorMessage = "Error adding notification response.";
                     unpaidResponseOutputList.Add(unpaidResonseOutput);

@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using DataManager.Models;
+using Microsoft.Extensions.Logging;
 using UnpaidManager.Interfaces;
 using UnpaidModels;
 
@@ -12,12 +13,13 @@ namespace UnpaidManager
     {
         private readonly IPushNotificationClient _pushNotificationClient;
         private readonly IAccessTokenClient _accessTokenClient;
-        // need to inject an AccessTokenManager to manage how long to use the same access token for bulk processing;
+        private readonly ILogger<PushNotificationManager> _logger;
 
-        public PushNotificationManager(IPushNotificationClient pushNotificationClient, IAccessTokenClient accessTokenClient)
+        public PushNotificationManager(IPushNotificationClient pushNotificationClient, IAccessTokenClient accessTokenClient, ILogger<PushNotificationManager> logger)
         {
             _pushNotificationClient = pushNotificationClient;
             _accessTokenClient = accessTokenClient;
+            _logger = logger;
         }
 
         public async Task<NotificationResponse> SendAsync(string title, string message, string idNumber, string correlationId, CancellationToken cancellationToken)
@@ -29,21 +31,21 @@ namespace UnpaidManager
 
             if (string.IsNullOrWhiteSpace(title))
             {
-                // Log Error.
+                _logger.LogError((int) LoggingEvents.ValidationFailed, "PushNotificationManager.SendAsync - title is null or empty");
                 errorResponse.AdditionalErrorMessage = "Title is null or empty.";
                 return errorResponse;
             }
 
             if (string.IsNullOrWhiteSpace(message))
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.ValidationFailed, "PushNotificationManager.SendAsync - message is null or empty");
                 errorResponse.AdditionalErrorMessage = "Message is null or empty.";
                 return errorResponse;
             }
 
             if (string.IsNullOrWhiteSpace(idNumber))
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.ValidationFailed, "PushNotificationManager.SendAsync - idNumber is null or empty");
                 errorResponse.AdditionalErrorMessage = "IdNumber is null or empty.";
                 return errorResponse;
             }
@@ -64,7 +66,7 @@ namespace UnpaidManager
 
                 if (accessTokenResult == null)
                 {
-                    // Log Error.
+                    _logger.LogError((int)LoggingEvents.GetItem, "PushNotificationManager.SendAsync - _pushNotificationClient.GetAccessTokenAsync returned null");
                     errorResponse.StatusCode = HttpStatusCode.ServiceUnavailable;
                     errorResponse.AdditionalErrorMessage = "Error getting a WebToken.";
                     return errorResponse;
@@ -83,7 +85,7 @@ namespace UnpaidManager
 
                 if (addAccessTokenResult <= 0)
                 {
-                    // Log Warning. Failed to new write access token to storage.
+                    _logger.LogWarning((int)LoggingEvents.InsertItem, "PushNotificationManager.SendAsync - _accessTokenClient.AddAccessTokenAsync returned no results");
                 }
 
                 accessToken = accessTokenResult.AccessToken;
@@ -101,7 +103,7 @@ namespace UnpaidManager
 
             if (pushNotificationResult == null)
             {
-                // Log Error.               
+                _logger.LogError((int)LoggingEvents.ExternalCall, "PushNotificationManager.SendAsync - _pushNotificationClient.SendPushNotification returned null", pushNotificationRequest);
                 errorResponse.StatusCode = HttpStatusCode.ServiceUnavailable;
                 errorResponse.AdditionalErrorMessage = "Error creating a Push Notification request.";
                 return errorResponse;

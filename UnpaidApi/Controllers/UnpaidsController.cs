@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using UnpaidManager.Interfaces;
 using UnpaidModels;
 
@@ -23,12 +24,14 @@ namespace UnpaidApi.Controllers
         private readonly IUnpaidEngineHandler _unpaidEngineHandler;
         private readonly IUnpaidRequestClient _unpaidRequestClient;
         private readonly IUnpaidResponseClient _unpaidResponseClient;
+        private readonly ILogger<UnpaidsController> _logger;
 
-        public UnpaidsController(IUnpaidEngineHandler unpaidEngineHandler, IUnpaidRequestClient unpaidRequestClient, IUnpaidResponseClient unpaidResponseClient)
+        public UnpaidsController(IUnpaidEngineHandler unpaidEngineHandler, IUnpaidRequestClient unpaidRequestClient, IUnpaidResponseClient unpaidResponseClient, ILogger<UnpaidsController> logger)
         {
             _unpaidEngineHandler = unpaidEngineHandler;
             _unpaidRequestClient = unpaidRequestClient;
             _unpaidResponseClient = unpaidResponseClient;
+            _logger = logger;
         }
 
         /// <summary>  
@@ -59,6 +62,7 @@ namespace UnpaidApi.Controllers
         public async Task<ActionResult<UnpaidOutput>> CreateUnpaidAsync([FromBody] IEnumerable<UnpaidInput> unpaids, CancellationToken cancellationToken)
         {
             // Log Entry.
+            _logger.LogInformation((int)LoggingEvents.EntryMethod, "UnpaidsController.CreateUnpaidAsync called");
 
             var handleUnpaidResult = await _unpaidEngineHandler.HandleUnpaidAsync(unpaids, Guid.NewGuid().ToString(), string.Empty, cancellationToken);
 
@@ -74,6 +78,7 @@ namespace UnpaidApi.Controllers
         public async Task<ActionResult<IEnumerable<UnpaidOutput>>> AddNotificationResponse([FromBody] IEnumerable<UnpaidResponseInput> unpaidResponses, CancellationToken cancellationToken)
         {
             // Log Entry.
+            _logger.LogInformation((int)LoggingEvents.EntryMethod, "UnpaidsController.AddNotificationResponse called");
 
             var handleUnpaidResponseResult = await _unpaidEngineHandler.HandleUnpaidResponseAsync(unpaidResponses, cancellationToken);
 
@@ -94,6 +99,7 @@ namespace UnpaidApi.Controllers
         public async Task<ActionResult<IEnumerable<GetAllUnpaidRequestOutput>>> GetAllUnpaidRequestAsync(CancellationToken cancellationToken)
         {
             // Log Entry.
+            _logger.LogInformation( (int)LoggingEvents.EntryMethod, "UnpaidsController.GetAllUnpaidRequestAsync called");
 
             var getAllUnpaidRequestAsyncResult = await _unpaidRequestClient.GetAllUnpaidRequestAsync(cancellationToken);
 
@@ -114,6 +120,7 @@ namespace UnpaidApi.Controllers
         public async Task<ActionResult<IEnumerable<GetAllUnpaidRequestOutput>>> GetAllUnpaidRequestAsync(string policyNumber, CancellationToken cancellationToken)
         {
             // Log Entry.
+            _logger.LogInformation((int)LoggingEvents.EntryMethod, "UnpaidsController.GetAllUnpaidRequestAsync called");
 
             var getAllUnpaidRequestAsyncResult = await _unpaidRequestClient.GetAllUnpaidRequestAsync(policyNumber, cancellationToken);
 
@@ -134,6 +141,7 @@ namespace UnpaidApi.Controllers
         public async Task<ActionResult<IEnumerable<GetAllUnpaidRequestOutput>>> GetAllUnpaidRequestAsync(DateTime dateFrom, DateTime dateTo, DateType dateType, CancellationToken cancellationToken)
         {
             // Log Entry.
+            _logger.LogInformation((int)LoggingEvents.EntryMethod, "UnpaidsController.GetAllUnpaidRequestAsync date filter called");
 
             var getAllUnpaidRequestAsyncResult = await _unpaidRequestClient.GetAllUnpaidRequestAsync(dateFrom, dateTo, dateType, cancellationToken);
 
@@ -174,6 +182,7 @@ namespace UnpaidApi.Controllers
         public async Task<ActionResult<IEnumerable<GetAllUnpaidResponseOutput>>> GetAllUnpaidResponseAsync(CancellationToken cancellationToken)
         {
             // Log Entry.
+            _logger.LogInformation((int)LoggingEvents.EntryMethod, "UnpaidsController.GetAllUnpaidResponseAsync called");
 
             var getAllUnpaidResponseAsyncResult = await _unpaidResponseClient.GetAllUnpaidResponseAsync(cancellationToken);
 
@@ -214,6 +223,7 @@ namespace UnpaidApi.Controllers
         public async Task<ActionResult<IEnumerable<GetAllUnpaidResponseOutput>>> GetAllUnpaidResponseAsync(DateTime dateFrom, DateTime dateTo, DateType dateType, CancellationToken cancellationToken)
         {
             // Log Entry.
+            _logger.LogInformation((int)LoggingEvents.EntryMethod, "UnpaidsController.GetAllUnpaidResponseAsync date filter called");
 
             var getAllUnpaidResponseAsyncResult = await _unpaidResponseClient.GetAllUnpaidResponseAsync(dateFrom, dateTo, dateType, cancellationToken);
 
