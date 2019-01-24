@@ -5,6 +5,7 @@ import { FileSaverService } from 'ngx-filesaver';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { UnpaidService } from '../../shared/services/unpaid.service';
+import { IUnpaidNotificationsResponse } from '../../shared/models/unpaid-notifications-response';
 
 @Component({
   selector: 'app-export-overview',
@@ -18,23 +19,7 @@ export class ExportOverviewComponent implements OnInit {
   ngOnInit() {
   }
 
-  private captureScreen(fileName: string) {
-    var data = document.getElementById('contentToConvert');
-
-    const width = data.clientWidth;
-    const height = data.clientHeight;
-    let rotate = 'p';
-    if (width > height) {
-      rotate = 'l';
-    }
-
-    const doc = new jsPDF(rotate);
-    doc.autoTable({ html: '#contentToConvert', theme: 'striped' });
-    doc.save(fileName);
-  }
-
-  export(event: MouseEvent, extension: string): void {
-
+  public export(event: MouseEvent, extension: string): void {
     const fileName = this.generateFileName(extension);
 
     if (extension === "pdf") {
@@ -42,31 +27,34 @@ export class ExportOverviewComponent implements OnInit {
 
     } else {
       this.unpaidService.getUnpaidNotificationResponses().subscribe(
-        (response) => {
+        (response: IUnpaidNotificationsResponse[]) => {
           console.log("unpaidService.getUnpaidNotificationResponses response", response);
 
-          if (response) {
-            let fileData = "";
-            if (extension === "csv") {
-              const papa = new Papa();
-
-              const options = {
-                quotes: false,
-                delimiter: ",",
-                header: true,
-                newline: "\r\n"
-              };
-
-              const csv = papa.unparse(response, options);
-              if (csv) {
-                fileData = csv;
-              }
-            }
-
-            this.createFileDownload(fileName, fileData);
-
-            this.bottomSheetRef.dismiss();
+          if (!response) {
+            return;
           }
+
+          let fileData = "";
+          if (extension === "csv") {
+            const papa = new Papa();
+
+            const options = {
+              quotes: false,
+              delimiter: ",",
+              header: true,
+              newline: "\r\n"
+            };
+
+            const csv = papa.unparse(response, options);
+            if (csv) {
+              fileData = csv;
+            }
+          }
+
+          this.createFileDownload(fileName, fileData);
+
+          this.bottomSheetRef.dismiss();
+
         },
         (error) => {
           console.log("unpaidService.getUnpaidNotificationResponses error", error);
@@ -92,5 +80,21 @@ export class ExportOverviewComponent implements OnInit {
     const fileType = this.fileSaverService.genType(fileName);
     const txtBlob = new Blob([fileData], { type: fileType });
     this.fileSaverService.save(txtBlob, fileName);
+  }
+
+  private captureScreen(fileName: string) {
+    var data = document.getElementById('contentToConvert');
+
+    const width = data.clientWidth;
+    const height = data.clientHeight;
+    let rotate = 'p';
+    if (width > height) {
+      rotate = 'l';
+    }
+
+    let doc = new jsPDF(rotate);
+    doc.autoTable({ html: '#contentToConvert', theme: 'striped' });   
+    doc.save(fileName);
+    this.bottomSheetRef.dismiss();
   }
 }

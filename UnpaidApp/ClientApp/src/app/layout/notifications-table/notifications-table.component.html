@@ -75,7 +75,7 @@
     <!-- Correlation ID Column -->
     <ng-container matColumnDef="correlationId">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> CorrelationId </th>
-      <td mat-cell *matCellDef="let row"> {{row.correlationId}} </td>
+      <td mat-cell *matCellDef="let row" style="font-size: 80%"> {{row.correlationId}} </td>
     </ng-container>
 
     <!-- NotificationSentStatus Column -->
@@ -87,7 +87,7 @@
     <!-- NotificationErrorMessage Column -->
     <ng-container matColumnDef="notificationErrorMessage">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> ErrorMessage </th>
-      <td mat-cell *matCellDef="let row"> {{row.notificationErrorMessage}} </td>
+      <td mat-cell *matCellDef="let row" style="font-size: 75%"> {{row.notificationErrorMessage}} </td>
     </ng-container>
 
     <!-- DateNotificationSent Column -->

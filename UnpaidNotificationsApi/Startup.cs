@@ -2,6 +2,7 @@
 using DataManager.Interfaces;
 using DataManager.Models;
 using Hangfire;
+using Hangfire.Dashboard;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -82,7 +83,7 @@ namespace UnpaidNotificationsApi
             app.UseHangfireDashboard();
             //app.UseHangfireDashboard("/hangfire", new DashboardOptions
             //{
-            //    Authorization = new[] { new HangfireAuthorizationFilter() },
+            //    Authorization = new[] { new DashboardAuthFilter() },
             //});
         }
     }
