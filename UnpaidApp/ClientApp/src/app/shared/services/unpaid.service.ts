@@ -6,14 +6,22 @@ import { IUnpaidInput } from '../models/unpaid-input';
 import { IUnpaidNotifications } from '../models/unpaid-notifications';
 import { IUnpaidNotificationsResponse } from '../models/unpaid-notifications-response';
 import { IUser } from '../models/user';
+import { AppConfigService } from '../../app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UnpaidService {
-  unpaidApiBaseUrl: string = 'http://tts.devtest.com/api/v1';
+  unpaidApiBaseUrl: string = ''; //http://tts.devtest.com/api/v1
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private appConfigService: AppConfigService) {
+    let config = this.appConfigService.getConfig();
+
+    if (config && config.unpaidApiBaseUrl) {
+      this.unpaidApiBaseUrl = config.unpaidApiBaseUrl;
+      console.log("baseUrl config", this.unpaidApiBaseUrl);
+    }
+  }
 
   public addUnpaid(unpaidInputs: IUnpaidInput[]): any {
     const httpOptions = {

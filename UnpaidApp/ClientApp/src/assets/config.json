@@ -1,5 +1,5 @@
 {
-  "unpaidApiBaseUrl": "https://tts.devtest.com/api/v1",
+  "unpaidApiBaseUrl": "http://tts.devtest.com/api/v1",
   "exclude": [
     "**/bin",
     "**/bower_components",

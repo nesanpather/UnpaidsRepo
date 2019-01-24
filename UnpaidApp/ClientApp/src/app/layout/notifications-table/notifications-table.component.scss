@@ -9,7 +9,7 @@ table {
 
 td,
 th {
-  width: 8%;
+  width: 10%;
 }
 
 .mat-radio-button ~ .mat-radio-button {
@@ -18,11 +18,14 @@ th {
 
 .mat-cell {
   font-size: 14px;
+  /*text-align: center;
+  border-left: 0.5px solid rgba(0, 0, 0, 0.12);
+  border-right: 0.5px solid rgba(0, 0, 0, 0.12);*/
 }
 
 .mat-header-cell {
   font-size: 15px;
-  font-weight: bold;
+  font-weight: bold;  
 }
 
 .mat-row:nth-child(even) {
