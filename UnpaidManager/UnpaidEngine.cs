@@ -58,7 +58,7 @@ namespace UnpaidManager
             var unpaidBatchResult = await _unpaidBatchClient.AddUnpaidBatchAsync(idempotencyKey, Status.Pending, userName, cancellationToken);
             if (unpaidBatchResult <= 0)
             {
-                _logger.LogError((int)LoggingEvents.InsertItem, "UnpaidEngine.HandleUnpaidAsync - _unpaidBatchClient.AddUnpaidBatchAsync returned no rows", new { BatchKey = idempotencyKey });
+                _logger.LogCritical((int)LoggingEvents.InsertItem, "UnpaidEngine.HandleUnpaidAsync - _unpaidBatchClient.AddUnpaidBatchAsync returned no rows", new { BatchKey = idempotencyKey });
                 return null;
             }
 
@@ -83,7 +83,7 @@ namespace UnpaidManager
             var unpaidResult = await _unpaidClient.AddUnpaidAsync(unpaidList, singleBatchToUpdate.UnpaidBatchId, cancellationToken);
             if (unpaidResult <= 0)
             {
-                _logger.LogError((int)LoggingEvents.InsertItem, "UnpaidEngine.HandleUnpaidAsync - _unpaidClient.AddUnpaidAsync returned no rows", new { BatchId = singleBatchToUpdate.UnpaidBatchId });
+                _logger.LogCritical((int)LoggingEvents.InsertItem, "UnpaidEngine.HandleUnpaidAsync - _unpaidClient.AddUnpaidAsync returned no rows", new { BatchId = singleBatchToUpdate.UnpaidBatchId });
                 return null;
             }
 

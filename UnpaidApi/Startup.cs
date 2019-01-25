@@ -59,7 +59,6 @@ namespace UnpaidApi
 
             services.AddScoped<ISettings, AppConfigSettings>();
             services.AddScoped<IHttpClientOperations, HttpClientManager>();
-            //services.AddSingleton<ICustomLogger, ConsoleLogger>();
 
             services.AddScoped<IUnpaidStorageOperations, UnpaidDataManager>();
             services.AddScoped<IUnpaidRequestStorageOperations, UnpaidRequestDataManager>();
@@ -78,20 +77,6 @@ namespace UnpaidApi
             services.AddScoped<IUnpaidEngineHandler, UnpaidEngine>();
             services.AddScoped<IUnpaidNotificationsEngineHandler, UnpaidNotificationsEngine>();
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
-            //services.AddAuthorization(options => {
-            //    options.AddPolicy("AllUsers", policy => {
-            //        policy.AddAuthenticationSchemes(IISDefaults.AuthenticationScheme);
-            //        policy.RequireRole("S - 1 - 1 - 0");
-            //    });
-            //});
-
-
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy("AllowSpecificOrigin",
-            //        //builder => builder.WithOrigins("https://localhost:44348").AllowAnyHeader());
-            //        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
