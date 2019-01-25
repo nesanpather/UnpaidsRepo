@@ -2,7 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Hangfire;
+using Microsoft.Extensions.Logging;
 using UnpaidManager.Interfaces;
+using UnpaidModels;
 
 namespace UnpaidManager
 {
@@ -10,18 +12,20 @@ namespace UnpaidManager
     {
         private readonly IUnpaidEngineHandler _unpaidEngineHandler;
         private readonly IUnpaidClient _unpaidClient;
+        private readonly ILogger<UnpaidNotificationsEngine> _logger;
 
-        public UnpaidNotificationsEngine(IUnpaidEngineHandler unpaidEngineHandler, IUnpaidClient unpaidClient)
+        public UnpaidNotificationsEngine(IUnpaidEngineHandler unpaidEngineHandler, IUnpaidClient unpaidClient, ILogger<UnpaidNotificationsEngine> logger)
         {
             _unpaidEngineHandler = unpaidEngineHandler;
             _unpaidClient = unpaidClient;
+            _logger = logger;
         }
 
         public async Task HandleUnpaidNotificationsAsync(string idempotencyKey, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(idempotencyKey))
             {
-                // Log Error.
+                _logger.LogWarning((int)LoggingEvents.GetItem, "UnpaidNotificationsEngine.HandleUnpaidNotificationsAsync - idempotencyKey is null or empty", new { BatchKey = idempotencyKey });
                 return;                
             }
 
@@ -29,7 +33,7 @@ namespace UnpaidManager
             var unpaidsByIdempotencyResult = await _unpaidClient.GetUnpaidsByIdempotencyKeyAsync(idempotencyKey, cancellationToken);
             if (unpaidsByIdempotencyResult == null)
             {
-                // Log Error.
+                _logger.LogWarning((int)LoggingEvents.GetItem, "UnpaidNotificationsEngine.HandleUnpaidNotificationsAsync - _unpaidClient.GetUnpaidsByIdempotencyKeyAsync returned null", new { BatchKey = idempotencyKey });
                 return;
             }
 
@@ -37,7 +41,7 @@ namespace UnpaidManager
 
             if (!byIdempotencyResultList.Any())
             {
-                // Log Error.
+                _logger.LogWarning((int)LoggingEvents.GetItem, "UnpaidNotificationsEngine.HandleUnpaidNotificationsAsync - _unpaidClient.GetUnpaidsByIdempotencyKeyAsync returned empty results", new { BatchKey = idempotencyKey });
                 return;
             }
 

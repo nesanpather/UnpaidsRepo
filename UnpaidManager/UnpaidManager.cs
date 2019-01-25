@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DataManager.Interfaces;
 using DataManager.Models;
+using Microsoft.Extensions.Logging;
 using UnpaidManager.Interfaces;
 using UnpaidModels;
 
@@ -13,23 +14,25 @@ namespace UnpaidManager
     public class UnpaidManager: IUnpaidClient
     {
         private readonly IUnpaidStorageOperations _unpaidOperations;
+        private readonly ILogger<UnpaidManager> _logger;
 
-        public UnpaidManager(IUnpaidStorageOperations unpaidOperations)
+        public UnpaidManager(IUnpaidStorageOperations unpaidOperations, ILogger<UnpaidManager> logger)
         {
             _unpaidOperations = unpaidOperations;
+            _logger = logger;
         }
 
         public async Task<int> AddUnpaidAsync(IEnumerable<UnpaidInput> unpaids, int unpaidBatchId, CancellationToken cancellationToken)
         {
             if (unpaids == null)
             {
-                // Log Error.
+                _logger.LogError((int) LoggingEvents.ValidationFailed, "UnpaidManager.AddUnpaidAsync - unpaids is null");
                 return 0;
             }
 
             if (unpaidBatchId <= 0)
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.ValidationFailed, "UnpaidManager.AddUnpaidAsync - unpaidBatchId is less than or equal to zero");
                 return 0;
             }
 
@@ -37,7 +40,7 @@ namespace UnpaidManager
 
             if (!enumerable.Any())
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.ValidationFailed, "UnpaidManager.AddUnpaidAsync - unpaids is empty");
                 return 0;
             }
 
@@ -64,7 +67,7 @@ namespace UnpaidManager
         {
             if (string.IsNullOrWhiteSpace(idempotencyKey))
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.ValidationFailed, "UnpaidManager.GetUnpaidsByIdempotencyKeyAsync - idempotencyKey is null or empty");
                 return null;
             }
 

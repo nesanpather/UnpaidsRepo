@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DataManager.Interfaces;
 using DataManager.Models;
+using Microsoft.Extensions.Logging;
 using UnpaidManager.Interfaces;
 using UnpaidModels;
 using Utilities;
@@ -16,18 +17,20 @@ namespace UnpaidManager
     {
         private readonly IUnpaidResponseStorageOperations _unpaidResponseStorageOperations;
         private readonly IUnpaidRequestStorageOperations _unpaidRequestStorageOperations;
+        private readonly ILogger<UnpaidResponseManager> _logger;
 
-        public UnpaidResponseManager(IUnpaidResponseStorageOperations unpaidResponseStorageOperations, IUnpaidRequestStorageOperations unpaidRequestStorageOperations)
+        public UnpaidResponseManager(IUnpaidResponseStorageOperations unpaidResponseStorageOperations, IUnpaidRequestStorageOperations unpaidRequestStorageOperations, ILogger<UnpaidResponseManager> logger)
         {
             _unpaidResponseStorageOperations = unpaidResponseStorageOperations;
             _unpaidRequestStorageOperations = unpaidRequestStorageOperations;
+            _logger = logger;
         }
 
         public async Task<int> AddPendingUnpaidResponseAsync(UnpaidResponseInput unpaidResponseInput,int unpaidRequestId, CancellationToken cancellationToken)
         {
             if (unpaidResponseInput == null)
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.ValidationFailed, "UnpaidResponseManager.AddPendingUnpaidResponseAsync - unpaidResponseInput is null");
                 return 0;
             }
 
@@ -49,7 +52,7 @@ namespace UnpaidManager
         {
             if (unpaidRequestId <= 0)
             {
-                // Log Error.
+                _logger.LogWarning((int)LoggingEvents.ValidationFailed, "UnpaidResponseManager.GetUnpaidResponseAsync - unpaidRequestId is less than or equal to zero");
                 return null;
             }
 
@@ -64,7 +67,7 @@ namespace UnpaidManager
             var unpaidResponseTaskResult = await unpaidResponsesTask;
 
             if (unpaidResponseTaskResult == null)
-            {
+            {                
                 unpaidRequestsJoinUnpaidTask.Dispose();
                 return null;
             }
@@ -108,7 +111,7 @@ namespace UnpaidManager
         {
             if (string.IsNullOrWhiteSpace(policyNumber))
             {
-                // Log Error.
+                _logger.LogWarning((int)LoggingEvents.ValidationFailed, "UnpaidResponseManager.GetUnpaidResponseAsync - policyNumber is null or empty");
                 return null;
             }
 
@@ -122,14 +125,14 @@ namespace UnpaidManager
         {
             if (dateFrom == DateTime.MinValue || dateFrom == DateTime.MaxValue)
             {
-                // Log Error.
+                _logger.LogWarning((int)LoggingEvents.ValidationFailed, "UnpaidResponseManager.GetUnpaidResponseAsync - dateFrom is not set");
 
                 return await GetAllUnpaidResponseAsync(cancellationToken);
             }
 
             if (dateTo == DateTime.MinValue || dateTo == DateTime.MaxValue)
             {
-                // Log Error.
+                _logger.LogWarning((int)LoggingEvents.ValidationFailed, "UnpaidResponseManager.GetUnpaidResponseAsync - dateTo is not set");
 
                 return await GetAllUnpaidResponseAsync(cancellationToken);
             }
@@ -142,7 +145,7 @@ namespace UnpaidManager
             var getAllUnpaidResponseResult = await GetAllUnpaidResponseAsync(cancellationToken);
             if (getAllUnpaidResponseResult == null)
             {
-                // Log Error.
+                _logger.LogWarning((int)LoggingEvents.GetItem, "UnpaidResponseManager.GetUnpaidResponseAsync - GetAllUnpaidResponseAsync returned null");
                 return null;
             }
 
@@ -165,7 +168,7 @@ namespace UnpaidManager
                 }
             }
 
-            // Log Warning. Invalid DateType.
+            _logger.LogWarning((int)LoggingEvents.ValidationFailed, "UnpaidResponseManager.GetUnpaidResponseAsync - invalid dateType");
             return getAllUnpaidResponseResult;
         }
     }

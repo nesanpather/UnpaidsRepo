@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DataManager.Interfaces;
 using DataManager.Models;
+using Microsoft.Extensions.Logging;
 using UnpaidManager.Interfaces;
 using UnpaidModels;
 using Utilities;
@@ -15,17 +16,19 @@ namespace UnpaidManager
     public class UnpaidRequestManager : IUnpaidRequestClient
     {
         private readonly IUnpaidRequestStorageOperations _unpaidRequestOperations;
+        private readonly ILogger<UnpaidRequestManager> _logger;
 
-        public UnpaidRequestManager(IUnpaidRequestStorageOperations unpaidRequestOperations)
+        public UnpaidRequestManager(IUnpaidRequestStorageOperations unpaidRequestOperations, ILogger<UnpaidRequestManager> logger)
         {
             _unpaidRequestOperations = unpaidRequestOperations;
+            _logger = logger;
         }
 
         public async Task<int> AddUnpaidRequestAsync(IEnumerable<TbUnpaid> unpaids, Notification notification, Status status, CancellationToken cancellationToken)
         {
             if (unpaids == null)
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.ValidationFailed, "UnpaidRequestManager.AddUnpaidRequestAsync - unpaids is null");
                 return 0;
             }
 
@@ -33,7 +36,7 @@ namespace UnpaidManager
 
             if (!unpaidDbs.Any())
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.ValidationFailed, "UnpaidRequestManager.AddUnpaidRequestAsync - unpaids is empty");
                 return 0;
             }
 
@@ -57,7 +60,7 @@ namespace UnpaidManager
         {
             if (unpaidRequestId <= 0)
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.ValidationFailed, "UnpaidRequestManager.UpdateUnpaidRequestAsync - unpaidRequestId is less than or equal to zero");
                 return 0;
             }
 
@@ -68,7 +71,7 @@ namespace UnpaidManager
         {
             if (unpaidId <= 0)
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.ValidationFailed, "UnpaidRequestManager.GetAllUnpaidRequestAsync - unpaidId is less than or equal to zero");
                 return null;
             }
 
@@ -81,32 +84,32 @@ namespace UnpaidManager
         {
             if (unpaidResponseInput == null)
             {
-                // Log Error.
+                _logger.LogWarning((int)LoggingEvents.ValidationFailed, "UnpaidRequestManager.GetUnpaidRequestByIdAsync - unpaidResponseInput is null");
                 return null;
             }
 
             if (string.IsNullOrWhiteSpace(unpaidResponseInput.PolicyNumber))
             {
-                // Log Error.
+                _logger.LogWarning((int)LoggingEvents.ValidationFailed, "UnpaidRequestManager.GetUnpaidRequestByIdAsync - PolicyNumber is null or empty");
                 return null;
             }
 
             if (string.IsNullOrWhiteSpace(unpaidResponseInput.IdNumber))
             {
-                // Log Error.
+                _logger.LogWarning((int)LoggingEvents.ValidationFailed, "UnpaidRequestManager.GetUnpaidRequestByIdAsync - IdNumber is null or empty");
                 return null;
             }
 
             if (string.IsNullOrWhiteSpace(unpaidResponseInput.CorrelationId))
             {
-                // Log Error.
+                _logger.LogError((int)LoggingEvents.ValidationFailed, "UnpaidRequestManager.GetUnpaidRequestByIdAsync - CorrelationId is null or empty");
                 return null;
             }
 
             var correlationIdSplit = unpaidResponseInput.CorrelationId.Split("_");
             if (correlationIdSplit.Length < 2)
             {
-                // Log Error. Invalid CorrelationId
+                _logger.LogError((int)LoggingEvents.ValidationFailed, "UnpaidRequestManager.GetUnpaidRequestByIdAsync - CorrelationId is not in the correct format");
                 return null;
             }
 
@@ -146,7 +149,7 @@ namespace UnpaidManager
         {
             if (string.IsNullOrWhiteSpace(policyNumber))
             {
-                // Log Error.
+                _logger.LogWarning((int)LoggingEvents.ValidationFailed, "UnpaidRequestManager.GetAllUnpaidRequestAsync - policyNumber is null or empty");
                 return null;
             }
 
@@ -164,14 +167,14 @@ namespace UnpaidManager
         {
             if (dateFrom == DateTime.MinValue || dateFrom == DateTime.MaxValue)
             {
-                // Log Error.
+                _logger.LogWarning((int)LoggingEvents.ValidationFailed, "UnpaidRequestManager.GetAllUnpaidRequestAsync - dateFrom is not set");
 
                 return await GetAllUnpaidRequestAsync(cancellationToken);
             }
 
             if (dateTo == DateTime.MinValue || dateTo == DateTime.MaxValue)
             {
-                // Log Error.
+                _logger.LogWarning((int)LoggingEvents.ValidationFailed, "UnpaidRequestManager.GetAllUnpaidRequestAsync - dateTo is not set");
 
                 return await GetAllUnpaidRequestAsync(cancellationToken);
             }
@@ -185,6 +188,7 @@ namespace UnpaidManager
 
             if (unpaidRequests == null)
             {
+                _logger.LogWarning((int)LoggingEvents.ValidationFailed, "UnpaidRequestManager.GetAllUnpaidRequestAsync - _unpaidRequestOperations.GetUnpaidRequestJoinUnpaidAsync returned null");
                 return null;
             }
 
@@ -204,7 +208,7 @@ namespace UnpaidManager
                 }
             }
 
-            // Log Warning. Invalid DateType. 
+            _logger.LogWarning((int)LoggingEvents.ValidationFailed, "UnpaidRequestManager.GetAllUnpaidRequestAsync - invalid dateType");
             return await GetAllUnpaidRequestAsync(cancellationToken);
         }
 
