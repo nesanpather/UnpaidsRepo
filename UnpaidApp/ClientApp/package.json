@@ -28,7 +28,7 @@
     "jspdf-autotable": "^3.0.2",
     "ng2-charts": "^1.6.0",
     "ngx-filesaver": "^2.2.0",
-    "ngx-papaparse": "^3.0.2",
+    "ngx-papaparse": "^6.0.2",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"
